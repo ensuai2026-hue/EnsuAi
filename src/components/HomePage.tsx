@@ -1,21 +1,51 @@
-import { motion } from 'motion/react';
-import { ArrowRight, Factory, Dna, Target, Rocket, Fingerprint, Users, Star, CircleCheck as CheckCircle } from 'lucide-react';
+import { motion, useScroll, useTransform } from 'motion/react';
+import { useEffect, useRef, useState } from 'react';
+import { ArrowRight, Factory, Dna, Target, Rocket, Fingerprint, Star, CircleCheck as CheckCircle, Scan } from 'lucide-react';
 
 interface HomePageProps {
   onStartDiagnosis: () => void;
 }
 
 export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
+  const [showStickyBtn, setShowStickyBtn] = useState(false);
+  const heroRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const heroBottom = heroRef.current?.getBoundingClientRect().bottom ?? 0;
+      setShowStickyBtn(heroBottom < 0);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <div className="bg-oem-light min-h-screen">
+      {/* Sticky Scan DNA Button */}
+      <motion.div
+        initial={false}
+        animate={{ opacity: showStickyBtn ? 1 : 0, y: showStickyBtn ? 0 : 20, pointerEvents: showStickyBtn ? 'auto' : 'none' }}
+        transition={{ duration: 0.3 }}
+        className="fixed bottom-8 right-8 z-50"
+      >
+        <button
+          onClick={onStartDiagnosis}
+          className="flex items-center gap-3 bg-oem-dark text-white px-6 py-4 rounded-2xl shadow-2xl shadow-oem-dark/30 hover:bg-oem-primary transition-all duration-300 group"
+        >
+          <Scan className="w-5 h-5 text-emerald-400 group-hover:text-white transition-colors" />
+          <span className="text-[11px] font-black uppercase tracking-widest">Scan DNA</span>
+          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+        </button>
+      </motion.div>
+
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center overflow-hidden pt-20">
+      <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden pt-20">
         {/* Background */}
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.pexels.com/photos/3735747/pexels-photo-3735747.jpeg?auto=compress&cs=tinysrgb&w=1600"
+            src="https://images.pexels.com/photos/2280547/pexels-photo-2280547.jpeg?auto=compress&cs=tinysrgb&w=1600"
             alt="Lab background"
-            className="w-full h-full object-cover opacity-[0.04]"
+            className="w-full h-full object-cover opacity-[0.05]"
           />
           <div className="absolute inset-0 bg-gradient-to-br from-oem-light via-oem-light/98 to-emerald-50/60" />
         </div>
@@ -110,7 +140,7 @@ export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
 
                 <div className="relative w-80 h-[500px] lg:w-96 lg:h-[560px]">
                   <img
-                    src="https://images.pexels.com/photos/5699516/pexels-photo-5699516.jpeg?auto=compress&cs=tinysrgb&w=700"
+                    src="https://images.pexels.com/photos/3938023/pexels-photo-3938023.jpeg?auto=compress&cs=tinysrgb&w=700"
                     alt="Saintis Ensu"
                     className="w-full h-full object-cover object-top rounded-[3rem] shadow-2xl shadow-emerald-200/50 border border-white/80"
                   />
