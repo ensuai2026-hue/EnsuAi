@@ -186,46 +186,93 @@ export const Hero = ({ onStartDiagnosis }: { onStartDiagnosis: () => void }) => 
         </motion.div>
       </motion.div>
       <div className="max-w-7xl mx-auto px-6 md:px-10 w-full relative z-10">
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="max-w-4xl"
-        >
-          <div className="mb-8">
-            <span className="pill-container text-[9px]">
-              Eksplorasi DNA Founder
-            </span>
-          </div>
-          <h1 className="text-5xl sm:text-7xl md:text-[8rem] lg:text-[9rem] font-extrabold mb-6 md:mb-12 leading-[1] md:leading-[0.9] tracking-tight text-oem-dark uppercase">
-            PRODUK <br className="hidden sm:block"/>
-            DNA <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-emerald-400 to-emerald-600 animate-gradient-x">FOUNDER.</span>
-          </h1>
-          <p className="text-base md:text-xl text-oem-dark/40 mb-8 md:mb-14 max-w-2xl leading-relaxed font-medium">
-            Kitorang kaji personaliti korang sampai ke akar umbi untuk bina jenama yang bukan saja catchy, tapi betul-betul ada <span className="text-oem-dark font-bold underline decoration-emerald-200">soul</span>. 
-          </p>
-          <div className="flex flex-col sm:flex-row items-center gap-6 md:gap-8">
-            <button 
-              onClick={onStartDiagnosis}
-              className="btn-organic group w-full sm:w-auto"
-            >
-              SCAN DNA <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
-            </button>
-            <div className="flex items-center gap-5">
-              <div className="flex -space-x-2.5">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="w-10 h-10 rounded-full border-2 border-white shadow-sm overflow-hidden">
-                    <img src={`https://i.pravatar.cc/150?u=ensu${i}`} alt="user" className="w-full h-full object-cover" />
-                  </div>
-                ))}
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xs font-black text-oem-dark tracking-tighter">1,200+ FOUNDER</span>
-                <span className="text-[9px] font-bold text-oem-primary uppercase tracking-[0.2em]">Telah Berjaya</span>
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-0">
+          {/* Left: Text Content */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="max-w-2xl flex-1"
+          >
+            <div className="mb-8">
+              <span className="pill-container text-[9px]">
+                Eksplorasi DNA Founder
+              </span>
+            </div>
+            <h1 className="text-5xl sm:text-7xl md:text-[8rem] lg:text-[7rem] font-extrabold mb-6 md:mb-12 leading-[1] md:leading-[0.9] tracking-tight text-oem-dark uppercase">
+              PRODUK <br className="hidden sm:block"/>
+              DNA <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-emerald-400 to-emerald-600 animate-gradient-x">FOUNDER.</span>
+            </h1>
+            <p className="text-base md:text-xl text-oem-dark/40 mb-8 md:mb-14 max-w-2xl leading-relaxed font-medium">
+              Kitorang kaji personaliti korang sampai ke akar umbi untuk bina jenama yang bukan saja catchy, tapi betul-betul ada <span className="text-oem-dark font-bold underline decoration-emerald-200">soul</span>.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center gap-6 md:gap-8">
+              <button
+                onClick={onStartDiagnosis}
+                className="btn-organic group w-full sm:w-auto"
+              >
+                SCAN DNA <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
+              </button>
+              <div className="flex items-center gap-5">
+                <div className="flex -space-x-2.5">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="w-10 h-10 rounded-full border-2 border-white shadow-sm overflow-hidden">
+                      <img src={`https://i.pravatar.cc/150?u=ensu${i}`} alt="user" className="w-full h-full object-cover" />
+                    </div>
+                  ))}
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-xs font-black text-oem-dark tracking-tighter">1,200+ FOUNDER</span>
+                  <span className="text-[9px] font-bold text-oem-primary uppercase tracking-[0.2em]">Telah Berjaya</span>
+                </div>
               </div>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+
+          {/* Right: Saintis Ensu Character */}
+          <motion.div
+            initial={{ opacity: 0, x: 60 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="hidden lg:flex flex-col items-center flex-shrink-0 relative"
+          >
+            {/* Speech bubble */}
+            <motion.div
+              initial={{ opacity: 0, y: -10, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.6, delay: 1.2 }}
+              className="absolute -top-4 -left-24 z-10 bg-white border border-emerald-100 rounded-2xl rounded-bl-sm px-4 py-3 shadow-lg max-w-[200px]"
+            >
+              <p className="text-[11px] font-bold text-oem-dark leading-snug">Eh, jom scan DNA bisnes kau! 🧬</p>
+              <p className="text-[9px] text-oem-dark/40 mt-0.5 font-medium">— Saintis Ensu</p>
+            </motion.div>
+
+            {/* Character image container */}
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+              className="relative"
+            >
+              <div className="w-72 h-[420px] relative">
+                {/* Glow behind character */}
+                <div className="absolute inset-0 bg-emerald-300/20 rounded-full blur-3xl scale-75 translate-y-8" />
+                <img
+                  src="https://images.pexels.com/photos/5699516/pexels-photo-5699516.jpeg?auto=compress&cs=tinysrgb&w=600"
+                  alt="Saintis Ensu"
+                  className="w-full h-full object-cover object-top rounded-3xl shadow-2xl shadow-emerald-200/40 border border-white/60"
+                />
+                {/* Name badge */}
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-oem-dark/90 backdrop-blur-sm text-white px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest whitespace-nowrap shadow-xl">
+                  Saintis Ensu
+                </div>
+                {/* AI badge */}
+                <div className="absolute top-4 right-4 bg-emerald-500 text-white text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-widest shadow-lg">
+                  AI
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
       </div>
     </section>
   );
