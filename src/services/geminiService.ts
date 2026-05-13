@@ -1,4 +1,4 @@
-const KIE_API_KEY = process.env.GEMINI_API_KEY || '';
+const KIE_API_KEY = import.meta.env.VITE_KIE_API_KEY || '';
 const KIE_BASE_URL = 'https://api.kie.ai/gemini-2.5-pro/v1';
 
 async function kieChat(messages: { role: string; content: string }[], jsonMode = false): Promise<string> {
