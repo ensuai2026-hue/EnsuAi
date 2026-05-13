@@ -1,68 +1,10 @@
 const KIE_API_KEY = process.env.GEMINI_API_KEY || '';
 const KIE_BASE_URL = 'https://api.kie.ai/gemini-2.5-pro/v1';
 
-function assertKey() {
+async function kieChat(messages: { role: string; content: string }[], jsonMode = false): Promise<string> {
   if (!KIE_API_KEY) {
     throw new Error("GEMINI_API_KEY tidak ditetapkan. Sila tambah GEMINI_API_KEY dalam fail .env anda.");
   }
-}
-
-export async function* chatWithScientistStream(
-  history: { role: 'user' | 'bot'; content: string }[]
-): AsyncGenerator<string> {
-  assertKey();
-
-  const messages = [
-    { role: 'system', content: SCIENTIST_SYSTEM_PROMPT },
-    ...history.map(m => ({
-      role: m.role === 'user' ? 'user' : 'assistant',
-      content: m.content,
-    })),
-  ];
-
-  const res = await fetch(`${KIE_BASE_URL}/chat/completions`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${KIE_API_KEY}`,
-    },
-    body: JSON.stringify({ model: 'gemini-2.5-flash', messages, stream: true }),
-  });
-
-  if (!res.ok || !res.body) {
-    const err = await res.text();
-    throw new Error(`KIE API error ${res.status}: ${err}`);
-  }
-
-  const reader = res.body.getReader();
-  const decoder = new TextDecoder();
-  let buffer = '';
-
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    buffer += decoder.decode(value, { stream: true });
-
-    const lines = buffer.split('\n');
-    buffer = lines.pop() ?? '';
-
-    for (const line of lines) {
-      const trimmed = line.trim();
-      if (!trimmed || trimmed === 'data: [DONE]') continue;
-      if (!trimmed.startsWith('data: ')) continue;
-      try {
-        const json = JSON.parse(trimmed.slice(6));
-        const delta = json.choices?.[0]?.delta?.content;
-        if (delta) yield delta;
-      } catch {
-        // skip malformed chunk
-      }
-    }
-  }
-}
-
-async function kieChat(messages: { role: string; content: string }[], jsonMode = false): Promise<string> {
-  assertKey();
 
   const body: Record<string, unknown> = {
     model: 'gemini-2.5-pro',
@@ -77,7 +19,7 @@ async function kieChat(messages: { role: string; content: string }[], jsonMode =
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${KIE_API_KEY}`,
+      'Authorization': `Bearer ${KIE_API_KEY}`,
     },
     body: JSON.stringify(body),
   });
@@ -134,7 +76,19 @@ MATLAMAT AKHIR:
 - Pastikan anda tahu sama ada mereka sesuai bawa produk 'High-End Luxury', 'Mass Market', 'Tech-Driven', atau 'Nature-Based'.
 - JANGAN bagi report muktamad lagi. Kumpul semua point ini dalam perbualan sampai user klik "MUKTAMADKAN ANALISIS DNA".`;
 
-export async function diagnoseFounder(history: { role: 'user' | 'bot'; content: string }[]): Promise<PersonalityProfile> {
+export async function chatWithScientist(history: { role: 'user' | 'bot', content: string }[]) {
+  const messages = [
+    { role: 'system', content: SCIENTIST_SYSTEM_PROMPT },
+    ...history.map(m => ({
+      role: m.role === 'user' ? 'user' : 'assistant',
+      content: m.content,
+    })),
+  ];
+
+  return await kieChat(messages) || "Maaf, transmisi saya terganggu. Boleh kita sambung semula?";
+}
+
+export async function diagnoseFounder(history: { role: 'user' | 'bot', content: string }[]): Promise<PersonalityProfile> {
   const fullConversation = history.map(m => `${m.role.toUpperCase()}: ${m.content}`).join('\n');
 
   const prompt = `Anda bertindak sebagai "Ensu Saintis" dari ENSU LIFESCIENCES.
