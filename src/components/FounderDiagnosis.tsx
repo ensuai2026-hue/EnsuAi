@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Brain, Send, Loader2, Sparkles, ArrowRight, User, Bot, MessageSquare } from 'lucide-react';
+import { Brain, Send, Loader as Loader2, Sparkles, ArrowRight, User, Bot, MessageSquare } from 'lucide-react';
 import { diagnoseFounder, chatWithScientist, PersonalityProfile } from '../services/geminiService';
 import { cn } from '../lib/utils';
 
@@ -38,7 +38,35 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
   const [input, setInput] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [ageSelected, setAgeSelected] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
+
+  const AGE_OPTIONS = ['20 - 30', '30 - 40', '40 - 50', '50 ke atas'];
+
+  const isAskingAboutAge = (text: string) => {
+    const lower = text.toLowerCase();
+    return (lower.includes('umur') || lower.includes('usia') || lower.includes('berapa tahun') || lower.includes('anggaran')) &&
+      !ageSelected;
+  };
+
+  const lastBotMessage = messages.filter(m => m.role === 'bot').at(-1)?.content ?? '';
+  const showAgeOptions = isAskingAboutAge(lastBotMessage) && !isTyping && !ageSelected;
+
+  const handleAgeSelect = async (age: string) => {
+    setAgeSelected(true);
+    const userMsg: Message = { role: 'user', content: age };
+    const updatedMessages = [...messages, userMsg];
+    setMessages(updatedMessages);
+    setIsTyping(true);
+    try {
+      const response = await chatWithScientist(updatedMessages);
+      setMessages(prev => [...prev, { role: 'bot', content: response }]);
+    } catch {
+      setMessages(prev => [...prev, { role: 'bot', content: "Maaf, hubungan transmisi saya sedikit terganggu. Boleh anda nyatakan semula?" }]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
 
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -176,8 +204,22 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
             </div>
           ) : (
             <div className="flex flex-col gap-3">
-              <form 
-                onSubmit={handleSendMessage} 
+              {showAgeOptions && (
+                <div className="flex flex-wrap gap-2">
+                  {AGE_OPTIONS.map((age) => (
+                    <button
+                      key={age}
+                      type="button"
+                      onClick={() => handleAgeSelect(age)}
+                      className="px-4 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-oem-dark text-sm font-bold hover:bg-oem-primary hover:text-white hover:border-oem-primary transition-all active:scale-95"
+                    >
+                      {age}
+                    </button>
+                  ))}
+                </div>
+              )}
+              <form
+                onSubmit={handleSendMessage}
                 className="relative flex items-center"
               >
                 <input
