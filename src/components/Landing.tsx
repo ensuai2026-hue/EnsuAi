@@ -29,16 +29,8 @@ export const Header = () => {
           </span>
         </div>
         <nav className="hidden lg:flex items-center gap-10 text-[10px] font-bold uppercase tracking-[0.2em] text-oem-dark/40">
-          <a href="#" className="hover:text-oem-primary transition-colors relative group">
-            Diagnosa
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-oem-primary transition-all group-hover:w-full" />
-          </a>
-          <a href="#" className="hover:text-oem-primary transition-colors relative group">
-            Sains Data
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-oem-primary transition-all group-hover:w-full" />
-          </a>
-          <a href="#" className="hover:text-oem-primary transition-colors relative group">
-            Kilang
+          <a href="/" className="hover:text-oem-primary transition-colors relative group">
+            Home
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-oem-primary transition-all group-hover:w-full" />
           </a>
         </nav>
