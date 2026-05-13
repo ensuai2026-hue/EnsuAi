@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-oem-primary: #10b981;
+  --color-oem-secondary: #064e4b;
+  --color-oem-sage: #94a3b8;
+  --color-oem-cream: #fdfdfd;
+  --color-oem-dark: #0f172a;
+  --color-oem-accent: #f0fdf4;
+}
+
+@layer base {
+  body {
+    @apply bg-oem-cream text-oem-dark font-sans selection:bg-oem-primary/20 antialiased overflow-x-hidden;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight leading-[0.95] font-black;
+  }
+}
+
+.oem-grid {
+  background-image: radial-gradient(circle, rgba(16, 185, 129, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.organic-card {
+  @apply bg-white/90 backdrop-blur-xl border border-white rounded-3xl md:rounded-[3rem] transition-all duration-700 shadow-[0_10px_35px_-10px_rgba(0,0,0,0.05)];
+  position: relative;
+  overflow: hidden;
+}
+
+.organic-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 100% 0%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+  @apply opacity-0 transition-opacity duration-700;
+}
+
+.organic-card:hover {
+  @apply shadow-[0_45px_80px_-25px_rgba(16,185,129,0.15)] -translate-y-2;
+}
+
+.organic-card:hover::before {
+  @apply opacity-100;
+}
+
+.btn-organic {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  @apply py-3.5 md:py-4 px-8 md:px-12 text-white font-bold uppercase tracking-widest text-xs md:text-sm rounded-full shadow-lg shadow-emerald-200/50 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3;
+}
+
+.btn-outline {
+  @apply py-2 md:py-3 px-5 md:px-8 border border-oem-dark/10 text-oem-dark font-bold uppercase tracking-widest text-[9px] md:text-[10px] rounded-full transition-all hover:bg-oem-dark hover:text-white active:scale-95;
+}
+
+.glass-organic {
+  @apply bg-white/60 backdrop-blur-3xl border-b border-emerald-50/30 shadow-sm;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(16, 185, 129, 0.2);
+  border-radius: 100px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(16, 185, 129, 0.4);
+}
+
+.pill-container {
+  @apply rounded-full border border-emerald-100 bg-emerald-50/50 px-3.5 py-1 text-oem-primary text-[9px] font-bold uppercase tracking-[0.2em];
+}
+
+.tech-label {
+  @apply text-[9px] font-black uppercase tracking-[0.15em] text-oem-primary/40 mb-3;
+}
+
+.floating {
+  animation: floating 10s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes floating {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-10px) rotate(0.5deg); }
+  66% { transform: translateY(5px) rotate(-0.5deg); }
+}
+
+@keyframes gradient-x {
+  0%, 100% { background-size: 200% 200%; background-position: left center; }
+  50% { background-size: 200% 200%; background-position: right center; }
+}
+
+.animate-gradient-x {
+  animation: gradient-x 6s ease infinite;
+}
+
+.text-gradient {
+  background: linear-gradient(to right, #022c22, #10b981);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
