@@ -6,7 +6,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
-const KIE_API_KEY = Deno.env.get("KIE_API_KEY") || "";
+const KIE_API_KEY = "9a87eccff0cfc2f9effdef7be2acc545";
 const KIE_URL = "https://api.kie.ai/gemini-2.5-pro/v1/chat/completions";
 
 Deno.serve(async (req: Request) => {
@@ -15,13 +15,6 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    if (!KIE_API_KEY) {
-      return new Response(
-        JSON.stringify({ error: "KIE_API_KEY tidak dikonfigurasi" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
     const body = await req.json();
 
     const res = await fetch(KIE_URL, {
