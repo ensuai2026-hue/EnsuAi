@@ -1,11 +1,7 @@
-const KIE_API_KEY = import.meta.env.VITE_KIE_API_KEY || '';
-const KIE_BASE_URL = 'https://api.kie.ai/gemini-2.5-pro/v1';
+const PROXY_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/kie-proxy`;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
 async function kieChat(messages: { role: string; content: string }[], jsonMode = false): Promise<string> {
-  if (!KIE_API_KEY) {
-    throw new Error("GEMINI_API_KEY tidak ditetapkan. Sila tambah GEMINI_API_KEY dalam fail .env anda.");
-  }
-
   const body: Record<string, unknown> = {
     model: 'gemini-2.5-pro',
     messages,
@@ -15,11 +11,12 @@ async function kieChat(messages: { role: string; content: string }[], jsonMode =
     body.response_format = { type: 'json_object' };
   }
 
-  const res = await fetch(`${KIE_BASE_URL}/chat/completions`, {
+  const res = await fetch(PROXY_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${KIE_API_KEY}`,
+      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+      'Apikey': SUPABASE_ANON_KEY,
     },
     body: JSON.stringify(body),
   });
@@ -30,6 +27,11 @@ async function kieChat(messages: { role: string; content: string }[], jsonMode =
   }
 
   const data = await res.json();
+
+  if (data.error) {
+    throw new Error(`KIE error: ${data.error}`);
+  }
+
   return data.choices?.[0]?.message?.content || '';
 }
 
