@@ -32,7 +32,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen selection:bg-oem-primary selection:text-white bg-oem-light">
-      <Header />
+      <Header onStartDiagnosis={handleStartDiagnosis} />
       
       <main>
         <AnimatePresence mode="wait">

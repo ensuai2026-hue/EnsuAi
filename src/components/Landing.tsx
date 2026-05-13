@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 import { ArrowRight, Factory, TrendingUp } from 'lucide-react';
 import { cn } from '../lib/utils';
 
-export const Header = () => {
+export const Header = ({ onStartDiagnosis }: { onStartDiagnosis?: () => void }) => {
   const [isScrolled, setIsScrolled] = React.useState(false);
 
   React.useEffect(() => {
@@ -15,8 +15,8 @@ export const Header = () => {
   return (
     <header className={cn(
       "fixed top-0 w-full z-50 transition-all duration-300 border-b",
-      isScrolled 
-        ? "bg-white/80 backdrop-blur-xl border-emerald-100 py-3 shadow-sm" 
+      isScrolled
+        ? "bg-white/80 backdrop-blur-xl border-emerald-100 py-3 shadow-sm"
         : "bg-transparent border-transparent py-5"
     )}>
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
@@ -33,8 +33,18 @@ export const Header = () => {
             Home
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-oem-primary transition-all group-hover:w-full" />
           </a>
+          <button
+            onClick={onStartDiagnosis}
+            className="hover:text-oem-primary transition-colors relative group uppercase tracking-[0.2em] font-bold text-[10px]"
+          >
+            Scan DNA
+            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-oem-primary transition-all group-hover:w-full" />
+          </button>
         </nav>
-        <button className="btn-outline hidden sm:block px-6 py-2.5 text-[10px] font-black uppercase tracking-widest hover:bg-oem-dark hover:text-white transition-all">
+        <button
+          onClick={onStartDiagnosis}
+          className="btn-outline hidden sm:block px-6 py-2.5 text-[10px] font-black uppercase tracking-widest hover:bg-oem-dark hover:text-white transition-all"
+        >
           Mula Bersembang
         </button>
       </div>
