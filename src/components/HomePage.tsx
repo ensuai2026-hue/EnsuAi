@@ -39,7 +39,7 @@ export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
       </motion.div>
 
       {/* Hero Section */}
-      <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden pt-20">
+      <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden pt-24 pb-16">
         {/* Background */}
         <div className="absolute inset-0 z-0">
           <img
@@ -77,32 +77,13 @@ export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
                 Ensu.AI menggunakan kecerdasan buatan untuk menganalisis personaliti unik anda dan mencorakkan produk jenama yang betul-betul <span className="text-oem-dark font-bold">mencerminkan jiwa anda</span> — bukan sekadar produk biasa.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 mb-14">
+              <div className="flex flex-col sm:flex-row gap-4">
                 <button onClick={onStartDiagnosis} className="btn-organic group">
                   Scan DNA Saya <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
                 </button>
                 <button className="btn-outline px-8 py-3.5 text-[10px]">
                   Ketahui Lebih Lanjut
                 </button>
-              </div>
-
-              {/* Stats */}
-              <div className="grid grid-cols-3 gap-6 pt-8 border-t border-emerald-100">
-                {[
-                  { value: '1,200+', label: 'Founder Aktif' },
-                  { value: '98%', label: 'Aura Match Rate' },
-                  { value: 'RM 2.4B', label: 'Pasaran Dijana' },
-                ].map((stat, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 + i * 0.1 }}
-                  >
-                    <div className="text-2xl md:text-3xl font-extrabold text-oem-dark tracking-tight">{stat.value}</div>
-                    <div className="text-[9px] font-bold text-oem-dark/30 uppercase tracking-[0.2em] mt-1">{stat.label}</div>
-                  </motion.div>
-                ))}
               </div>
             </motion.div>
 
@@ -181,6 +162,30 @@ export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
               </motion.div>
             </motion.div>
           </div>
+
+          {/* Stats Strip */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.7 }}
+            className="mt-16 pt-10 border-t border-emerald-100 grid grid-cols-3 gap-8 md:gap-16 max-w-lg"
+          >
+            {[
+              { value: '1,200+', label: 'Founder Aktif' },
+              { value: '98%', label: 'Aura Match Rate' },
+              { value: 'RM 2.4B', label: 'Pasaran Dijana' },
+            ].map((stat, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 + i * 0.1 }}
+              >
+                <div className="text-2xl md:text-4xl font-extrabold text-oem-dark tracking-tight">{stat.value}</div>
+                <div className="text-[9px] font-bold text-oem-dark/30 uppercase tracking-[0.2em] mt-1.5">{stat.label}</div>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
