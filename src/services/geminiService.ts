@@ -1,6 +1,13 @@
 import { GoogleGenAI, Type } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
+
+function getAI() {
+  if (!GEMINI_API_KEY) {
+    throw new Error("GEMINI_API_KEY tidak ditetapkan. Sila tambah GEMINI_API_KEY dalam fail .env anda.");
+  }
+  return new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+}
 
 export interface ProductRecommendation {
   name: string;
@@ -28,8 +35,9 @@ export async function chatWithScientist(history: { role: 'user' | 'bot', content
     parts: [{ text: m.content }]
   }));
 
+  const ai = getAI();
   const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
+    model: "gemini-2.0-flash",
     contents: contents,
     config: {
       systemInstruction: `Anda adalah "Ensu Saintis" dari ENSU LIFESCIENCES. 
@@ -86,8 +94,9 @@ export async function diagnoseFounder(history: { role: 'user' | 'bot', content: 
   WAJIB masukkan sub-heading: ### Karakter DNA, ### Analisis Metafizik, ### Analisis Pasaran, dan ### Market Value.
   `;
 
+  const ai = getAI();
   const response = await ai.models.generateContent({
-    model: "gemini-3.1-pro-preview",
+    model: "gemini-2.5-pro-preview-05-06",
     contents: [{ role: 'user', parts: [{ text: prompt }] }],
     config: {
       responseMimeType: "application/json",
