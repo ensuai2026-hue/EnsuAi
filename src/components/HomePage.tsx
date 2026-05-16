@@ -39,7 +39,7 @@ export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
       </motion.div>
 
       {/* Hero Section */}
-      <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden pt-24 pb-16">
+      <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden pt-20 pb-12">
         {/* Background */}
         <div className="absolute inset-0 z-0">
           <img
@@ -55,7 +55,7 @@ export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
         <div className="absolute bottom-[5%] left-[0%] w-[350px] h-[350px] bg-emerald-50/60 rounded-full blur-[100px] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-6 md:px-10 w-full relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
 
             {/* Left: Content */}
             <motion.div
@@ -63,27 +63,46 @@ export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
             >
-              <div className="mb-6">
+              <div className="mb-4">
                 <span className="pill-container text-[9px]">Platform AI Jenama Malaysia #1</span>
               </div>
 
-              <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] font-extrabold text-oem-dark uppercase leading-[0.92] tracking-tight mb-8">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-oem-dark uppercase leading-[0.93] tracking-tight mb-5">
                 Bina Jenama<br />
                 Dari <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-emerald-600">DNA</span><br />
                 Kau Sendiri.
               </h1>
 
-              <p className="text-base md:text-lg text-oem-dark/40 leading-relaxed font-medium mb-10 max-w-xl">
+              <p className="text-sm md:text-base text-oem-dark/40 leading-relaxed font-medium mb-7 max-w-xl">
                 Ensu.AI menggunakan kecerdasan buatan untuk menganalisis personaliti unik anda dan mencorakkan produk jenama yang betul-betul <span className="text-oem-dark font-bold">mencerminkan jiwa anda</span> — bukan sekadar produk biasa.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 mb-8">
                 <button onClick={onStartDiagnosis} className="btn-organic group">
                   Scan DNA Saya <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
                 </button>
                 <button className="btn-outline px-8 py-3.5 text-[10px]">
                   Ketahui Lebih Lanjut
                 </button>
+              </div>
+
+              {/* Stats inline */}
+              <div className="grid grid-cols-3 gap-6 pt-6 border-t border-emerald-100">
+                {[
+                  { value: '1,200+', label: 'Founder Aktif' },
+                  { value: '98%', label: 'Aura Match Rate' },
+                  { value: 'RM 2.4B', label: 'Pasaran Dijana' },
+                ].map((stat, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 + i * 0.1 }}
+                  >
+                    <div className="text-xl md:text-2xl lg:text-3xl font-extrabold text-oem-dark tracking-tight">{stat.value}</div>
+                    <div className="text-[9px] font-bold text-oem-dark/30 uppercase tracking-[0.2em] mt-1">{stat.label}</div>
+                  </motion.div>
+                ))}
               </div>
             </motion.div>
 
@@ -119,7 +138,7 @@ export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
                 {/* Glow */}
                 <div className="absolute inset-0 bg-emerald-300/25 rounded-[3rem] blur-3xl scale-90 translate-y-8 pointer-events-none" />
 
-                <div className="relative w-80 h-[500px] lg:w-96 lg:h-[560px]">
+                <div className="relative w-72 h-[420px] lg:w-80 lg:h-[460px]">
                   <img
                     src="https://images.pexels.com/photos/3938023/pexels-photo-3938023.jpeg?auto=compress&cs=tinysrgb&w=700"
                     alt="Saintis Ensu"
@@ -163,29 +182,6 @@ export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
             </motion.div>
           </div>
 
-          {/* Stats Strip */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.7 }}
-            className="mt-16 pt-10 border-t border-emerald-100 grid grid-cols-3 gap-8 md:gap-16 max-w-lg"
-          >
-            {[
-              { value: '1,200+', label: 'Founder Aktif' },
-              { value: '98%', label: 'Aura Match Rate' },
-              { value: 'RM 2.4B', label: 'Pasaran Dijana' },
-            ].map((stat, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7 + i * 0.1 }}
-              >
-                <div className="text-2xl md:text-4xl font-extrabold text-oem-dark tracking-tight">{stat.value}</div>
-                <div className="text-[9px] font-bold text-oem-dark/30 uppercase tracking-[0.2em] mt-1.5">{stat.label}</div>
-              </motion.div>
-            ))}
-          </motion.div>
         </div>
       </section>
 
