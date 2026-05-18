@@ -102,6 +102,3 @@ export const AdminLogin = ({ onLogin }: AdminLoginProps) => {
     </div>
   );
 };
-
-
-export { AdminLogin }
