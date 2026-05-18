@@ -16,6 +16,7 @@ type View = 'home' | 'scan' | 'results';
 export default function App() {
   const [view, setView] = useState<View>('home');
   const [profile, setProfile] = useState<PersonalityProfile | null>(null);
+  const [currentLeadId, setCurrentLeadId] = useState<string | null>(null);
   const diagnosisRef = useRef<HTMLDivElement>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminAuthed, setAdminAuthed] = useState(false);
@@ -47,8 +48,9 @@ export default function App() {
     }, 100);
   };
 
-  const handleReportComplete = (data: PersonalityProfile) => {
+  const handleReportComplete = (data: PersonalityProfile, leadId: string | null) => {
     setProfile(data);
+    setCurrentLeadId(leadId);
     setView('results');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -101,7 +103,7 @@ export default function App() {
 
               <div ref={diagnosisRef}>
                 <section className="py-10 md:py-16 bg-oem-light border-t border-oem-primary/10">
-                  <FounderDiagnosis onReportComplete={handleReportComplete} />
+                  <FounderDiagnosis onReportComplete={(data, leadId) => handleReportComplete(data, leadId)} />
                 </section>
               </div>
 
@@ -172,7 +174,7 @@ export default function App() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.4 }}
             >
-              <ProductRecommendation profile={profile} onReset={handleReset} />
+              <ProductRecommendation profile={profile} leadId={currentLeadId} onReset={handleReset} />
             </motion.div>
           )}
         </AnimatePresence>

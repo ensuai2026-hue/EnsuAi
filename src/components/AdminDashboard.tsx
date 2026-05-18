@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Users, TrendingUp, CircleCheck as CheckCircle, Clock, Eye, X, LogOut, RefreshCw, MessageSquare, ChevronDown, ChevronUp } from 'lucide-react';
+import { Users, TrendingUp, CircleCheck as CheckCircle, Clock, Eye, X, LogOut, RefreshCw, MessageSquare, ChevronDown, ChevronUp, Phone, Mail, Wallet, Package, Hash } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 interface Lead {
   id: string;
   name: string | null;
   age_range: string | null;
+  phone: string | null;
+  email: string | null;
+  budget: string | null;
+  product_type: string | null;
+  quantity: string | null;
   messages: Array<{ role: string; content: string }>;
   personality_profile: Record<string, unknown> | null;
   completed: boolean;
@@ -86,6 +91,60 @@ const LeadDrawer = ({ lead, onClose }: { lead: Lead; onClose: () => void }) => {
               <div className="text-sm font-bold text-slate-700">{lead.messages?.length ?? 0} mesej</div>
             </div>
           </div>
+
+          {/* Contact & Order Info */}
+          {(lead.phone || lead.email || lead.budget || lead.product_type || lead.quantity) && (
+            <div>
+              <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Maklumat Kenalan & Pesanan</div>
+              <div className="space-y-2">
+                {lead.phone && (
+                  <div className="flex items-center gap-3 bg-blue-50 border border-blue-100 rounded-xl p-3">
+                    <Phone className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                    <div>
+                      <div className="text-[10px] font-black uppercase tracking-widest text-blue-400">No. WhatsApp</div>
+                      <div className="text-sm font-bold text-slate-700">{lead.phone}</div>
+                    </div>
+                  </div>
+                )}
+                {lead.email && (
+                  <div className="flex items-center gap-3 bg-blue-50 border border-blue-100 rounded-xl p-3">
+                    <Mail className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                    <div>
+                      <div className="text-[10px] font-black uppercase tracking-widest text-blue-400">E-mel</div>
+                      <div className="text-sm font-bold text-slate-700">{lead.email}</div>
+                    </div>
+                  </div>
+                )}
+                {lead.budget && (
+                  <div className="flex items-center gap-3 bg-amber-50 border border-amber-100 rounded-xl p-3">
+                    <Wallet className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                    <div>
+                      <div className="text-[10px] font-black uppercase tracking-widest text-amber-400">Bajet</div>
+                      <div className="text-sm font-bold text-slate-700">{lead.budget}</div>
+                    </div>
+                  </div>
+                )}
+                {lead.product_type && (
+                  <div className="flex items-center gap-3 bg-emerald-50 border border-emerald-100 rounded-xl p-3">
+                    <Package className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                    <div>
+                      <div className="text-[10px] font-black uppercase tracking-widest text-emerald-400">Jenis Produk</div>
+                      <div className="text-sm font-bold text-slate-700">{lead.product_type}</div>
+                    </div>
+                  </div>
+                )}
+                {lead.quantity && (
+                  <div className="flex items-center gap-3 bg-emerald-50 border border-emerald-100 rounded-xl p-3">
+                    <Hash className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                    <div>
+                      <div className="text-[10px] font-black uppercase tracking-widest text-emerald-400">Kuantiti / SKU</div>
+                      <div className="text-sm font-bold text-slate-700">{lead.quantity}</div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Personality Profile */}
           {profile && (

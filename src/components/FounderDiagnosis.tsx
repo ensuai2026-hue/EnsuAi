@@ -6,7 +6,7 @@ import { cn } from '../lib/utils';
 import { supabase } from '../lib/supabase';
 
 interface Props {
-  onReportComplete: (profile: PersonalityProfile) => void;
+  onReportComplete: (profile: PersonalityProfile, leadId: string | null) => void;
 }
 
 interface Message {
@@ -143,7 +143,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
     try {
       const profile = await diagnoseFounder(messages);
       await saveLead(messages, profile);
-      onReportComplete(profile);
+      onReportComplete(profile, leadId);
     } catch (error) {
       alert(error instanceof Error ? error.message : "Gagal memproses DNA anda.");
     } finally {
