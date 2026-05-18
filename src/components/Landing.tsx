@@ -1,9 +1,9 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { ArrowRight, Factory, TrendingUp } from 'lucide-react';
+import { ArrowRight, Factory, TrendingUp, LayoutDashboard } from 'lucide-react';
 import { cn } from '../lib/utils';
 
-export const Header = ({ onStartDiagnosis, onGoHome }: { onStartDiagnosis?: () => void; onGoHome?: () => void }) => {
+export const Header = ({ onStartDiagnosis, onGoHome, onGoAdmin }: { onStartDiagnosis?: () => void; onGoHome?: () => void; onGoAdmin?: () => void }) => {
   const [isScrolled, setIsScrolled] = React.useState(false);
 
   React.useEffect(() => {
@@ -44,12 +44,21 @@ export const Header = ({ onStartDiagnosis, onGoHome }: { onStartDiagnosis?: () =
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-oem-primary transition-all group-hover:w-full" />
           </button>
         </nav>
-        <button
-          onClick={onStartDiagnosis}
-          className="btn-outline hidden sm:block px-6 py-2.5 text-[10px] font-black uppercase tracking-widest hover:bg-oem-dark hover:text-white transition-all"
-        >
-          Mula Bersembang
-        </button>
+        <div className="hidden sm:flex items-center gap-3">
+          <button
+            onClick={onGoAdmin}
+            className="flex items-center gap-2 px-4 py-2.5 text-[10px] font-black uppercase tracking-widest text-oem-dark/40 hover:text-oem-primary transition-colors"
+          >
+            <LayoutDashboard className="w-3.5 h-3.5" />
+            Admin
+          </button>
+          <button
+            onClick={onStartDiagnosis}
+            className="btn-outline px-6 py-2.5 text-[10px] font-black uppercase tracking-widest hover:bg-oem-dark hover:text-white transition-all"
+          >
+            Mula Bersembang
+          </button>
+        </div>
       </div>
     </header>
   );

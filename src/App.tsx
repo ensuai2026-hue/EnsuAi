@@ -27,9 +27,16 @@ export default function App() {
     });
   }, []);
 
+  const handleGoAdmin = () => {
+    window.location.hash = '#/admin';
+    setIsAdmin(true);
+  };
+
   const handleAdminLogout = async () => {
     await supabase.auth.signOut();
     setAdminAuthed(false);
+    setIsAdmin(false);
+    window.location.hash = '';
   };
 
   const handleStartDiagnosis = () => {
@@ -66,7 +73,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen selection:bg-oem-primary selection:text-white bg-oem-light">
-      <Header onStartDiagnosis={handleStartDiagnosis} onGoHome={handleGoHome} />
+      <Header onStartDiagnosis={handleStartDiagnosis} onGoHome={handleGoHome} onGoAdmin={handleGoAdmin} />
 
       <main>
         <AnimatePresence mode="wait">
