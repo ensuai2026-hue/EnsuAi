@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Brain, Send, Loader as Loader2, Sparkles, ArrowRight, User, Bot, MessageSquare } from 'lucide-react';
 import { diagnoseFounder, chatWithScientist, PersonalityProfile } from '../services/geminiService';
 import { cn } from '../lib/utils';
+import { supabase } from '../lib/supabase';
 
 interface Props {
   onReportComplete: (profile: PersonalityProfile) => void;
@@ -39,7 +40,39 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [ageSelected, setAgeSelected] = useState(false);
+  const [leadId, setLeadId] = useState<string | null>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
+
+  const extractName = (msgs: Message[]) => {
+    const firstUserMsg = msgs.find(m => m.role === 'user');
+    return firstUserMsg?.content ?? null;
+  };
+
+  const extractAgeRange = (msgs: Message[]) => {
+    const ageMsg = msgs.find(m => m.role === 'user' && /^\d{2}/.test(m.content.trim()));
+    return ageMsg?.content ?? null;
+  };
+
+  const saveLead = async (msgs: Message[], profile?: PersonalityProfile) => {
+    const name = extractName(msgs);
+    const age_range = extractAgeRange(msgs);
+    if (leadId) {
+      await supabase.from('leads').update({
+        messages: msgs,
+        name,
+        age_range,
+        ...(profile ? { personality_profile: profile, completed: true } : {}),
+      }).eq('id', leadId);
+    } else {
+      const { data } = await supabase.from('leads').insert({
+        messages: msgs,
+        name,
+        age_range,
+        completed: false,
+      }).select('id').maybeSingle();
+      if (data?.id) setLeadId(data.id);
+    }
+  };
 
   const AGE_OPTIONS = ['20 - 30', '30 - 40', '40 - 50', '50 ke atas'];
 
@@ -58,9 +91,12 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
     const updatedMessages = [...messages, userMsg];
     setMessages(updatedMessages);
     setIsTyping(true);
+    saveLead(updatedMessages);
     try {
       const response = await chatWithScientist(updatedMessages);
-      setMessages(prev => [...prev, { role: 'bot', content: response }]);
+      const withBot = [...updatedMessages, { role: 'bot' as const, content: response }];
+      setMessages(withBot);
+      saveLead(withBot);
     } catch {
       setMessages(prev => [...prev, { role: 'bot', content: "Maaf, hubungan transmisi saya sedikit terganggu. Boleh anda nyatakan semula?" }]);
     } finally {
@@ -85,10 +121,13 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
     setMessages(updatedMessages);
     setInput('');
     setIsTyping(true);
-    
+    saveLead(updatedMessages);
+
     try {
       const response = await chatWithScientist(updatedMessages);
-      setMessages(prev => [...prev, { role: 'bot', content: response }]);
+      const withBot = [...updatedMessages, { role: 'bot' as const, content: response }];
+      setMessages(withBot);
+      saveLead(withBot);
     } catch (error) {
       console.error("Chat error:", error);
       setMessages(prev => [...prev, { role: 'bot', content: "Maaf, hubungan transmisi saya sedikit terganggu. Boleh anda nyatakan semula?" }]);
@@ -103,6 +142,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
     setIsAnalyzing(true);
     try {
       const profile = await diagnoseFounder(messages);
+      await saveLead(messages, profile);
       onReportComplete(profile);
     } catch (error) {
       alert(error instanceof Error ? error.message : "Gagal memproses DNA anda.");

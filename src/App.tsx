@@ -1,10 +1,13 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Header, Hero } from './components/Landing';
 import { HomePage } from './components/HomePage';
 import { FounderDiagnosis } from './components/FounderDiagnosis';
 import { ProductRecommendation } from './components/ProductRecommendation';
+import { AdminDashboard } from './components/AdminDashboard';
+import { AdminLogin } from './components/AdminLogin';
 import { Footer } from './components/Footer';
 import { PersonalityProfile } from './services/geminiService';
+import { supabase } from './lib/supabase';
 import { AnimatePresence, motion } from 'motion/react';
 import { Brain, Bot, Factory, Fingerprint, FlaskConical, Cpu, ArrowRight, Dna, Target, Rocket } from 'lucide-react';
 
@@ -14,6 +17,20 @@ export default function App() {
   const [view, setView] = useState<View>('home');
   const [profile, setProfile] = useState<PersonalityProfile | null>(null);
   const diagnosisRef = useRef<HTMLDivElement>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [adminAuthed, setAdminAuthed] = useState(false);
+
+  useEffect(() => {
+    if (window.location.hash === '#/admin') setIsAdmin(true);
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) setAdminAuthed(true);
+    });
+  }, []);
+
+  const handleAdminLogout = async () => {
+    await supabase.auth.signOut();
+    setAdminAuthed(false);
+  };
 
   const handleStartDiagnosis = () => {
     setView('scan');
@@ -40,6 +57,12 @@ export default function App() {
     setProfile(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  if (isAdmin) {
+    return adminAuthed
+      ? <AdminDashboard onLogout={handleAdminLogout} />
+      : <AdminLogin onLogin={() => setAdminAuthed(true)} />;
+  }
 
   return (
     <div className="min-h-screen selection:bg-oem-primary selection:text-white bg-oem-light">
