@@ -244,14 +244,12 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
   const fetchLeads = async () => {
     setLoading(true);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      const token = session?.access_token ?? import.meta.env.VITE_SUPABASE_ANON_KEY;
-      const res = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-leads`,
-        { headers: { Authorization: `Bearer ${token}`, Apikey: import.meta.env.VITE_SUPABASE_ANON_KEY } }
-      );
-      const data = await res.json();
-      setLeads(Array.isArray(data) ? (data as Lead[]) : []);
+      const { data, error } = await supabase
+        .from('leads')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      setLeads((data ?? []) as Lead[]);
     } catch (e) {
       console.error('fetchLeads error:', e);
     }
