@@ -159,25 +159,23 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 md:px-6 py-6 md:py-12">
-      <div className="text-center md:text-left mb-6 md:mb-10">
-        <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 mb-4 md:mb-6">
-          <div className="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-oem-primary flex items-center justify-center text-white shadow-lg shadow-emerald-100">
-            <Brain className="w-5 h-5 md:w-7 md:h-7" />
+    <div className="flex flex-col items-center justify-center min-h-screen px-4 md:px-6 py-8">
+      <div className="w-full max-w-2xl flex flex-col" style={{ height: 'calc(100vh - 4rem)' }}>
+        {/* Header */}
+        <div className="text-center mb-4 flex-shrink-0">
+          <div className="flex flex-col items-center gap-2 mb-3">
+            <div className="w-10 h-10 rounded-xl bg-oem-primary flex items-center justify-center text-white shadow-lg shadow-emerald-100">
+              <Brain className="w-5 h-5" />
+            </div>
+            <span className="pill-container text-[8px]">Karakter & Visi</span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-oem-dark uppercase tracking-tight">SCAN DNA.</h2>
           </div>
-          <div className="flex flex-col items-center md:items-start text-center md:text-left">
-            <span className="pill-container mb-1.5 md:mb-2 text-[8px]">
-              Karakter & Visi
-            </span>
-            <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-oem-dark uppercase tracking-tight">SCAN DNA.</h2>
-          </div>
+          <p className="text-oem-dark/50 text-sm font-medium max-w-md leading-relaxed mx-auto">
+            Bincang santai dengan <span className="text-oem-primary font-bold">Ensu Saintis</span>. Jom kenali DNA anda untuk hasilkan produk yang benar-benar berjiwa.
+          </p>
         </div>
-        <p className="text-oem-dark/50 text-sm md:text-lg font-medium max-w-2xl leading-relaxed mx-auto md:mx-0">
-          Bincang santai dengan <span className="text-oem-primary font-bold">Ensu Saintis</span>. Jom kenali DNA anda untuk hasilkan produk yang benar-benar berjiwa.
-        </p>
-      </div>
 
-      <div className="organic-card overflow-hidden flex flex-col h-[500px] sm:h-[550px] md:h-[650px] shadow-2xl relative bg-white border border-emerald-50 hover:transform-none hover:translate-y-0">
+      <div className="organic-card overflow-hidden flex flex-col flex-1 min-h-0 shadow-2xl relative bg-white border border-emerald-50 hover:transform-none hover:translate-y-0">
         {/* Chat Header */}
         <div className="px-5 py-4 border-b border-emerald-50 bg-emerald-50/10 flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-oem-primary flex items-center justify-center text-white">
@@ -299,7 +297,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
           )}
         </div>
       </div>
+      </div>
     </div>
-
   );
 };
