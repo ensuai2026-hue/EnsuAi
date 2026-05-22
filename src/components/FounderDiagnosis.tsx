@@ -110,16 +110,18 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
     const contactFields = extractContactFields(msgs);
     const currentId = leadIdRef.current;
     if (currentId) {
-      await supabase.from('leads').update({
+      const { error } = await supabase.from('leads').update({
         messages: msgs, name, age_range,
         ...contactFields,
         ...(profile ? { personality_profile: profile, completed: true } : {}),
       }).eq('id', currentId);
+      if (error) console.error('Lead update error:', error);
     } else {
-      const { data } = await supabase.from('leads').insert({
+      const { data, error } = await supabase.from('leads').insert({
         messages: msgs, name, age_range, completed: false,
         ...contactFields,
       }).select('id').maybeSingle();
+      if (error) console.error('Lead insert error:', error);
       if (data?.id) {
         leadIdRef.current = data.id;
         setLeadId(data.id);
@@ -141,7 +143,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
       const response = await chatWithScientist(msgs);
       const withBot: Message[] = [...msgs, { role: 'bot', content: response }];
       setMessages(withBot);
-      saveLead(withBot);
+      await saveLead(withBot);
     } catch {
       setMessages(prev => [...prev, { role: 'bot', content: 'Maaf, hubungan transmisi saya sedikit terganggu. Boleh anda nyatakan semula?' }]);
     } finally {
@@ -154,7 +156,6 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
     setAgeSelected(true);
     const updated: Message[] = [...messages, { role: 'user', content: age }];
     setMessages(updated);
-    saveLead(updated);
     await sendBotReply(updated);
   };
 
@@ -164,7 +165,6 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
     const updated: Message[] = [...messages, { role: 'user', content: input }];
     setMessages(updated);
     setInput('');
-    saveLead(updated);
     await sendBotReply(updated);
   };
 
