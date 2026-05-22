@@ -159,7 +159,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-4 md:px-6 flex flex-col">
+    <div className="w-full max-w-2xl mx-auto px-4 md:px-6 flex flex-col py-10">
       {/* Header */}
       <div className="text-center mb-6">
         <div className="inline-flex items-center gap-2 mb-3">
