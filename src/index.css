@@ -10,27 +10,17 @@
   --color-oem-secondary: #064e4b;
   --color-oem-sage: #94a3b8;
   --color-oem-cream: #fdfdfd;
-  --color-oem-light: #f9fafb;
   --color-oem-dark: #0f172a;
   --color-oem-accent: #f0fdf4;
 }
 
 @layer base {
   body {
-    @apply bg-oem-light text-oem-dark font-sans selection:bg-oem-primary/20 antialiased overflow-x-hidden;
+    @apply bg-oem-cream text-oem-dark font-sans selection:bg-oem-primary/20 antialiased overflow-x-hidden;
   }
-
+  
   h1, h2, h3, h4, h5, h6 {
     @apply font-display tracking-tight leading-[0.95] font-black;
-  }
-
-  /* Respect user motion preferences */
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
   }
 }
 
@@ -40,7 +30,7 @@
 }
 
 .organic-card {
-  @apply bg-white/90 backdrop-blur-xl border border-white rounded-3xl transition-all duration-700 shadow-[0_10px_35px_-10px_rgba(0,0,0,0.05)];
+  @apply bg-white/90 backdrop-blur-xl border border-white rounded-3xl md:rounded-[3rem] transition-all duration-700 shadow-[0_10px_35px_-10px_rgba(0,0,0,0.05)];
   position: relative;
   overflow: hidden;
 }
@@ -54,7 +44,7 @@
 }
 
 .organic-card:hover {
-  @apply shadow-[0_35px_70px_-20px_rgba(16,185,129,0.12)] -translate-y-1;
+  @apply shadow-[0_45px_80px_-25px_rgba(16,185,129,0.15)] -translate-y-2;
 }
 
 .organic-card:hover::before {
@@ -63,20 +53,19 @@
 
 .btn-organic {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  @apply py-3.5 px-8 text-white font-bold uppercase tracking-widest text-xs rounded-full shadow-lg shadow-emerald-200/50 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3;
+  @apply py-3.5 md:py-4 px-8 md:px-12 text-white font-bold uppercase tracking-widest text-xs md:text-sm rounded-full shadow-lg shadow-emerald-200/50 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3;
 }
 
 .btn-outline {
-  @apply py-2.5 px-6 border border-oem-dark/10 text-oem-dark font-bold uppercase tracking-widest text-[10px] rounded-full transition-all hover:bg-oem-dark hover:text-white active:scale-95;
+  @apply py-2 md:py-3 px-5 md:px-8 border border-oem-dark/10 text-oem-dark font-bold uppercase tracking-widest text-[9px] md:text-[10px] rounded-full transition-all hover:bg-oem-dark hover:text-white active:scale-95;
 }
 
 .glass-organic {
   @apply bg-white/60 backdrop-blur-3xl border-b border-emerald-50/30 shadow-sm;
 }
 
-/* Custom scrollbar — Webkit */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
@@ -90,20 +79,6 @@
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(16, 185, 129, 0.4);
-}
-
-/* Firefox scrollbar */
-.custom-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(16, 185, 129, 0.2) transparent;
-}
-
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
 }
 
 .pill-container {
