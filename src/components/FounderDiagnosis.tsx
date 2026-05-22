@@ -404,7 +404,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
                     className="w-full py-3 px-6 bg-oem-dark text-white rounded-xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-emerald-600 transition-all duration-300 active:scale-[0.98] shadow-sm"
                   >
                     <Sparkles size={12} />
-                    Muktamadkan Analisis DNA
+                    Tamatkan Analisis — Hantar Detail ke WhatsApp
                     <Sparkles size={12} />
                   </motion.button>
                 )}
