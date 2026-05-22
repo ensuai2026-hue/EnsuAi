@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
-  Users, TrendingUp, CircleCheck as CheckCircle, Clock, Eye, X, LogOut, RefreshCw,
+  Users, CircleCheck as CheckCircle, Clock, Eye, X, LogOut, RefreshCw,
   MessageSquare, ChevronDown, ChevronUp, Phone, Mail, Wallet, Package, Hash, Bot, User,
-  Dna, Search, Calendar
+  Dna, Search, Calendar, Download, Send
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { cn } from '../lib/utils';
@@ -26,6 +26,8 @@ interface Lead {
 interface AdminDashboardProps {
   onLogout: () => void;
 }
+
+const ADMIN_WA = '+60123456789';
 
 const StatCard = ({ icon: Icon, label, value, color, bg }: {
   icon: React.ElementType; label: string; value: number; color: string; bg: string;
@@ -51,6 +53,55 @@ const ProfileRow = ({ label, value }: { label: string; value: string }) => (
     <span className="text-sm font-bold text-slate-700">{value}</span>
   </div>
 );
+
+const buildWaMessage = (lead: Lead): string => {
+  const lines: string[] = [];
+  lines.push(`*Lead Baru — ENSU.AI*`);
+  lines.push(`Nama: ${lead.name ?? '—'}`);
+  if (lead.age_range) lines.push(`Umur: ${lead.age_range}`);
+  if (lead.phone) lines.push(`Telefon: ${lead.phone}`);
+  if (lead.email) lines.push(`Emel: ${lead.email}`);
+  if (lead.budget) lines.push(`Bajet: ${lead.budget}`);
+  if (lead.product_type) lines.push(`Produk: ${lead.product_type}`);
+  if (lead.quantity) lines.push(`Kuantiti: ${lead.quantity}`);
+  lines.push(`Tarikh: ${new Date(lead.created_at).toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' })}`);
+  lines.push(`Status: ${lead.completed ? 'Selesai' : 'Dalam Proses'}`);
+  const profile = lead.personality_profile as Record<string, string> | null;
+  if (profile?.personalityType) lines.push(`\n*Profil DNA:* ${profile.personalityType}`);
+  if (profile?.entrepreneurStyle) lines.push(`Gaya: ${profile.entrepreneurStyle}`);
+  return lines.join('\n');
+};
+
+const sendToWhatsApp = (lead: Lead) => {
+  const msg = buildWaMessage(lead);
+  const phone = ADMIN_WA.replace(/\D/g, '');
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+};
+
+const downloadCSV = (leads: Lead[]) => {
+  const headers = ['Nama', 'Umur', 'Telefon', 'Emel', 'Bajet', 'Produk', 'Kuantiti', 'Status', 'Tarikh'];
+  const rows = leads.map(l => [
+    l.name ?? '',
+    l.age_range ?? '',
+    l.phone ?? '',
+    l.email ?? '',
+    l.budget ?? '',
+    l.product_type ?? '',
+    l.quantity ?? '',
+    l.completed ? 'Selesai' : 'Dalam Proses',
+    new Date(l.created_at).toLocaleDateString('ms-MY'),
+  ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
+
+  const csv = [headers.join(','), ...rows].join('\n');
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `leads-ensu-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+};
 
 const LeadDrawer = ({ lead, onClose }: { lead: Lead; onClose: () => void }) => {
   const [showMessages, setShowMessages] = useState(lead.completed);
@@ -229,6 +280,23 @@ const LeadDrawer = ({ lead, onClose }: { lead: Lead; onClose: () => void }) => {
             </div>
           )}
         </div>
+
+        {/* Action Buttons */}
+        <div className="sticky bottom-0 bg-white border-t border-slate-100 px-5 py-4 flex gap-2">
+          <button
+            onClick={() => sendToWhatsApp(lead)}
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-black uppercase tracking-widest rounded-xl transition-all active:scale-95"
+          >
+            <Send className="w-3.5 h-3.5" />
+            Hantar ke WhatsApp
+          </button>
+          <button
+            onClick={() => downloadCSV([lead])}
+            className="flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-black uppercase tracking-widest rounded-xl transition-all active:scale-95"
+          >
+            <Download className="w-3.5 h-3.5" />
+          </button>
+        </div>
       </motion.div>
     </motion.div>
   );
@@ -237,21 +305,23 @@ const LeadDrawer = ({ lead, onClose }: { lead: Lead; onClose: () => void }) => {
 export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [filter, setFilter] = useState<'all' | 'completed' | 'incomplete'>('all');
   const [search, setSearch] = useState('');
 
   const fetchLeads = async () => {
     setLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from('leads')
-        .select('*')
-        .order('created_at', { ascending: false });
-      if (error) throw error;
+    setError(null);
+    const { data, error: err } = await supabase
+      .from('leads')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (err) {
+      console.error('fetchLeads error:', err);
+      setError(err.message);
+    } else {
       setLeads((data ?? []) as Lead[]);
-    } catch (e) {
-      console.error('fetchLeads error:', e);
     }
     setLoading(false);
   };
@@ -297,6 +367,14 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
           </div>
           <div className="flex items-center gap-2">
             <button
+              onClick={() => downloadCSV(leads)}
+              disabled={leads.length === 0}
+              className="flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-emerald-600 transition-colors px-3 py-2 rounded-lg hover:bg-emerald-50 disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              <Download className="w-3.5 h-3.5" />
+              Export CSV
+            </button>
+            <button
               onClick={fetchLeads}
               className="flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-slate-700 transition-colors px-3 py-2 rounded-lg hover:bg-slate-100"
             >
@@ -325,7 +403,6 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
 
         {/* Toolbar */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-          {/* Filter tabs */}
           <div className="flex items-center gap-1.5 bg-slate-100 rounded-xl p-1">
             {(['all', 'completed', 'incomplete'] as const).map(f => (
               <button
@@ -343,7 +420,6 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
             ))}
           </div>
 
-          {/* Search */}
           <div className="relative flex-1 max-w-sm ml-auto">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
             <input
@@ -364,6 +440,12 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
             <div className="flex flex-col items-center justify-center py-20 gap-3">
               <div className="w-7 h-7 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
               <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Memuatkan...</span>
+            </div>
+          ) : error ? (
+            <div className="text-center py-20">
+              <div className="text-sm font-bold text-red-400 mb-2">Gagal memuatkan lead</div>
+              <div className="text-xs text-slate-400 mb-4">{error}</div>
+              <button onClick={fetchLeads} className="text-xs font-bold text-emerald-600 hover:underline">Cuba semula</button>
             </div>
           ) : filtered.length === 0 ? (
             <div className="text-center py-20">
@@ -432,7 +514,16 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
                         </div>
                       </td>
                       <td className="px-5 py-3.5">
-                        <Eye className="w-4 h-4 text-slate-300 group-hover:text-emerald-500 transition-colors" />
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={e => { e.stopPropagation(); sendToWhatsApp(lead); }}
+                            className="w-7 h-7 rounded-lg bg-emerald-50 hover:bg-emerald-500 flex items-center justify-center transition-colors group/wa"
+                            title="Hantar ke WhatsApp"
+                          >
+                            <Send className="w-3 h-3 text-emerald-500 group-hover/wa:text-white transition-colors" />
+                          </button>
+                          <Eye className="w-4 h-4 text-slate-300 group-hover:text-emerald-500 transition-colors" />
+                        </div>
                       </td>
                     </motion.tr>
                   ))}
