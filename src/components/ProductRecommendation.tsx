@@ -456,7 +456,7 @@ export const ProductRecommendation = ({ profile, onReset }: Props) => {
             className="w-full sm:w-auto px-10 py-6 md:px-16 md:py-8 bg-oem-primary text-white rounded-full text-base md:text-xl font-black uppercase tracking-widest shadow-2xl shadow-emerald-200 hover:scale-[1.03] transition-all relative overflow-hidden group order-1 sm:order-2 flex items-center justify-center"
           >
             <span className="relative z-10 flex items-center justify-center gap-3 md:gap-4">
-              MANIFESTASIKAN PRODUK <Sparkles className="w-5 h-5 md:w-6 md:h-6 animate-pulse" />
+              BUAT SEKARANG <Sparkles className="w-5 h-5 md:w-6 md:h-6 animate-pulse" />
             </span>
             <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity" />
           </a>
