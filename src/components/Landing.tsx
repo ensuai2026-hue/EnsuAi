@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 import { ArrowRight, Factory, TrendingUp, LayoutDashboard } from 'lucide-react';
 import { cn } from '../lib/utils';
 
-export const Header = ({ onStartDiagnosis, onGoHome, onGoAdmin }: { onStartDiagnosis?: () => void; onGoHome?: () => void; onGoAdmin?: () => void }) => {
+export const Header = ({ onStartDiagnosis, onGoHome, onGoAdmin, showCta, ctaHref }: { onStartDiagnosis?: () => void; onGoHome?: () => void; onGoAdmin?: () => void; showCta?: boolean; ctaHref?: string }) => {
   const [isScrolled, setIsScrolled] = React.useState(false);
 
   React.useEffect(() => {
@@ -45,19 +45,33 @@ export const Header = ({ onStartDiagnosis, onGoHome, onGoAdmin }: { onStartDiagn
           </button>
         </nav>
         <div className="hidden sm:flex items-center gap-3">
-          <button
-            onClick={onGoAdmin}
-            className="flex items-center gap-2 px-4 py-2.5 text-[10px] font-black uppercase tracking-widest text-oem-dark/40 hover:text-oem-primary transition-colors"
-          >
-            <LayoutDashboard className="w-3.5 h-3.5" />
-            Admin
-          </button>
-          <button
-            onClick={onStartDiagnosis}
-            className="btn-outline px-6 py-2.5 text-[10px] font-black uppercase tracking-widest hover:bg-oem-dark hover:text-white transition-all"
-          >
-            Scan DNA Produk
-          </button>
+          {showCta && ctaHref ? (
+            <a
+              href={ctaHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-5 py-2.5 bg-oem-primary text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-md shadow-emerald-200 hover:scale-105 transition-all"
+            >
+              Buat Sekarang
+              <ArrowRight className="w-3 h-3" />
+            </a>
+          ) : (
+            <>
+              <button
+                onClick={onGoAdmin}
+                className="flex items-center gap-2 px-4 py-2.5 text-[10px] font-black uppercase tracking-widest text-oem-dark/40 hover:text-oem-primary transition-colors"
+              >
+                <LayoutDashboard className="w-3.5 h-3.5" />
+                Admin
+              </button>
+              <button
+                onClick={onStartDiagnosis}
+                className="btn-outline px-6 py-2.5 text-[10px] font-black uppercase tracking-widest hover:bg-oem-dark hover:text-white transition-all"
+              >
+                Scan DNA Produk
+              </button>
+            </>
+          )}
         </div>
       </div>
     </header>

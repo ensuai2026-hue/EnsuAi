@@ -75,7 +75,13 @@ export default function App() {
 
   return (
     <div className="min-h-screen selection:bg-oem-primary selection:text-white bg-oem-light">
-      <Header onStartDiagnosis={handleStartDiagnosis} onGoHome={handleGoHome} onGoAdmin={handleGoAdmin} />
+      <Header
+        onStartDiagnosis={handleStartDiagnosis}
+        onGoHome={handleGoHome}
+        onGoAdmin={handleGoAdmin}
+        showCta={view === 'results'}
+        ctaHref="https://wa.me/60123456789?text=Saya%20baru%20selesai%20Scan%20DNA%20dengan%20Ensu%20Saintis%20dan%20ingin%20tahu%20lebih%20lanjut."
+      />
 
       <main>
         <AnimatePresence mode="wait">

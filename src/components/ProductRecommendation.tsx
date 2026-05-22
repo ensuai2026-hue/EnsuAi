@@ -17,20 +17,7 @@ export const ProductRecommendation = ({ profile, onReset, adminMode }: Props) =>
   const selectedProduct = profile.recommendations[selectedProductIndex];
 
   return (
-    <div className={cn('min-h-screen bg-oem-cream pb-12 md:pb-24 px-4 md:px-10 overflow-x-hidden', adminMode ? 'pt-6 md:pt-10' : 'pt-32 md:pt-44')}>
-      {/* Sticky top CTA bar */}
-      {!adminMode && (
-        <div className="fixed top-[57px] md:top-[65px] left-0 right-0 z-40 flex items-center justify-center px-4 py-3 bg-white/90 backdrop-blur-xl border-b border-emerald-100 shadow-sm">
-          <a
-            href="https://wa.me/60123456789?text=Saya%20baru%20selesai%20Scan%20DNA%20dengan%20Ensu%20Saintis%20dan%20ingin%20tahu%20lebih%20lanjut."
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-organic group text-xs md:text-sm px-8 py-3 md:px-12 md:py-4"
-          >
-            BUAT SEKARANG <Sparkles className="w-4 h-4 animate-pulse" />
-          </a>
-        </div>
-      )}
+    <div className={cn('min-h-screen bg-oem-cream pb-12 md:pb-24 px-4 md:px-10 overflow-x-hidden', adminMode ? 'pt-6 md:pt-10' : 'pt-24 md:pt-32')}>
       <div className="max-w-7xl mx-auto space-y-12 md:space-y-16">
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
