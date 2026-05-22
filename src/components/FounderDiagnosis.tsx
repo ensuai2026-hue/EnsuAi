@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Brain, Send, Loader as Loader2, Sparkles, User, Bot, Dna } from 'lucide-react';
+import { Send, Loader as Loader2, Sparkles, User, Bot, Dna } from 'lucide-react';
 import { diagnoseFounder, chatWithScientist, PersonalityProfile } from '../services/geminiService';
 import { cn } from '../lib/utils';
 import { supabase } from '../lib/supabase';
@@ -31,7 +31,7 @@ const TypewriterText = ({ text, onDone }: { text: string; onDone?: () => void })
     const t = setTimeout(() => {
       setDisplayed(text.slice(0, idx.current + 1));
       idx.current += 1;
-    }, 12);
+    }, 10);
     return () => clearTimeout(t);
   }, [displayed, text, onDone]);
 
@@ -39,7 +39,7 @@ const TypewriterText = ({ text, onDone }: { text: string; onDone?: () => void })
 };
 
 const TypingDots = () => (
-  <div className="flex items-center gap-1 px-1 py-1">
+  <div className="flex items-center gap-1.5 px-1 py-1">
     {[0, 1, 2].map(i => (
       <motion.div
         key={i}
@@ -159,10 +159,10 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-4 md:px-6 flex flex-col py-10">
+    <div className="w-full max-w-2xl mx-auto px-4 md:px-6 flex flex-col py-10 md:py-14">
       {/* Header */}
-      <div className="text-center mb-6">
-        <div className="inline-flex items-center gap-2 mb-3">
+      <div className="text-center mb-6 md:mb-8">
+        <div className="inline-flex items-center gap-3 mb-3">
           <div className="w-9 h-9 rounded-xl bg-oem-primary flex items-center justify-center text-white shadow-md shadow-emerald-200">
             <Dna className="w-4 h-4" />
           </div>
@@ -176,16 +176,14 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
         </p>
       </div>
 
-      {/* Chat Card */}
-      <div
-        className="flex flex-col rounded-3xl border border-emerald-100 shadow-[0_20px_60px_-15px_rgba(16,185,129,0.15)] bg-white overflow-hidden"
-        style={{ height: '560px' }}
-      >
+      {/* Chat Card — fluid height on mobile, fixed on desktop */}
+      <div className="flex flex-col rounded-3xl border border-emerald-100 shadow-[0_20px_60px_-15px_rgba(16,185,129,0.15)] bg-white overflow-hidden"
+           style={{ height: 'clamp(420px, 60vh, 580px)' }}>
         {/* Chat Header Bar */}
-        <div className="flex items-center gap-3 px-5 py-3.5 border-b border-emerald-50 bg-gradient-to-r from-white to-emerald-50/30 flex-shrink-0">
+        <div className="flex items-center gap-3 px-4 md:px-5 py-3 md:py-3.5 border-b border-emerald-50 bg-gradient-to-r from-white to-emerald-50/30 flex-shrink-0">
           <div className="relative">
-            <div className="w-9 h-9 rounded-xl bg-emerald-500 flex items-center justify-center text-white shadow-sm">
-              <Bot size={16} />
+            <div className="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-emerald-500 flex items-center justify-center text-white shadow-sm">
+              <Bot size={15} />
             </div>
             <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-white flex items-center justify-center">
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -203,7 +201,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3 custom-scrollbar bg-[#fafffe]">
+        <div className="flex-1 overflow-y-auto px-4 md:px-5 py-4 space-y-3 custom-scrollbar bg-[#fafffe] overscroll-contain">
           <AnimatePresence initial={false}>
             {messages.map((m, i) => (
               <motion.div
@@ -220,10 +218,10 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
                   {m.role === 'user' ? <User className="w-3.5 h-3.5" /> : <Bot className="w-3.5 h-3.5" />}
                 </div>
                 <div className={cn(
-                  'px-4 py-2.5 rounded-2xl text-sm font-medium leading-relaxed max-w-[78%] shadow-sm',
+                  'px-4 py-2.5 rounded-2xl text-sm font-medium leading-relaxed max-w-[82%] shadow-sm',
                   m.role === 'user'
                     ? 'bg-oem-dark text-white rounded-br-sm'
-                    : 'bg-white text-slate-800 rounded-bl-sm border border-emerald-100/80 shadow-emerald-50'
+                    : 'bg-white text-slate-700 rounded-bl-sm border border-emerald-100/80'
                 )}>
                   {m.role === 'bot' && i === messages.length - 1 && !isAnalyzing
                     ? <TypewriterText text={m.content} onDone={scrollToBottom} />
@@ -253,16 +251,16 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
         </div>
 
         {/* Input Area */}
-        <div className="flex-shrink-0 border-t border-emerald-50 bg-white px-4 py-3">
+        <div className="flex-shrink-0 border-t border-emerald-50 bg-white px-3 md:px-4 py-3">
           {isAnalyzing ? (
             <div className="flex items-center justify-center gap-3 py-3">
               <Loader2 className="w-5 h-5 text-oem-primary animate-spin" />
               <p className="text-oem-dark/50 text-sm font-semibold animate-pulse">Sedang membedah DNA anda...</p>
             </div>
           ) : (
-            <div className="flex flex-col gap-2.5">
+            <div className="flex flex-col gap-2">
               {showAgeOptions && (
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 pb-1">
                   {AGE_OPTIONS.map(age => (
                     <button
                       key={age}
@@ -283,14 +281,14 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
                   value={input}
                   onChange={e => setInput(e.target.value)}
                   placeholder={isTyping ? 'Saintis sedang berfikir...' : 'Katakan sesuatu kepada Saintis...'}
-                  className="flex-1 bg-emerald-50/40 border border-emerald-100 rounded-xl px-4 py-3 text-sm text-oem-dark placeholder:text-oem-dark/30 focus:outline-none focus:border-emerald-400 focus:bg-white transition-all font-medium disabled:opacity-50"
+                  className="flex-1 bg-emerald-50/40 border border-emerald-100 rounded-xl px-3 md:px-4 py-2.5 text-sm text-oem-dark placeholder:text-oem-dark/30 focus:outline-none focus:border-emerald-400 focus:bg-white transition-all font-medium disabled:opacity-50 min-w-0"
                   disabled={isTyping}
                   autoFocus
                 />
                 <button
                   type="submit"
                   disabled={!input.trim() || isTyping}
-                  className="w-11 h-11 bg-emerald-500 text-white rounded-xl flex items-center justify-center hover:bg-emerald-600 active:scale-95 disabled:bg-slate-100 disabled:text-slate-300 transition-all shadow-sm shadow-emerald-200 flex-shrink-0"
+                  className="w-10 h-10 md:w-11 md:h-11 bg-emerald-500 text-white rounded-xl flex items-center justify-center hover:bg-emerald-600 active:scale-95 disabled:bg-slate-100 disabled:text-slate-300 transition-all shadow-sm shadow-emerald-200 flex-shrink-0"
                 >
                   {isTyping ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                 </button>
@@ -299,11 +297,11 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
               {messages.length >= 4 && (
                 <button
                   onClick={handleFinalAnalyze}
-                  className="w-full py-3 px-6 bg-oem-dark text-white rounded-xl font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-2 hover:bg-emerald-600 transition-colors active:scale-[0.98]"
+                  className="w-full py-2.5 md:py-3 px-6 bg-oem-dark text-white rounded-xl font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-2 hover:bg-emerald-600 transition-colors active:scale-[0.98]"
                 >
-                  <Sparkles size={13} />
+                  <Sparkles size={12} />
                   Muktamadkan Analisis DNA
-                  <Sparkles size={13} />
+                  <Sparkles size={12} />
                 </button>
               )}
             </div>
