@@ -210,21 +210,25 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
 
   const fetchLeads = async () => {
     setLoading(true);
-    const { data } = await supabase
-      .from('leads')
-      .select('*')
-      .order('created_at', { ascending: false });
-    setLeads((data as Lead[]) ?? []);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token ?? import.meta.env.VITE_SUPABASE_ANON_KEY;
+      const res = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-leads`,
+        { headers: { Authorization: `Bearer ${token}`, Apikey: import.meta.env.VITE_SUPABASE_ANON_KEY } }
+      );
+      const data = await res.json();
+      setLeads(Array.isArray(data) ? (data as Lead[]) : []);
+    } catch (e) {
+      console.error('fetchLeads error:', e);
+    }
     setLoading(false);
   };
 
   useEffect(() => {
     fetchLeads();
-    const channel = supabase
-      .channel('leads-realtime')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'leads' }, () => fetchLeads())
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    const interval = setInterval(fetchLeads, 15000);
+    return () => clearInterval(interval);
   }, []);
 
   const filtered = leads.filter(l => {

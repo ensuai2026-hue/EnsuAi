@@ -41,6 +41,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
   const [isTyping, setIsTyping] = useState(false);
   const [ageSelected, setAgeSelected] = useState(false);
   const [leadId, setLeadId] = useState<string | null>(null);
+  const leadIdRef = useRef<string | null>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   const extractName = (msgs: Message[]) => {
@@ -56,21 +57,27 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
   const saveLead = async (msgs: Message[], profile?: PersonalityProfile) => {
     const name = extractName(msgs);
     const age_range = extractAgeRange(msgs);
-    if (leadId) {
-      await supabase.from('leads').update({
+    const currentId = leadIdRef.current;
+    if (currentId) {
+      const { error } = await supabase.from('leads').update({
         messages: msgs,
         name,
         age_range,
         ...(profile ? { personality_profile: profile, completed: true } : {}),
-      }).eq('id', leadId);
+      }).eq('id', currentId);
+      if (error) console.error('Lead update error:', error);
     } else {
-      const { data } = await supabase.from('leads').insert({
+      const { data, error } = await supabase.from('leads').insert({
         messages: msgs,
         name,
         age_range,
         completed: false,
       }).select('id').maybeSingle();
-      if (data?.id) setLeadId(data.id);
+      if (error) console.error('Lead insert error:', error);
+      if (data?.id) {
+        leadIdRef.current = data.id;
+        setLeadId(data.id);
+      }
     }
   };
 
