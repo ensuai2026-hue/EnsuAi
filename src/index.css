@@ -52,8 +52,8 @@
 }
 
 .btn-organic {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  @apply py-3.5 md:py-4 px-8 md:px-12 text-white font-bold uppercase tracking-widest text-xs md:text-sm rounded-full shadow-lg shadow-emerald-200/50 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3;
+  background: linear-gradient(135deg, #0f172a 0%, #134e4a 50%, #10b981 100%);
+  @apply py-3.5 md:py-4 px-8 md:px-12 text-white font-bold uppercase tracking-widest text-xs md:text-sm rounded-full shadow-lg shadow-oem-dark/20 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] hover:shadow-emerald-900/30 active:scale-95 flex items-center justify-center gap-3;
 }
 
 .btn-outline {

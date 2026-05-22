@@ -9,14 +9,15 @@ interface Props {
   profile: PersonalityProfile;
   leadId: string | null;
   onReset: () => void;
+  adminMode?: boolean;
 }
 
-export const ProductRecommendation = ({ profile, onReset }: Props) => {
+export const ProductRecommendation = ({ profile, onReset, adminMode }: Props) => {
   const [selectedProductIndex, setSelectedProductIndex] = useState(0);
   const selectedProduct = profile.recommendations[selectedProductIndex];
 
   return (
-    <div className="min-h-screen bg-oem-cream pt-20 md:pt-32 pb-12 md:pb-24 px-4 md:px-10 overflow-x-hidden">
+    <div className={cn('min-h-screen bg-oem-cream pb-12 md:pb-24 px-4 md:px-10 overflow-x-hidden', adminMode ? 'pt-6 md:pt-10' : 'pt-20 md:pt-32')}>
       <div className="max-w-7xl mx-auto space-y-12 md:space-y-16">
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
