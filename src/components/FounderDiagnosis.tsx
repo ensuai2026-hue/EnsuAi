@@ -62,12 +62,16 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
   const [leadId, setLeadId] = useState<string | null>(null);
   const leadIdRef = useRef<string | null>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const AGE_OPTIONS = ['20 - 30', '30 - 40', '40 - 50', '50 ke atas'];
 
   const scrollToBottom = () => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const container = messagesContainerRef.current;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
   };
 
   useEffect(() => {
@@ -203,7 +207,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3 custom-scrollbar bg-[#fafffe]">
+        <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-5 py-4 space-y-3 custom-scrollbar bg-[#fafffe]">
           <AnimatePresence initial={false}>
             {messages.map((m, i) => (
               <motion.div
