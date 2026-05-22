@@ -99,9 +99,11 @@ export default function App() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.4 }}
             >
+              <Hero onStartDiagnosis={handleStartDiagnosis} />
+
               <div ref={diagnosisRef}>
                 <section
-                  className="bg-oem-light flex items-center justify-center"
+                  className="bg-oem-light border-t border-oem-primary/10 flex items-center justify-center"
                   style={{ minHeight: 'calc(100vh - 64px)' }}
                 >
                   <FounderDiagnosis onReportComplete={(data, leadId) => handleReportComplete(data, leadId)} />

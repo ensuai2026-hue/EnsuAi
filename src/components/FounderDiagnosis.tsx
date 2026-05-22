@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Brain, Send, Loader as Loader2, Sparkles, User, Bot, Dna, Fingerprint, Target, Rocket, CircleCheck as CheckCircle } from 'lucide-react';
+import { Brain, Send, Loader as Loader2, Sparkles, User, Bot, Dna } from 'lucide-react';
 import { diagnoseFounder, chatWithScientist, PersonalityProfile } from '../services/geminiService';
 import { cn } from '../lib/utils';
 import { supabase } from '../lib/supabase';
@@ -51,13 +51,6 @@ const TypingDots = () => (
   </div>
 );
 
-const steps = [
-  { icon: Fingerprint, label: 'Kenali Diri', desc: 'Kongsi nama & latar belakang anda' },
-  { icon: Dna, label: 'Analisis DNA', desc: 'AI kaji personaliti bisnes anda' },
-  { icon: Target, label: 'Padanan Produk', desc: 'Cari kategori terbaik untuk anda' },
-  { icon: Rocket, label: 'Bina Jenama', desc: 'Terima laporan DNA lengkap' },
-];
-
 export const FounderDiagnosis = ({ onReportComplete }: Props) => {
   const [messages, setMessages] = useState<Message[]>([
     { role: 'bot', content: 'Salam! Saya Ensu Saintis. Sebelum kita mula kaji DNA bisnes anda, boleh saya tahu nama anda siapa?' }
@@ -91,14 +84,22 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
     const currentId = leadIdRef.current;
     if (currentId) {
       await supabase.from('leads').update({
-        messages: msgs, name, age_range,
+        messages: msgs,
+        name,
+        age_range,
         ...(profile ? { personality_profile: profile, completed: true } : {}),
       }).eq('id', currentId);
     } else {
       const { data } = await supabase.from('leads').insert({
-        messages: msgs, name, age_range, completed: false,
+        messages: msgs,
+        name,
+        age_range,
+        completed: false,
       }).select('id').maybeSingle();
-      if (data?.id) { leadIdRef.current = data.id; setLeadId(data.id); }
+      if (data?.id) {
+        leadIdRef.current = data.id;
+        setLeadId(data.id);
+      }
     }
   };
 
@@ -157,224 +158,157 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
     }
   };
 
-  const userTurnCount = messages.filter(m => m.role === 'user').length;
-  const currentStep = Math.min(userTurnCount, 3);
-
   return (
-    <div className="w-full max-w-5xl mx-auto px-4 md:px-8 py-8">
-      <div className="flex flex-col lg:flex-row gap-6 items-stretch" style={{ minHeight: '620px' }}>
+    <div className="w-full max-w-2xl mx-auto px-4 md:px-6 flex flex-col py-10">
+      {/* Header */}
+      <div className="text-center mb-6">
+        <div className="inline-flex items-center gap-2 mb-3">
+          <div className="w-9 h-9 rounded-xl bg-oem-primary flex items-center justify-center text-white shadow-md shadow-emerald-200">
+            <Dna className="w-4 h-4" />
+          </div>
+          <div className="text-left">
+            <span className="pill-container text-[8px] block mb-0.5">Karakter & Visi</span>
+            <h2 className="text-xl font-extrabold text-oem-dark uppercase tracking-tight leading-none">SCAN DNA.</h2>
+          </div>
+        </div>
+        <p className="text-oem-dark/50 text-sm font-medium leading-relaxed">
+          Bincang santai dengan <span className="text-oem-primary font-bold">Ensu Saintis</span> untuk kenali DNA jenama anda.
+        </p>
+      </div>
 
-        {/* ── Left Sidebar ── */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-          className="lg:w-72 flex-shrink-0 flex flex-col gap-5"
-        >
-          {/* Brand block */}
-          <div className="rounded-2xl bg-oem-dark p-6 text-white flex flex-col gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center shadow-lg">
-                <Dna className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <div className="text-[10px] font-black uppercase tracking-widest text-emerald-400">Ensu Saintis</div>
-                <div className="flex items-center gap-1.5 mt-0.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-[9px] text-white/40 font-bold uppercase tracking-widest">Aktif Mengkaji</span>
+      {/* Chat Card */}
+      <div
+        className="flex flex-col rounded-3xl border border-emerald-100 shadow-[0_20px_60px_-15px_rgba(16,185,129,0.15)] bg-white overflow-hidden"
+        style={{ height: '560px' }}
+      >
+        {/* Chat Header Bar */}
+        <div className="flex items-center gap-3 px-5 py-3.5 border-b border-emerald-50 bg-gradient-to-r from-white to-emerald-50/30 flex-shrink-0">
+          <div className="relative">
+            <div className="w-9 h-9 rounded-xl bg-emerald-500 flex items-center justify-center text-white shadow-sm">
+              <Bot size={16} />
+            </div>
+            <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-white flex items-center justify-center">
+              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            </div>
+          </div>
+          <div>
+            <div className="text-[11px] font-black uppercase tracking-widest text-oem-dark">Ensu Saintis</div>
+            <div className="text-[9px] text-emerald-600 font-bold uppercase tracking-wider">Aktif Mengkaji</div>
+          </div>
+          <div className="ml-auto flex items-center gap-1.5">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className={cn('w-2.5 h-2.5 rounded-full', i === 0 ? 'bg-red-300' : i === 1 ? 'bg-amber-300' : 'bg-emerald-400')} />
+            ))}
+          </div>
+        </div>
+
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3 custom-scrollbar bg-[#fafffe]">
+          <AnimatePresence initial={false}>
+            {messages.map((m, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 8, scale: 0.97 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.25, ease: 'easeOut' }}
+                className={cn('flex items-end gap-2', m.role === 'user' ? 'flex-row-reverse' : 'flex-row')}
+              >
+                <div className={cn(
+                  'w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0',
+                  m.role === 'user' ? 'bg-oem-dark text-white' : 'bg-emerald-500 text-white'
+                )}>
+                  {m.role === 'user' ? <User className="w-3.5 h-3.5" /> : <Bot className="w-3.5 h-3.5" />}
                 </div>
-              </div>
-            </div>
-            <p className="text-xs text-white/50 leading-relaxed font-medium">
-              AI pakar DNA jenama anda. Bincang santai dan dapatkan laporan personaliti bisnes yang komprehensif.
-            </p>
-            <div className="pt-3 border-t border-white/10 grid grid-cols-2 gap-3">
-              {[{ val: '1,200+', lbl: 'Scan Berjaya' }, { val: '98%', lbl: 'Aura Match' }].map(s => (
-                <div key={s.lbl}>
-                  <div className="text-lg font-black text-white">{s.val}</div>
-                  <div className="text-[9px] text-white/30 font-bold uppercase tracking-widest">{s.lbl}</div>
+                <div className={cn(
+                  'px-4 py-2.5 rounded-2xl text-sm font-medium leading-relaxed max-w-[78%] shadow-sm',
+                  m.role === 'user'
+                    ? 'bg-oem-dark text-white rounded-br-sm'
+                    : 'bg-white text-slate-800 rounded-bl-sm border border-emerald-100/80 shadow-emerald-50'
+                )}>
+                  {m.role === 'bot' && i === messages.length - 1 && !isAnalyzing
+                    ? <TypewriterText text={m.content} onDone={scrollToBottom} />
+                    : <p className="whitespace-pre-wrap">{m.content}</p>}
                 </div>
-              ))}
-            </div>
-          </div>
+              </motion.div>
+            ))}
 
-          {/* Progress steps */}
-          <div className="rounded-2xl border border-emerald-100 bg-white p-5 flex flex-col gap-4 flex-1">
-            <div className="text-[9px] font-black uppercase tracking-widest text-oem-dark/30 mb-1">Proses Scan</div>
-            {steps.map((step, i) => {
-              const done = i < currentStep;
-              const active = i === currentStep;
-              return (
-                <div key={i} className={cn('flex items-start gap-3 transition-all duration-300', !done && !active && 'opacity-30')}>
-                  <div className={cn(
-                    'w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-300',
-                    done ? 'bg-emerald-500 text-white' : active ? 'bg-emerald-50 text-emerald-500 ring-2 ring-emerald-200' : 'bg-slate-50 text-slate-300'
-                  )}>
-                    {done ? <CheckCircle className="w-4 h-4" /> : <step.icon className="w-4 h-4" />}
-                  </div>
-                  <div>
-                    <div className={cn('text-[11px] font-black uppercase tracking-tight', active ? 'text-oem-dark' : 'text-oem-dark/60')}>{step.label}</div>
-                    <div className="text-[10px] text-oem-dark/30 font-medium mt-0.5">{step.desc}</div>
-                  </div>
+            {isTyping && (
+              <motion.div
+                key="typing"
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="flex items-end gap-2"
+              >
+                <div className="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center text-white flex-shrink-0">
+                  <Bot className="w-3.5 h-3.5" />
                 </div>
-              );
-            })}
-
-            {/* Progress bar */}
-            <div className="mt-2">
-              <div className="flex justify-between items-center mb-1.5">
-                <span className="text-[9px] font-bold text-oem-dark/30 uppercase tracking-widest">Kemajuan</span>
-                <span className="text-[9px] font-black text-emerald-600">{Math.round((currentStep / 4) * 100)}%</span>
-              </div>
-              <div className="h-1.5 bg-emerald-50 rounded-full overflow-hidden">
-                <motion.div
-                  className="h-full bg-emerald-500 rounded-full"
-                  animate={{ width: `${(currentStep / 4) * 100}%` }}
-                  transition={{ duration: 0.5 }}
-                />
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* ── Chat Panel ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="flex-1 flex flex-col rounded-2xl border border-emerald-100 bg-white shadow-[0_20px_60px_-15px_rgba(16,185,129,0.12)] overflow-hidden"
-        >
-          {/* Chat header */}
-          <div className="flex items-center gap-3 px-5 py-4 border-b border-emerald-50 bg-gradient-to-r from-white to-emerald-50/20 flex-shrink-0">
-            <div className="relative">
-              <div className="w-9 h-9 rounded-xl bg-emerald-500 flex items-center justify-center text-white">
-                <Bot size={17} />
-              </div>
-              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-white flex items-center justify-center">
-                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              </div>
-            </div>
-            <div>
-              <div className="text-[11px] font-black uppercase tracking-widest text-oem-dark">Ensu Saintis</div>
-              <div className="text-[9px] text-emerald-600 font-bold uppercase tracking-wider">
-                {isTyping ? 'Sedang menaip...' : 'Aktif Mengkaji'}
-              </div>
-            </div>
-            <div className="ml-auto flex items-center gap-1.5">
-              {['bg-red-300', 'bg-amber-300', 'bg-emerald-400'].map((c, i) => (
-                <div key={i} className={cn('w-2.5 h-2.5 rounded-full', c)} />
-              ))}
-            </div>
-          </div>
-
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-5 py-5 space-y-4 custom-scrollbar bg-[#fafffe]">
-            <AnimatePresence initial={false}>
-              {messages.map((m, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 8, scale: 0.97 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{ duration: 0.25, ease: 'easeOut' }}
-                  className={cn('flex items-end gap-2.5', m.role === 'user' ? 'flex-row-reverse' : 'flex-row')}
-                >
-                  <div className={cn(
-                    'w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm',
-                    m.role === 'user' ? 'bg-oem-dark text-white' : 'bg-emerald-500 text-white'
-                  )}>
-                    {m.role === 'user' ? <User className="w-3.5 h-3.5" /> : <Bot className="w-3.5 h-3.5" />}
-                  </div>
-                  <div className={cn(
-                    'px-4 py-3 rounded-2xl text-sm font-medium leading-relaxed max-w-[80%] shadow-sm',
-                    m.role === 'user'
-                      ? 'bg-oem-dark text-white rounded-br-sm'
-                      : 'bg-white text-slate-800 rounded-bl-sm border border-emerald-100/80'
-                  )}>
-                    {m.role === 'bot' && i === messages.length - 1 && !isAnalyzing
-                      ? <TypewriterText text={m.content} onDone={scrollToBottom} />
-                      : <p className="whitespace-pre-wrap">{m.content}</p>}
-                  </div>
-                </motion.div>
-              ))}
-
-              {isTyping && (
-                <motion.div
-                  key="typing"
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  className="flex items-end gap-2.5"
-                >
-                  <div className="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center text-white flex-shrink-0">
-                    <Bot className="w-3.5 h-3.5" />
-                  </div>
-                  <div className="px-4 py-2.5 rounded-2xl rounded-bl-sm bg-white border border-emerald-100/80 shadow-sm">
-                    <TypingDots />
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-            <div ref={chatEndRef} />
-          </div>
-
-          {/* Input */}
-          <div className="flex-shrink-0 border-t border-emerald-50 bg-white px-4 py-4">
-            {isAnalyzing ? (
-              <div className="flex items-center justify-center gap-3 py-3">
-                <Loader2 className="w-5 h-5 text-oem-primary animate-spin" />
-                <span className="text-sm text-oem-dark/50 font-semibold animate-pulse">Sedang membedah DNA anda...</span>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-2.5">
-                {showAgeOptions && (
-                  <div className="flex flex-wrap gap-2">
-                    {AGE_OPTIONS.map(age => (
-                      <button
-                        key={age}
-                        type="button"
-                        onClick={() => handleAgeSelect(age)}
-                        className="px-4 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-oem-dark text-xs font-bold hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all duration-200 active:scale-95"
-                      >
-                        {age}
-                      </button>
-                    ))}
-                  </div>
-                )}
-
-                <form onSubmit={handleSendMessage} className="flex items-center gap-2">
-                  <input
-                    ref={inputRef}
-                    type="text"
-                    value={input}
-                    onChange={e => setInput(e.target.value)}
-                    placeholder={isTyping ? 'Saintis sedang berfikir...' : 'Katakan sesuatu kepada Saintis...'}
-                    className="flex-1 bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-sm text-oem-dark placeholder:text-slate-300 focus:outline-none focus:border-emerald-300 focus:bg-white transition-all font-medium disabled:opacity-50"
-                    disabled={isTyping}
-                    autoFocus
-                  />
-                  <button
-                    type="submit"
-                    disabled={!input.trim() || isTyping}
-                    className="w-11 h-11 bg-emerald-500 text-white rounded-xl flex items-center justify-center hover:bg-emerald-600 active:scale-95 disabled:bg-slate-100 disabled:text-slate-300 transition-all flex-shrink-0"
-                  >
-                    {isTyping ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                  </button>
-                </form>
-
-                {messages.length >= 4 && (
-                  <button
-                    onClick={handleFinalAnalyze}
-                    className="w-full py-3 bg-oem-dark text-white rounded-xl font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-2 hover:bg-emerald-600 transition-colors active:scale-[0.98]"
-                  >
-                    <Sparkles size={12} />
-                    Muktamadkan Analisis DNA
-                    <Sparkles size={12} />
-                  </button>
-                )}
-              </div>
+                <div className="px-4 py-2 rounded-2xl rounded-bl-sm bg-white border border-emerald-100/80 shadow-sm">
+                  <TypingDots />
+                </div>
+              </motion.div>
             )}
-          </div>
-        </motion.div>
+          </AnimatePresence>
+          <div ref={chatEndRef} />
+        </div>
+
+        {/* Input Area */}
+        <div className="flex-shrink-0 border-t border-emerald-50 bg-white px-4 py-3">
+          {isAnalyzing ? (
+            <div className="flex items-center justify-center gap-3 py-3">
+              <Loader2 className="w-5 h-5 text-oem-primary animate-spin" />
+              <p className="text-oem-dark/50 text-sm font-semibold animate-pulse">Sedang membedah DNA anda...</p>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2.5">
+              {showAgeOptions && (
+                <div className="flex flex-wrap gap-2">
+                  {AGE_OPTIONS.map(age => (
+                    <button
+                      key={age}
+                      type="button"
+                      onClick={() => handleAgeSelect(age)}
+                      className="px-4 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-oem-dark text-xs font-bold hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all duration-200 active:scale-95"
+                    >
+                      {age}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              <form onSubmit={handleSendMessage} className="flex items-center gap-2">
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  placeholder={isTyping ? 'Saintis sedang berfikir...' : 'Katakan sesuatu kepada Saintis...'}
+                  className="flex-1 bg-emerald-50/40 border border-emerald-100 rounded-xl px-4 py-3 text-sm text-oem-dark placeholder:text-oem-dark/30 focus:outline-none focus:border-emerald-400 focus:bg-white transition-all font-medium disabled:opacity-50"
+                  disabled={isTyping}
+                  autoFocus
+                />
+                <button
+                  type="submit"
+                  disabled={!input.trim() || isTyping}
+                  className="w-11 h-11 bg-emerald-500 text-white rounded-xl flex items-center justify-center hover:bg-emerald-600 active:scale-95 disabled:bg-slate-100 disabled:text-slate-300 transition-all shadow-sm shadow-emerald-200 flex-shrink-0"
+                >
+                  {isTyping ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                </button>
+              </form>
+
+              {messages.length >= 4 && (
+                <button
+                  onClick={handleFinalAnalyze}
+                  className="w-full py-3 px-6 bg-oem-dark text-white rounded-xl font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-2 hover:bg-emerald-600 transition-colors active:scale-[0.98]"
+                >
+                  <Sparkles size={13} />
+                  Muktamadkan Analisis DNA
+                  <Sparkles size={13} />
+                </button>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
