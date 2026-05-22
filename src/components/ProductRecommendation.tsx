@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { PersonalityProfile } from '../services/geminiService';
-import { Sparkles, Target, Shield, User, ChevronRight, Heart, CircleCheck as CheckCircle2, Leaf, ShoppingBag, Zap, ChartBar as BarChart3, TrendingUp, X, Phone, Mail, Wallet, Package, Hash, CircleCheck as CheckCircle } from 'lucide-react';
+import { Sparkles, Target, Shield, User, ChevronRight, Heart, CircleCheck as CheckCircle2, Leaf, ShoppingBag, Zap, ChartBar as BarChart3, TrendingUp } from 'lucide-react';
 import { cn } from '../lib/utils';
 import ReactMarkdown from 'react-markdown';
-import { supabase } from '../lib/supabase';
 
 interface Props {
   profile: PersonalityProfile;
@@ -12,127 +11,8 @@ interface Props {
   onReset: () => void;
 }
 
-interface LeadForm {
-  name: string;
-  phone: string;
-  email: string;
-  budget: string;
-  product_type: string;
-  quantity: string;
-}
-
-const LeadCaptureModal = ({ leadId, onClose }: { leadId: string | null; onClose: () => void }) => {
-  const [form, setForm] = useState<LeadForm>({ name: '', phone: '', email: '', budget: '', product_type: '', quantity: '' });
-  const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    if (leadId) {
-      await supabase.from('leads').update({
-        name: form.name || undefined,
-        phone: form.phone,
-        email: form.email,
-        budget: form.budget,
-        product_type: form.product_type,
-        quantity: form.quantity,
-      }).eq('id', leadId);
-    }
-    setLoading(false);
-    setSubmitted(true);
-  };
-
-  const fields: { key: keyof LeadForm; label: string; placeholder: string; icon: React.ElementType; type?: string; required?: boolean }[] = [
-    { key: 'name', label: 'Nama Penuh', placeholder: 'Nama anda', icon: User, required: true },
-    { key: 'phone', label: 'No. WhatsApp', placeholder: '012-3456789', icon: Phone, required: true },
-    { key: 'email', label: 'E-mel', placeholder: 'email@anda.com', icon: Mail, type: 'email', required: true },
-    { key: 'budget', label: 'Bajet Anggaran', placeholder: 'Contoh: RM5,000 - RM10,000', icon: Wallet, required: true },
-    { key: 'product_type', label: 'Jenis Produk', placeholder: 'Contoh: Supplement, Skincare, F&B', icon: Package, required: true },
-    { key: 'quantity', label: 'Kuantiti / Bil. SKU', placeholder: 'Contoh: 500 unit, 2 SKU', icon: Hash, required: true },
-  ];
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-    >
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <motion.div
-        initial={{ scale: 0.92, y: 20 }}
-        animate={{ scale: 1, y: 0 }}
-        exit={{ scale: 0.92, y: 20 }}
-        transition={{ type: 'spring', stiffness: 320, damping: 28 }}
-        className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden"
-      >
-        <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors z-10">
-          <X className="w-4 h-4 text-slate-500" />
-        </button>
-
-        {submitted ? (
-          <div className="flex flex-col items-center justify-center py-16 px-8 text-center gap-5">
-            <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center">
-              <CheckCircle className="w-8 h-8 text-emerald-500" />
-            </div>
-            <div>
-              <h3 className="text-2xl font-extrabold text-slate-800 uppercase tracking-tight mb-2">Terima Kasih!</h3>
-              <p className="text-slate-500 font-medium text-sm">Maklumat anda telah dihantar. Team Ensu akan menghubungi anda tidak lama lagi.</p>
-            </div>
-            <button onClick={onClose} className="px-8 py-3 bg-emerald-500 text-white rounded-xl font-black uppercase tracking-widest text-xs hover:bg-emerald-600 transition-colors">
-              Tutup
-            </button>
-          </div>
-        ) : (
-          <div>
-            <div className="bg-slate-900 px-6 py-6">
-              <div className="flex items-center gap-3 mb-1">
-                <div className="w-8 h-8 rounded-xl bg-emerald-500 flex items-center justify-center">
-                  <Sparkles className="w-4 h-4 text-white" />
-                </div>
-                <h3 className="text-base font-extrabold text-white uppercase tracking-tight">Manifestasikan Produk Anda</h3>
-              </div>
-              <p className="text-slate-400 text-xs font-medium pl-11">Isi maklumat di bawah, team Ensu akan hubungi anda.</p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              {fields.map(({ key, label, placeholder, icon: Icon, type, required }) => (
-                <div key={key}>
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-1.5">{label}</label>
-                  <div className="relative">
-                    <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
-                    <input
-                      type={type ?? 'text'}
-                      required={required}
-                      placeholder={placeholder}
-                      value={form[key]}
-                      onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
-                      className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-700 outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 transition-all placeholder:text-slate-300"
-                    />
-                  </div>
-                </div>
-              ))}
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-3.5 bg-slate-900 hover:bg-emerald-500 text-white rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 mt-2"
-              >
-                {loading && <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />}
-                {loading ? 'Menghantar...' : 'Hantar Maklumat'}
-              </button>
-            </form>
-          </div>
-        )}
-      </motion.div>
-    </motion.div>
-  );
-};
-
-export const ProductRecommendation = ({ profile, leadId, onReset }: Props) => {
+export const ProductRecommendation = ({ profile, onReset }: Props) => {
   const [selectedProductIndex, setSelectedProductIndex] = useState(0);
-  const [showLeadModal, setShowLeadModal] = useState(false);
   const selectedProduct = profile.recommendations[selectedProductIndex];
 
   return (
@@ -559,7 +439,7 @@ export const ProductRecommendation = ({ profile, leadId, onReset }: Props) => {
 
         {/* Global CTAs */}
         <div className="flex flex-col sm:flex-row gap-6 md:gap-8 items-center justify-center pt-4 md:pt-8 pb-8">
-          <button 
+          <button
             onClick={onReset}
             className="px-8 py-4 md:px-10 md:py-6 text-xs md:text-sm font-black uppercase tracking-[0.4em] text-oem-dark/30 hover:text-oem-primary transition-all flex items-center gap-3 md:gap-4 group order-2 sm:order-1"
           >
@@ -568,24 +448,20 @@ export const ProductRecommendation = ({ profile, leadId, onReset }: Props) => {
             </div>
             Ulang Diagnosis
           </button>
-          
-          <button
-            onClick={() => setShowLeadModal(true)}
-            className="w-full sm:w-auto px-10 py-6 md:px-16 md:py-8 bg-oem-primary text-white rounded-full text-base md:text-xl font-black uppercase tracking-widest shadow-2xl shadow-emerald-200 hover:scale-[1.03] transition-all relative overflow-hidden group order-1 sm:order-2"
+
+          <a
+            href="https://wa.me/60123456789?text=Saya%20baru%20selesai%20Scan%20DNA%20dengan%20Ensu%20Saintis%20dan%20ingin%20tahu%20lebih%20lanjut."
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full sm:w-auto px-10 py-6 md:px-16 md:py-8 bg-oem-primary text-white rounded-full text-base md:text-xl font-black uppercase tracking-widest shadow-2xl shadow-emerald-200 hover:scale-[1.03] transition-all relative overflow-hidden group order-1 sm:order-2 flex items-center justify-center"
           >
             <span className="relative z-10 flex items-center justify-center gap-3 md:gap-4">
               MANIFESTASIKAN PRODUK <Sparkles className="w-5 h-5 md:w-6 md:h-6 animate-pulse" />
             </span>
             <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity" />
-          </button>
+          </a>
         </div>
       </div>
-
-      <AnimatePresence>
-        {showLeadModal && (
-          <LeadCaptureModal leadId={leadId} onClose={() => setShowLeadModal(false)} />
-        )}
-      </AnimatePresence>
     </div>
   );
 };

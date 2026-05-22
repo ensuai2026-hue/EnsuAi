@@ -85,18 +85,40 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
   const extractAgeRange = (msgs: Message[]) =>
     msgs.find(m => m.role === 'user' && /^\d{2}/.test(m.content.trim()))?.content ?? null;
 
+  // Extract phone, email, budget, product_type, quantity from all user messages
+  const extractContactFields = (msgs: Message[]) => {
+    const userTexts = msgs.filter(m => m.role === 'user').map(m => m.content).join('\n');
+
+    const phoneMatch = userTexts.match(/(\+?6?01[0-9][-\s]?\d{3,4}[-\s]?\d{3,4}|\b0\d{1,2}[-\s]?\d{3,4}[-\s]?\d{3,4}\b)/);
+    const emailMatch = userTexts.match(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/);
+    const budgetMatch = userTexts.match(/RM\s?\d[\d,.]*([\s\-–]+RM?\s?\d[\d,.]*)?|\d[\d,.]*\s*(ribu|k\b|K\b)/i);
+    const productMatch = userTexts.match(/(?:supplement|skincare|f&b|herbal|vitamin|cosmetic|kecantikan|minuman|makanan|functional drink|haircare|babycare|petcare|wellness|slim|detox|collagen|whitening|probiotik|probiotic)[^\n,.]*/i);
+    const qtyMatch = userTexts.match(/\d+\s*(?:unit|sku|item|kotak|botol|pcs|pieces|pack)/i);
+
+    return {
+      phone: phoneMatch?.[0] ?? null,
+      email: emailMatch?.[0] ?? null,
+      budget: budgetMatch?.[0] ?? null,
+      product_type: productMatch?.[0]?.trim() ?? null,
+      quantity: qtyMatch?.[0] ?? null,
+    };
+  };
+
   const saveLead = async (msgs: Message[], profile?: PersonalityProfile) => {
     const name = extractName(msgs);
     const age_range = extractAgeRange(msgs);
+    const contactFields = extractContactFields(msgs);
     const currentId = leadIdRef.current;
     if (currentId) {
       await supabase.from('leads').update({
         messages: msgs, name, age_range,
+        ...contactFields,
         ...(profile ? { personality_profile: profile, completed: true } : {}),
       }).eq('id', currentId);
     } else {
       const { data } = await supabase.from('leads').insert({
         messages: msgs, name, age_range, completed: false,
+        ...contactFields,
       }).select('id').maybeSingle();
       if (data?.id) {
         leadIdRef.current = data.id;

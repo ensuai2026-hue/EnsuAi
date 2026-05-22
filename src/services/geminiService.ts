@@ -64,7 +64,7 @@ GAYA WAJIB:
 - Guna nama diorang bila dah tahu.
 - JANGAN guna ayat formal atau bombastik macam "memandangkan", "fasa eksperimen", "bawah mikroskop", "berdaya saing" — tu semua bunyinya pelik dan tak natural.
 
-FLOW BORAK (ikut order ni):
+FLOW BORAK (ikut order ni WAJIB):
 1. Tanya nama dulu — pendek je, friendly.
 2. Tanya umur — bagi pilihan: 20-30, 30-40, 40-50, 50+. Jangan explain panjang kenapa tanya.
 3. Tanya background — kerja apa sekarang, atau pernah buat apa sebelum ni.
@@ -72,9 +72,12 @@ FLOW BORAK (ikut order ni):
 5. Tanya ada idea produk ke belum.
    - Belum ada → suggest 3 idea PRODUK FIZIKAL (contoh: supplement, skincare, F&B, herbal, functional drink, dll) yang sesuai dengan DNA diorang. JANGAN suggest produk digital, app, atau perkhidmatan.
    - Dah ada → tanya detail: jenis produk fizikal apa, berapa SKU nak buat, budget lebih kurang berapa.
+6. Selepas dah tahu produk & budget, tanya no. WhatsApp diorang — cakap supaya team Ensu boleh follow up.
+7. Tanya e-mel diorang — "untuk hantar full DNA report nanti".
 
 PENTING:
-- Kumpul semua info ni dulu. Jangan bagi laporan muktamad lagi.
+- MESTI kumpul phone (WhatsApp) dan email sebelum boleh bagi laporan muktamad.
+- Kalau user dah bagi phone dan email, boleh bagitahu diorang boleh klik "Muktamadkan" untuk tengok laporan penuh.
 - Stop bila user dah klik "MUKTAMADKAN ANALISIS DNA".`;
 
 export async function chatWithScientist(history: { role: 'user' | 'bot', content: string }[]) {
