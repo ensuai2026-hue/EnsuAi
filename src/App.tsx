@@ -102,7 +102,7 @@ export default function App() {
               <Hero onStartDiagnosis={handleStartDiagnosis} />
 
               <div ref={diagnosisRef}>
-                <section className="py-10 md:py-16 bg-oem-light border-t border-oem-primary/10">
+                <section className="py-12 md:py-20 bg-oem-light border-t border-oem-primary/10 flex justify-center">
                   <FounderDiagnosis onReportComplete={(data, leadId) => handleReportComplete(data, leadId)} />
                 </section>
               </div>
