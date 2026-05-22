@@ -66,7 +66,7 @@ export const Header = ({ onStartDiagnosis, onGoHome, onGoAdmin, showCta, ctaHref
               </button>
               <button
                 onClick={onStartDiagnosis}
-                className="btn-outline px-6 py-2.5 text-[10px] font-black uppercase tracking-widest hover:bg-oem-dark hover:text-white transition-all"
+                className="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest bg-oem-primary text-white rounded-full shadow-md shadow-emerald-200 hover:scale-105 transition-all"
               >
                 Scan DNA Produk
               </button>
