@@ -122,35 +122,36 @@ export const ProductRecommendation = ({ profile, onReset, adminMode }: Props) =>
 
           {/* Right Side: 3 Product Recommendations (Actionable Insights) */}
           <div className="lg:col-span-12 xl:col-span-8 space-y-8 md:space-y-10 order-1 xl:order-2">
-            {/* Product Selector Tabs (High-Tech Selector) */}
-            <div className="flex overflow-x-auto no-scrollbar sm:flex-nowrap gap-3 md:gap-4 p-2 md:p-4 bg-white/40 backdrop-blur-2xl border border-white/50 rounded-[2rem] md:rounded-[3rem] shadow-2xl relative overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-              {profile.recommendations.map((rec, i) => (
-                <button
-                  key={i}
-                  onClick={() => setSelectedProductIndex(i)}
-                  className={cn(
-                    "flex-1 min-w-[140px] py-4 md:py-6 px-4 md:px-6 rounded-[1.5rem] md:rounded-[2.5rem] transition-all flex flex-col items-center gap-1.5 md:gap-2 border-2 relative overflow-hidden group/btn",
-                    selectedProductIndex === i 
-                      ? "bg-oem-dark border-oem-dark text-white shadow-2xl scale-[1.02]" 
-                      : "text-oem-dark/30 border-transparent hover:bg-emerald-50 hover:text-oem-primary"
-                  )}
-                >
-                  {selectedProductIndex === i && (
-                    <motion.div 
-                      layoutId="tab-glow"
-                      className="absolute inset-0 bg-gradient-to-tr from-emerald-500/20 to-transparent pointer-events-none"
-                    />
-                  )}
-                  <span className={cn("text-[10px] font-black uppercase tracking-[0.4em] relative z-10", selectedProductIndex === i ? "text-emerald-400" : "text-oem-dark/10")}>
-                    Product Match 0{i+1}
-                  </span>
-                  <span className="text-xs md:text-sm font-black truncate w-full text-center tracking-tight uppercase leading-none relative z-10">{rec.name}</span>
-                  {selectedProductIndex === i && (
-                    <div className="absolute bottom-2 w-8 h-1 bg-emerald-500 rounded-full" />
-                  )}
-                </button>
-              ))}
+            {/* Product Selector Tabs */}
+            <div className="bg-white/40 backdrop-blur-2xl border border-white/50 rounded-[2rem] md:rounded-[3rem] shadow-2xl p-2 md:p-4">
+              <div className="flex overflow-x-auto no-scrollbar gap-2 md:gap-4 snap-x snap-mandatory">
+                {profile.recommendations.map((rec, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setSelectedProductIndex(i)}
+                    className={cn(
+                      "snap-start flex-shrink-0 w-[calc(50%-4px)] sm:w-auto sm:flex-1 py-4 md:py-6 px-3 md:px-6 rounded-[1.5rem] md:rounded-[2.5rem] transition-all flex flex-col items-center gap-1.5 md:gap-2 border-2 relative overflow-hidden",
+                      selectedProductIndex === i
+                        ? "bg-oem-dark border-oem-dark text-white shadow-2xl scale-[1.02]"
+                        : "text-oem-dark/30 border-transparent hover:bg-emerald-50 hover:text-oem-primary"
+                    )}
+                  >
+                    {selectedProductIndex === i && (
+                      <motion.div
+                        layoutId="tab-glow"
+                        className="absolute inset-0 bg-gradient-to-tr from-emerald-500/20 to-transparent pointer-events-none"
+                      />
+                    )}
+                    <span className={cn("text-[9px] font-black uppercase tracking-[0.35em] relative z-10 whitespace-nowrap", selectedProductIndex === i ? "text-emerald-400" : "text-oem-dark/10")}>
+                      Product Match 0{i+1}
+                    </span>
+                    <span className="text-[11px] md:text-sm font-black w-full text-center tracking-tight uppercase leading-tight relative z-10 line-clamp-2">{rec.name}</span>
+                    {selectedProductIndex === i && (
+                      <div className="absolute bottom-2 w-8 h-1 bg-emerald-500 rounded-full" />
+                    )}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <AnimatePresence mode="wait">
