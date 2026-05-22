@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import {
-  Users, CircleCheck as CheckCircle, Clock, Eye, X, LogOut, RefreshCw,
-  MessageSquare, ChevronDown, ChevronUp, Phone, Mail, Wallet, Package, Hash, Bot, User,
-  Dna, Search, Calendar, Download, Send
-} from 'lucide-react';
+import { Users, CircleCheck as CheckCircle, Clock, Eye, X, LogOut, RefreshCw, MessageSquare, ChevronDown, ChevronUp, Phone, Mail, Wallet, Package, Hash, Bot, User, Dna, Search, Calendar, Download, Send, Trash2, FileText, TriangleAlert as AlertTriangle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { cn } from '../lib/utils';
+import { ProductRecommendation } from './ProductRecommendation';
+import { PersonalityProfile } from '../services/geminiService';
 
 interface Lead {
   id: string;
@@ -103,7 +101,62 @@ const downloadCSV = (leads: Lead[]) => {
   URL.revokeObjectURL(url);
 };
 
-const LeadDrawer = ({ lead, onClose }: { lead: Lead; onClose: () => void }) => {
+const DeleteConfirmDialog = ({ lead, onConfirm, onCancel, loading }: {
+  lead: Lead; onConfirm: () => void; onCancel: () => void; loading: boolean;
+}) => (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    className="fixed inset-0 z-[60] flex items-center justify-center px-4"
+  >
+    <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onCancel} />
+    <motion.div
+      initial={{ scale: 0.92, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      exit={{ scale: 0.92, opacity: 0 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+      className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm"
+    >
+      <div className="flex flex-col items-center text-center gap-4">
+        <div className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center">
+          <AlertTriangle className="w-6 h-6 text-red-500" />
+        </div>
+        <div>
+          <div className="text-sm font-extrabold text-slate-800 mb-1">Padam Lead</div>
+          <div className="text-xs text-slate-500 font-medium">
+            Adakah anda pasti mahu padam lead <span className="font-bold text-slate-700">{lead.name ?? 'ini'}</span>? Tindakan ini tidak boleh dibatalkan.
+          </div>
+        </div>
+        <div className="flex gap-2 w-full pt-1">
+          <button
+            onClick={onCancel}
+            disabled={loading}
+            className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-black uppercase tracking-widest transition-all"
+          >
+            Batal
+          </button>
+          <button
+            onClick={onConfirm}
+            disabled={loading}
+            className="flex-1 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+          >
+            {loading ? (
+              <div className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+            ) : (
+              <Trash2 className="w-3.5 h-3.5" />
+            )}
+            Padam
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  </motion.div>
+);
+
+const LeadDrawer = ({ lead, onClose, onDelete, onViewReport }: {
+  lead: Lead; onClose: () => void; onDelete: (lead: Lead) => void; onViewReport: (lead: Lead) => void;
+}) => {
   const [showMessages, setShowMessages] = useState(lead.completed);
   const profile = lead.personality_profile as Record<string, string> | null;
 
@@ -282,22 +335,71 @@ const LeadDrawer = ({ lead, onClose }: { lead: Lead; onClose: () => void }) => {
         </div>
 
         {/* Action Buttons */}
-        <div className="sticky bottom-0 bg-white border-t border-slate-100 px-5 py-4 flex gap-2">
-          <button
-            onClick={() => sendToWhatsApp(lead)}
-            className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-black uppercase tracking-widest rounded-xl transition-all active:scale-95"
-          >
-            <Send className="w-3.5 h-3.5" />
-            Hantar ke WhatsApp
-          </button>
-          <button
-            onClick={() => downloadCSV([lead])}
-            className="flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-black uppercase tracking-widest rounded-xl transition-all active:scale-95"
-          >
-            <Download className="w-3.5 h-3.5" />
-          </button>
+        <div className="sticky bottom-0 bg-white border-t border-slate-100 px-5 py-4 space-y-2">
+          {lead.completed && lead.personality_profile && (
+            <button
+              onClick={() => onViewReport(lead)}
+              className="w-full flex items-center justify-center gap-2 py-2.5 bg-oem-dark hover:bg-slate-800 text-white text-xs font-black uppercase tracking-widest rounded-xl transition-all active:scale-95"
+            >
+              <FileText className="w-3.5 h-3.5" />
+              Lihat Full Report DNA
+            </button>
+          )}
+          <div className="flex gap-2">
+            <button
+              onClick={() => sendToWhatsApp(lead)}
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-black uppercase tracking-widest rounded-xl transition-all active:scale-95"
+            >
+              <Send className="w-3.5 h-3.5" />
+              Hantar ke WhatsApp
+            </button>
+            <button
+              onClick={() => downloadCSV([lead])}
+              className="flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-black uppercase tracking-widest rounded-xl transition-all active:scale-95"
+            >
+              <Download className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={() => onDelete(lead)}
+              className="flex items-center justify-center gap-2 px-4 py-2.5 bg-red-50 hover:bg-red-100 text-red-500 text-xs font-black uppercase tracking-widest rounded-xl transition-all active:scale-95"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
       </motion.div>
+    </motion.div>
+  );
+};
+
+const FullReportModal = ({ lead, onClose }: { lead: Lead; onClose: () => void }) => {
+  const profile = lead.personality_profile as PersonalityProfile | null;
+  if (!profile) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[60] bg-white overflow-y-auto"
+    >
+      <div className="sticky top-0 z-10 bg-white/90 backdrop-blur-md border-b border-slate-100 px-6 py-3 flex items-center justify-between">
+        <div className="text-xs font-black uppercase tracking-widest text-slate-500">
+          Report DNA — {lead.name ?? 'Tanpa Nama'}
+        </div>
+        <button
+          onClick={onClose}
+          className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-400 hover:text-slate-700 transition-colors px-3 py-2 rounded-lg hover:bg-slate-100"
+        >
+          <X className="w-4 h-4" />
+          Tutup
+        </button>
+      </div>
+      <ProductRecommendation
+        profile={profile}
+        leadId={lead.id}
+        onReset={onClose}
+      />
     </motion.div>
   );
 };
@@ -307,6 +409,9 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Lead | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [reportLead, setReportLead] = useState<Lead | null>(null);
   const [filter, setFilter] = useState<'all' | 'completed' | 'incomplete'>('all');
   const [search, setSearch] = useState('');
 
@@ -331,6 +436,20 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
     const interval = setInterval(fetchLeads, 15000);
     return () => clearInterval(interval);
   }, []);
+
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleteLoading(true);
+    const { error: err } = await supabase.from('leads').delete().eq('id', deleteTarget.id);
+    if (err) {
+      console.error('Delete error:', err);
+    } else {
+      setLeads(prev => prev.filter(l => l.id !== deleteTarget.id));
+      if (selectedLead?.id === deleteTarget.id) setSelectedLead(null);
+    }
+    setDeleteLoading(false);
+    setDeleteTarget(null);
+  };
 
   const filtered = leads.filter(l => {
     const matchFilter =
@@ -514,13 +633,29 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
                         </div>
                       </td>
                       <td className="px-5 py-3.5">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1.5">
+                          {lead.completed && lead.personality_profile && (
+                            <button
+                              onClick={e => { e.stopPropagation(); setReportLead(lead); }}
+                              className="w-7 h-7 rounded-lg bg-slate-50 hover:bg-oem-dark flex items-center justify-center transition-colors group/rep"
+                              title="Lihat Full Report"
+                            >
+                              <FileText className="w-3 h-3 text-slate-400 group-hover/rep:text-emerald-400 transition-colors" />
+                            </button>
+                          )}
                           <button
                             onClick={e => { e.stopPropagation(); sendToWhatsApp(lead); }}
                             className="w-7 h-7 rounded-lg bg-emerald-50 hover:bg-emerald-500 flex items-center justify-center transition-colors group/wa"
                             title="Hantar ke WhatsApp"
                           >
                             <Send className="w-3 h-3 text-emerald-500 group-hover/wa:text-white transition-colors" />
+                          </button>
+                          <button
+                            onClick={e => { e.stopPropagation(); setDeleteTarget(lead); }}
+                            className="w-7 h-7 rounded-lg bg-red-50 hover:bg-red-500 flex items-center justify-center transition-colors group/del"
+                            title="Padam Lead"
+                          >
+                            <Trash2 className="w-3 h-3 text-red-400 group-hover/del:text-white transition-colors" />
                           </button>
                           <Eye className="w-4 h-4 text-slate-300 group-hover:text-emerald-500 transition-colors" />
                         </div>
@@ -536,7 +671,32 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
 
       <AnimatePresence>
         {selectedLead && (
-          <LeadDrawer lead={selectedLead} onClose={() => setSelectedLead(null)} />
+          <LeadDrawer
+            lead={selectedLead}
+            onClose={() => setSelectedLead(null)}
+            onDelete={lead => { setSelectedLead(null); setDeleteTarget(lead); }}
+            onViewReport={lead => { setSelectedLead(null); setReportLead(lead); }}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {deleteTarget && (
+          <DeleteConfirmDialog
+            lead={deleteTarget}
+            onConfirm={handleDelete}
+            onCancel={() => setDeleteTarget(null)}
+            loading={deleteLoading}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {reportLead && (
+          <FullReportModal
+            lead={reportLead}
+            onClose={() => setReportLead(null)}
+          />
         )}
       </AnimatePresence>
     </div>
