@@ -335,7 +335,7 @@ export const ProductRecommendation = ({ profile, onReset, adminMode }: Props) =>
                 </div>
                 <span className="text-[10px] font-black uppercase tracking-[0.5em]">Market Expansion</span>
               </div>
-              <h2 className="text-2xl md:text-4xl font-extrabold text-oem-dark uppercase tracking-tight leading-[1.1]">3 Strategi Alpha</h2>
+              <h2 className="text-2xl md:text-4xl font-extrabold text-oem-dark uppercase tracking-tight leading-[1.1]">3 Strategi Utama</h2>
               <div className="flex items-center gap-2 md:gap-3">
                  <div className="w-6 md:w-8 h-1 bg-emerald-500 rounded-full" />
                  <p className="text-oem-dark/30 font-black text-[9px] tracking-[0.4em] uppercase">Tactical Execution Plan</p>
