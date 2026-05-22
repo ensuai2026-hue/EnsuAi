@@ -83,7 +83,7 @@ export const ProductRecommendation = ({ profile, onReset, adminMode }: Props) =>
                       Signature Profile Extraction
                     </div>
                   </div>
-                  <h1 className="text-3xl sm:text-4xl md:text-7xl font-extrabold text-oem-dark uppercase tracking-tight leading-[1.1] break-words relative">
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl xl:text-5xl font-extrabold text-oem-dark uppercase tracking-tight leading-[1.15] break-words relative">
                     <span className="relative z-10">{profile.personalityType}</span>
                     <div className="absolute -left-4 top-0 w-1.5 h-full bg-oem-primary/30" />
                   </h1>
@@ -168,11 +168,11 @@ export const ProductRecommendation = ({ profile, onReset, adminMode }: Props) =>
                 
                 <div className="relative z-10 space-y-10 md:space-y-16">
                   {/* Top Header: Name & ID */}
-                  <div className="flex flex-col md:flex-row justify-between items-start gap-8 md:gap-12">
-                    <div className="max-w-2xl space-y-6 md:space-y-8">
+                  <div className="flex flex-row justify-between items-start gap-4 md:gap-8">
+                    <div className="min-w-0 flex-1 space-y-4 md:space-y-6">
                       <div className="flex items-center gap-4 md:gap-6">
                         <div className="relative">
-                          <div className="text-oem-primary font-mono text-5xl sm:text-6xl md:text-8xl font-black leading-none tracking-tighter">
+                          <div className="text-oem-primary font-mono text-4xl sm:text-5xl md:text-6xl font-black leading-none tracking-tighter">
                             {selectedProduct.matchPercentage}%
                           </div>
                           <motion.div 
@@ -189,22 +189,22 @@ export const ProductRecommendation = ({ profile, onReset, adminMode }: Props) =>
                       </div>
                       
                       <div className="space-y-3 md:space-y-4">
-                        <h2 className="text-3xl sm:text-5xl md:text-8xl font-extrabold text-oem-dark uppercase tracking-tight leading-[1.1]">
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl xl:text-5xl font-extrabold text-oem-dark uppercase tracking-tight leading-[1.15] break-words">
                           {selectedProduct.name}
                         </h2>
                         <div className="p-5 md:p-8 bg-slate-50/80 backdrop-blur-md rounded-[1.5rem] md:rounded-[2.5rem] border border-slate-100 relative group/desc">
                           <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 md:w-1.5 md:h-12 bg-oem-primary rounded-r-full" />
-                          <p className="text-oem-dark/60 text-base md:text-2xl leading-relaxed font-medium italic pl-3 md:pl-4">"{selectedProduct.description}"</p>
+                          <p className="text-oem-dark/60 text-sm md:text-base leading-relaxed font-medium italic pl-3 md:pl-4">"{selectedProduct.description}"</p>
                         </div>
                       </div>
                     </div>
                     
-                    <motion.div 
+                    <motion.div
                       whileHover={{ rotate: 15, scale: 1.1 }}
-                      className="w-20 h-20 md:w-32 md:h-32 bg-oem-dark text-white rounded-[2rem] md:rounded-[3.5rem] flex items-center justify-center shadow-3xl shadow-emerald-900/20 relative overflow-hidden flex-shrink-0"
+                      className="w-14 h-14 md:w-20 md:h-20 bg-oem-dark text-white rounded-[1.5rem] md:rounded-[2.5rem] flex items-center justify-center shadow-xl shadow-emerald-900/20 relative overflow-hidden flex-shrink-0"
                     >
                       <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/40 to-transparent group-hover:scale-150 transition-transform duration-1000" />
-                      <ShoppingBag className="w-10 h-10 md:w-16 md:h-16 relative z-10" />
+                      <ShoppingBag className="w-6 h-6 md:w-9 md:h-9 relative z-10" />
                     </motion.div>
                   </div>
 
@@ -223,7 +223,7 @@ export const ProductRecommendation = ({ profile, onReset, adminMode }: Props) =>
                               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                               <span className="text-emerald-500 font-black text-[9px] md:text-[11px] uppercase tracking-[0.6em]">Market Potential Report</span>
                             </div>
-                            <p className="text-4xl sm:text-6xl md:text-8xl font-extrabold text-white tracking-tight leading-tight md:leading-[0.9] uppercase">
+                            <p className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight uppercase break-words">
                               {selectedProduct.estimatedMarketValue}
                             </p>
                           </div>
@@ -284,7 +284,7 @@ export const ProductRecommendation = ({ profile, onReset, adminMode }: Props) =>
                             <div className="w-8 h-8 md:w-10 md:h-10 rounded-[1rem] md:rounded-[1.25rem] bg-emerald-50 flex items-center justify-center flex-shrink-0 mt-1 transition-all group-hover/point:bg-oem-dark group-hover/point:text-emerald-400 group-hover/point:rotate-[15deg]">
                               <CheckCircle2 className="w-4 h-4 md:w-5 md:h-5" />
                             </div>
-                            <p className="text-lg md:text-2xl font-black text-oem-dark uppercase tracking-tighter leading-[0.9] pt-1 transition-transform group-hover/point:translate-x-2">{point}</p>
+                            <p className="text-base md:text-lg font-black text-oem-dark uppercase tracking-tighter leading-tight pt-1 transition-transform group-hover/point:translate-x-2">{point}</p>
                           </div>
                         ))}
                       </div>
@@ -304,7 +304,7 @@ export const ProductRecommendation = ({ profile, onReset, adminMode }: Props) =>
                            <div className="text-sm md:text-base font-black text-oem-dark uppercase tracking-tight">Niche Ekosistem</div>
                         </div>
                       </div>
-                      <p className="text-3xl sm:text-5xl md:text-7xl font-extrabold text-oem-dark tracking-tight leading-[1.1] md:leading-[1] uppercase relative z-10 break-words mb-10 md:mb-14">{selectedProduct.targetAudience}</p>
+                      <p className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-oem-dark tracking-tight leading-[1.2] uppercase relative z-10 break-words mb-8 md:mb-10">{selectedProduct.targetAudience}</p>
                       
                       <div className="mt-auto pt-8 md:pt-10 border-t border-emerald-50 relative z-10 flex justify-between items-end">
                         <div className="space-y-3">
@@ -334,7 +334,7 @@ export const ProductRecommendation = ({ profile, onReset, adminMode }: Props) =>
                 </div>
                 <span className="text-[10px] font-black uppercase tracking-[0.5em]">Market Expansion</span>
               </div>
-              <h2 className="text-3xl md:text-6xl font-extrabold text-oem-dark uppercase tracking-tight leading-[1.1]">3 Strategi Alpha</h2>
+              <h2 className="text-2xl md:text-4xl font-extrabold text-oem-dark uppercase tracking-tight leading-[1.1]">3 Strategi Alpha</h2>
               <div className="flex items-center gap-2 md:gap-3">
                  <div className="w-6 md:w-8 h-1 bg-emerald-500 rounded-full" />
                  <p className="text-oem-dark/30 font-black text-[9px] tracking-[0.4em] uppercase">Tactical Execution Plan</p>
@@ -387,7 +387,7 @@ export const ProductRecommendation = ({ profile, onReset, adminMode }: Props) =>
                   <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-emerald-500 animate-pulse" />
                   <span className="text-[10px] font-black uppercase tracking-[0.4em]">Internal Intelligence Report</span>
                 </div>
-                <h2 className="text-4xl sm:text-5xl md:text-8xl font-extrabold uppercase tracking-tight leading-tight md:leading-[0.9]">Blueprint<br/><span className="text-emerald-500">Sales Alpha</span></h2>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold uppercase tracking-tight leading-tight">Blueprint<br/><span className="text-emerald-500">Sales Alpha</span></h2>
                 <p className="text-slate-400 font-medium text-lg md:text-xl leading-relaxed max-w-sm">Menganalisa "pahit" pelanggan secara sub-atomik & taktik closing paling tajam.</p>
               </div>
               
@@ -421,7 +421,7 @@ export const ProductRecommendation = ({ profile, onReset, adminMode }: Props) =>
                   </div>
                </div>
                
-               <div className="prose prose-invert max-w-none prose-p:text-slate-300 prose-strong:text-emerald-400 prose-strong:font-black prose-p:text-lg md:prose-p:text-2xl prose-p:leading-relaxed prose-headings:text-white prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tighter pl-6 md:pl-8 relative">
+               <div className="prose prose-invert max-w-none prose-p:text-slate-300 prose-strong:text-emerald-400 prose-strong:font-black prose-p:text-base md:prose-p:text-lg prose-p:leading-relaxed prose-headings:text-white prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tighter pl-6 md:pl-8 relative">
                   <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-emerald-500/50 to-transparent rounded-full" />
                   <ReactMarkdown>{profile.salesAdvisorReport}</ReactMarkdown>
                </div>
