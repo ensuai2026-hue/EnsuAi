@@ -91,7 +91,9 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
 
     const phoneMatch = userTexts.match(/(\+?6?01[0-9][-\s]?\d{3,4}[-\s]?\d{3,4}|\b0\d{1,2}[-\s]?\d{3,4}[-\s]?\d{3,4}\b)/);
     const emailMatch = userTexts.match(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/);
-    const budgetMatch = userTexts.match(/RM\s?\d[\d,.]*([\s\-–]+RM?\s?\d[\d,.]*)?|\d[\d,.]*\s*(ribu|k\b|K\b)/i);
+    const budgetContextMatch = userTexts.match(/(?:bajet|budget|modal|belanja|spend|peruntukan)[^\n]{0,30}?(RM\s?\d[\d,.]*(?:\s*[-–]\s*RM?\s?\d[\d,.]*)?|\d[\d,.]*\s*(?:ribu|k\b))/i);
+    const budgetRmMatch = userTexts.match(/RM\s?\d[\d,.]*(?:\s*[-–]\s*RM?\s?\d[\d,.]*)?\b/i);
+    const budgetMatch = budgetContextMatch ? [budgetContextMatch[1]] : budgetRmMatch;
     const productMatch = userTexts.match(/(?:supplement|skincare|f&b|herbal|vitamin|cosmetic|kecantikan|minuman|makanan|functional drink|haircare|babycare|petcare|wellness|slim|detox|collagen|whitening|probiotik|probiotic)[^\n,.]*/i);
     const qtyMatch = userTexts.match(/\d+\s*(?:unit|sku|item|kotak|botol|pcs|pieces|pack)/i);
 
