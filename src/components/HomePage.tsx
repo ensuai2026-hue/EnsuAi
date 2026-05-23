@@ -407,7 +407,7 @@ export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
               Mulakan Perjalanan Anda
             </span>
             <h2 className="text-4xl md:text-7xl font-extrabold text-white uppercase leading-[0.92] tracking-tight mb-8">
-              DNA Kau<br />
+              Inject Produk<br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-500">Tunggu Di Sini.</span>
             </h2>
             <p className="text-base md:text-lg text-white/30 font-medium leading-relaxed mb-12 max-w-2xl mx-auto">
