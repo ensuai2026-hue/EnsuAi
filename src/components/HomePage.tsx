@@ -408,7 +408,7 @@ export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
             </span>
             <h2 className="text-4xl md:text-7xl font-extrabold text-white uppercase leading-[0.92] tracking-tight mb-8">
               Inject Produk<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-500">Tunggu Di Sini.</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-500">Dengan DNA.</span>
             </h2>
             <p className="text-base md:text-lg text-white/30 font-medium leading-relaxed mb-12 max-w-2xl mx-auto">
               Lebih 1,200 founder dah scan DNA bisnes mereka. Masa untuk kau kenal diri kau sendiri dan bina jenama yang betul-betul hidup.
