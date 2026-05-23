@@ -413,9 +413,11 @@ export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
             <p className="text-base md:text-lg text-white/30 font-medium leading-relaxed mb-12 max-w-2xl mx-auto">
               Lebih 1,200 founder dah scan DNA bisnes mereka. Masa untuk kau kenal diri kau sendiri dan bina jenama yang betul-betul hidup.
             </p>
-            <button onClick={onStartDiagnosis} className="btn-organic group text-sm px-12 py-5">
-              Scan DNA Sekarang — Percuma <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
-            </button>
+            <div className="flex justify-center">
+              <button onClick={onStartDiagnosis} className="btn-organic group text-sm px-12 py-5">
+                Scan DNA Sekarang — Percuma <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
+              </button>
+            </div>
             <div className="mt-8 flex items-center justify-center gap-6 text-[9px] font-bold text-white/20 uppercase tracking-widest">
               <span className="flex items-center gap-1.5"><CheckCircle className="w-3 h-3 text-emerald-500" /> Percuma</span>
               <span className="flex items-center gap-1.5"><CheckCircle className="w-3 h-3 text-emerald-500" /> Tiada Kad Kredit</span>
