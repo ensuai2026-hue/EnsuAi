@@ -121,7 +121,7 @@ export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
                 className="absolute -top-6 left-4 lg:left-0 z-20 bg-white border border-emerald-100 rounded-2xl rounded-bl-sm px-4 py-3 shadow-xl max-w-[220px]"
               >
                 <p className="text-[11px] font-bold text-oem-dark leading-snug">
-                  "Saya Saintis Ensu — pakar DNA jenama anda!"
+                  "kami memformulasikan setiap produk mengikut keserasian Founder"
                 </p>
                 <div className="mt-1.5 flex items-center gap-1.5">
                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
