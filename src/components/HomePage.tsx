@@ -140,8 +140,8 @@ export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
 
                 <div className="relative w-72 h-[420px] lg:w-80 lg:h-[460px]">
                   <img
-                    src="https://images.pexels.com/photos/3938023/pexels-photo-3938023.jpeg?auto=compress&cs=tinysrgb&w=700"
-                    alt="Saintis Ensu"
+                    src="/ChatGPT_Image_May_23,_2026,_10_48_53_AM.png"
+                    alt="Saintis Formula OEM"
                     className="w-full h-full object-cover object-top rounded-[3rem] shadow-2xl shadow-emerald-200/50 border border-white/80"
                   />
                   {/* Name badge */}
