@@ -68,9 +68,9 @@ export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
               </div>
 
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-oem-dark uppercase leading-[0.93] tracking-tight mb-5">
-                Bina Jenama<br />
-                Dari <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-emerald-600">DNA</span><br />
-                Kau Sendiri.
+                Kilang OEM<br />
+                Dengan <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-emerald-600">Formula</span><br />
+                Saintis.
               </h1>
 
               <p className="text-sm md:text-base text-oem-dark/40 leading-relaxed font-medium mb-7 max-w-xl">
