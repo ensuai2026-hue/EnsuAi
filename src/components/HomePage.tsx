@@ -74,7 +74,7 @@ export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
               </h1>
 
               <p className="text-sm md:text-base text-oem-dark/40 leading-relaxed font-medium mb-7 max-w-xl">
-                Ensu.AI menggunakan kecerdasan buatan untuk menganalisis personaliti unik anda dan mencorakkan produk jenama yang betul-betul <span className="text-oem-dark font-bold">mencerminkan jiwa anda</span> — bukan sekadar produk biasa.
+                20+ Tahun Kepakaran OEM Bersama <span className="text-oem-dark font-bold">Saintis Formula</span>
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 mb-8">
