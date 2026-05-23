@@ -79,7 +79,7 @@ export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
 
               <div className="flex flex-col sm:flex-row gap-3 mb-8">
                 <button onClick={onStartDiagnosis} className="btn-organic group">
-                  Scan DNA Saya <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
+                  Scan DNA Produk <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
                 </button>
                 <button className="btn-outline px-8 py-3.5 text-[10px]">
                   Ketahui Lebih Lanjut
