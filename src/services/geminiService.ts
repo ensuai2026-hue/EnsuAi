@@ -67,18 +67,61 @@ GAYA WAJIB:
 FLOW BORAK (ikut order ni WAJIB):
 1. Tanya nama dulu — pendek je, friendly.
 2. Tanya umur — bagi pilihan: 20-30, 30-40, 40-50, 50+. Jangan explain panjang kenapa tanya.
-3. Tanya background — kerja apa sekarang, atau pernah buat apa sebelum ni.
+3. Tanya background — kerja apa sekarang, atau pernah buat apa sebelum ni. Ini penting untuk "Note" dalam rekod.
 4. Tanya followers/komuniti — ada tak? Instagram, TikTok, group ke?
 5. Tanya ada idea produk ke belum.
    - Belum ada → suggest 3 idea PRODUK FIZIKAL (contoh: supplement, skincare, F&B, herbal, functional drink, dll) yang sesuai dengan DNA diorang. JANGAN suggest produk digital, app, atau perkhidmatan.
-   - Dah ada → tanya detail: jenis produk fizikal apa, berapa SKU nak buat, budget lebih kurang berapa.
-6. Selepas dah tahu produk & budget, tanya no. WhatsApp diorang — cakap supaya team Ensu boleh follow up.
+   - Dah ada → tanya detail: jenis produk fizikal apa (Jenis Produk), berapa SKU/unit nak buat (Kuantiti), budget lebih kurang berapa (Bajet).
+6. Selepas dah tahu produk, kuantiti & bajet, tanya no. WhatsApp diorang — cakap supaya team Ensu boleh follow up.
 7. Tanya e-mel diorang — "untuk hantar full DNA report nanti".
 
 PENTING:
-- MESTI kumpul phone (WhatsApp) dan email sebelum boleh bagi laporan muktamad.
-- Kalau user dah bagi phone dan email, boleh bagitahu diorang boleh klik "Muktamadkan" untuk tengok laporan penuh.
+- MESTI kumpul: nama, background/note, jenis produk, kuantiti, bajet, phone (WhatsApp) dan email sebelum boleh bagi laporan muktamad.
+- Kalau user dah bagi semua maklumat tu, boleh bagitahu diorang boleh klik "Muktamadkan" untuk tengok laporan penuh.
 - Stop bila user dah klik "MUKTAMADKAN ANALISIS DNA".`;
+
+export interface ExtractedLeadData {
+  name: string | null;
+  age_range: string | null;
+  note: string | null;
+  email: string | null;
+  phone: string | null;
+  product_type: string | null;
+  budget: string | null;
+  quantity: string | null;
+}
+
+export async function extractLeadData(history: { role: 'user' | 'bot', content: string }[]): Promise<ExtractedLeadData> {
+  const conversation = history.map(m => `${m.role === 'user' ? 'USER' : 'BOT'}: ${m.content}`).join('\n');
+
+  const prompt = `Berdasarkan perbualan di bawah, ekstrak maklumat berikut dalam format JSON. Jika maklumat tidak ada, gunakan null.
+
+PERBUALAN:
+---
+${conversation}
+---
+
+Ekstrak dengan tepat:
+- name: Nama penuh pengguna
+- age_range: Julat umur (contoh: "20-30", "30-40", "40-50", "50+")
+- note: Ringkasan latar belakang — kerja, pengalaman, bidang, komuniti/followers (1-2 ayat pendek)
+- email: Alamat emel
+- phone: Nombor WhatsApp/telefon (format asal seperti yang diberikan)
+- product_type: Jenis produk fizikal yang ingin dibuat (contoh: "Supplement Kolagen", "Skincare Brightening")
+- budget: Bajet yang dinyatakan (contoh: "RM5,000", "RM10k-20k")
+- quantity: Kuantiti/SKU yang dinyatakan (contoh: "500 unit", "1000 botol", "2 SKU")
+
+Balas JSON sahaja, tiada markdown:
+{"name":null,"age_range":null,"note":null,"email":null,"phone":null,"product_type":null,"budget":null,"quantity":null}`;
+
+  try {
+    const text = await kieChat([{ role: 'user', content: prompt }], true, 'gemini-2.5-flash');
+    const cleaned = text.replace(/^```json\s*/i, '').replace(/```\s*$/, '').trim();
+    return JSON.parse(cleaned) as ExtractedLeadData;
+  } catch {
+    return { name: null, age_range: null, note: null, email: null, phone: null, product_type: null, budget: null, quantity: null };
+  }
+}
 
 export async function chatWithScientist(history: { role: 'user' | 'bot', content: string }[]) {
   const messages = [

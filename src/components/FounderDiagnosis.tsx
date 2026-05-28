@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Send, Loader as Loader2, Sparkles, User, Bot, Dna, ChevronRight } from 'lucide-react';
-import { diagnoseFounder, chatWithScientist, PersonalityProfile } from '../services/geminiService';
+import { diagnoseFounder, chatWithScientist, extractLeadData, PersonalityProfile } from '../services/geminiService';
 import { cn } from '../lib/utils';
 import { supabase } from '../lib/supabase';
 
@@ -81,47 +81,35 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
     scrollToBottom();
   }, [messages, isTyping]);
 
-  const extractName = (msgs: Message[]) => msgs.find(m => m.role === 'user')?.content ?? null;
-  const extractAgeRange = (msgs: Message[]) =>
-    msgs.find(m => m.role === 'user' && /^\d{2}/.test(m.content.trim()))?.content ?? null;
-
-  // Extract phone, email, budget, product_type, quantity from all user messages
-  const extractContactFields = (msgs: Message[]) => {
-    const userTexts = msgs.filter(m => m.role === 'user').map(m => m.content).join('\n');
-
-    const phoneMatch = userTexts.match(/(\+?6?01[0-9][-\s]?\d{3,4}[-\s]?\d{3,4}|\b0\d{1,2}[-\s]?\d{3,4}[-\s]?\d{3,4}\b)/);
-    const emailMatch = userTexts.match(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/);
-    const budgetContextMatch = userTexts.match(/(?:bajet|budget|modal|belanja|spend|peruntukan)[^\n]{0,30}?(RM\s?\d[\d,.]*(?:\s*[-–]\s*RM?\s?\d[\d,.]*)?|\d[\d,.]*\s*(?:ribu|k\b))/i);
-    const budgetRmMatch = userTexts.match(/RM\s?\d[\d,.]*(?:\s*[-–]\s*RM?\s?\d[\d,.]*)?\b/i);
-    const budgetMatch = budgetContextMatch ? [budgetContextMatch[1]] : budgetRmMatch;
-    const productMatch = userTexts.match(/(?:supplement|skincare|f&b|herbal|vitamin|cosmetic|kecantikan|minuman|makanan|functional drink|haircare|babycare|petcare|wellness|slim|detox|collagen|whitening|probiotik|probiotic)[^\n,.]*/i);
-    const qtyMatch = userTexts.match(/\d+\s*(?:unit|sku|item|kotak|botol|pcs|pieces|pack)/i);
-
-    return {
-      phone: phoneMatch?.[0] ?? null,
-      email: emailMatch?.[0] ?? null,
-      budget: budgetMatch?.[0] ?? null,
-      product_type: productMatch?.[0]?.trim() ?? null,
-      quantity: qtyMatch?.[0] ?? null,
-    };
-  };
-
   const saveLead = async (msgs: Message[], profile?: PersonalityProfile) => {
-    const name = extractName(msgs);
-    const age_range = extractAgeRange(msgs);
-    const contactFields = extractContactFields(msgs);
+    const extracted = await extractLeadData(msgs);
     const currentId = leadIdRef.current;
     if (currentId) {
       const { error } = await supabase.from('leads').update({
-        messages: msgs, name, age_range,
-        ...contactFields,
+        messages: msgs,
+        name: extracted.name,
+        age_range: extracted.age_range,
+        note: extracted.note,
+        email: extracted.email,
+        phone: extracted.phone,
+        product_type: extracted.product_type,
+        budget: extracted.budget,
+        quantity: extracted.quantity,
         ...(profile ? { personality_profile: profile, completed: true } : {}),
       }).eq('id', currentId);
       if (error) console.error('Lead update error:', error);
     } else {
       const { data, error } = await supabase.from('leads').insert({
-        messages: msgs, name, age_range, completed: false,
-        ...contactFields,
+        messages: msgs,
+        name: extracted.name,
+        age_range: extracted.age_range,
+        note: extracted.note,
+        email: extracted.email,
+        phone: extracted.phone,
+        product_type: extracted.product_type,
+        budget: extracted.budget,
+        quantity: extracted.quantity,
+        completed: false,
       }).select('id').maybeSingle();
       if (error) console.error('Lead insert error:', error);
       if (data?.id) {

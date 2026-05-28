@@ -10,6 +10,7 @@ interface Lead {
   id: string;
   name: string | null;
   age_range: string | null;
+  note: string | null;
   phone: string | null;
   email: string | null;
   budget: string | null;
@@ -55,18 +56,18 @@ const ProfileRow = ({ label, value }: { label: string; value: string }) => (
 const buildWaMessage = (lead: Lead): string => {
   const lines: string[] = [];
   lines.push(`*Lead Baru — ENSU.AI*`);
-  lines.push(`Nama: ${lead.name ?? '—'}`);
-  if (lead.age_range) lines.push(`Umur: ${lead.age_range}`);
-  if (lead.phone) lines.push(`Telefon: ${lead.phone}`);
-  if (lead.email) lines.push(`Emel: ${lead.email}`);
-  if (lead.budget) lines.push(`Bajet: ${lead.budget}`);
-  if (lead.product_type) lines.push(`Produk: ${lead.product_type}`);
-  if (lead.quantity) lines.push(`Kuantiti: ${lead.quantity}`);
-  lines.push(`Tarikh: ${new Date(lead.created_at).toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' })}`);
-  lines.push(`Status: ${lead.completed ? 'Selesai' : 'Dalam Proses'}`);
+  lines.push(`Nama : ${lead.name ?? '—'}`);
+  lines.push(`Note : ${lead.note ?? '—'}`);
+  lines.push(`Emel : ${lead.email ?? '—'}`);
+  lines.push(`Jenis Produk : ${lead.product_type ?? '—'}`);
+  lines.push(`Bajet : ${lead.budget ?? '—'}`);
+  lines.push(`Kuantiti : ${lead.quantity ?? '—'}`);
+  if (lead.phone) lines.push(`\nWhatsApp : ${lead.phone}`);
+  if (lead.age_range) lines.push(`Umur : ${lead.age_range}`);
+  lines.push(`Tarikh : ${new Date(lead.created_at).toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' })}`);
   const profile = lead.personality_profile as Record<string, string> | null;
   if (profile?.personalityType) lines.push(`\n*Profil DNA:* ${profile.personalityType}`);
-  if (profile?.entrepreneurStyle) lines.push(`Gaya: ${profile.entrepreneurStyle}`);
+  if (profile?.entrepreneurStyle) lines.push(`Gaya : ${profile.entrepreneurStyle}`);
   return lines.join('\n');
 };
 
@@ -78,14 +79,15 @@ const sendToWhatsApp = (lead: Lead) => {
 };
 
 const downloadCSV = (leads: Lead[]) => {
-  const headers = ['Nama', 'Umur', 'Telefon', 'Emel', 'Bajet', 'Produk', 'Kuantiti', 'Status', 'Tarikh'];
+  const headers = ['Nama', 'Note', 'Umur', 'WhatsApp', 'Emel', 'Jenis Produk', 'Bajet', 'Kuantiti', 'Status', 'Tarikh'];
   const rows = leads.map(l => [
     l.name ?? '',
+    l.note ?? '',
     l.age_range ?? '',
     l.phone ?? '',
     l.email ?? '',
-    l.budget ?? '',
     l.product_type ?? '',
+    l.budget ?? '',
     l.quantity ?? '',
     l.completed ? 'Selesai' : 'Dalam Proses',
     new Date(l.created_at).toLocaleDateString('ms-MY'),
@@ -162,9 +164,9 @@ const LeadDrawer = ({ lead, onClose, onDelete, onViewReport }: {
 
   const contactFields = [
     { icon: Phone, label: 'WhatsApp', value: lead.phone, color: 'text-blue-500 bg-blue-50 border-blue-100' },
-    { icon: Mail, label: 'E-mel', value: lead.email, color: 'text-blue-500 bg-blue-50 border-blue-100' },
-    { icon: Wallet, label: 'Bajet', value: lead.budget, color: 'text-amber-500 bg-amber-50 border-amber-100' },
+    { icon: Mail, label: 'Emel', value: lead.email, color: 'text-blue-500 bg-blue-50 border-blue-100' },
     { icon: Package, label: 'Jenis Produk', value: lead.product_type, color: 'text-emerald-600 bg-emerald-50 border-emerald-100' },
+    { icon: Wallet, label: 'Bajet', value: lead.budget, color: 'text-amber-500 bg-amber-50 border-amber-100' },
     { icon: Hash, label: 'Kuantiti / SKU', value: lead.quantity, color: 'text-emerald-600 bg-emerald-50 border-emerald-100' },
   ].filter(f => f.value);
 
@@ -228,6 +230,14 @@ const LeadDrawer = ({ lead, onClose, onDelete, onViewReport }: {
               <ProfileRow label="Tarikh" value={new Date(lead.created_at).toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' })} />
             </div>
           </div>
+
+          {/* Note */}
+          {lead.note && (
+            <div className="bg-slate-50 rounded-xl p-3.5 border border-slate-200">
+              <div className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Note</div>
+              <div className="text-sm font-medium text-slate-700 leading-relaxed">{lead.note}</div>
+            </div>
+          )}
 
           {/* Contact & order info */}
           {contactFields.length > 0 && (
