@@ -1,9 +1,9 @@
 const PROXY_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/kie-proxy`;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
-async function kieChat(messages: { role: string; content: string }[], jsonMode = false): Promise<string> {
+async function kieChat(messages: { role: string; content: string }[], jsonMode = false, model = 'gemini-2.0-flash'): Promise<string> {
   const body: Record<string, unknown> = {
-    model: 'gemini-2.5-pro',
+    model,
     messages,
   };
 
@@ -136,7 +136,7 @@ Balas DALAM FORMAT JSON SAHAJA (tanpa markdown code block) mengikut skema beriku
   ]
 }`;
 
-  const text = await kieChat([{ role: 'user', content: prompt }], true);
+  const text = await kieChat([{ role: 'user', content: prompt }], true, 'gemini-2.5-pro');
 
   try {
     const cleaned = text.replace(/^```json\s*/i, '').replace(/```\s*$/, '').trim();
