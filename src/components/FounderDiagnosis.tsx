@@ -81,39 +81,16 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
     scrollToBottom();
   }, [messages, isTyping]);
 
-  // Quick regex extraction for basic fields — runs on every turn so admin always sees latest data
-  const quickExtract = (msgs: Message[]) => {
-    const userTexts = msgs.filter(m => m.role === 'user').map(m => m.content).join('\n');
-    const name = msgs.find(m => m.role === 'user')?.content?.split(/[\n,.!?]/)[0]?.trim() ?? null;
-    const phoneMatch = userTexts.match(/(\+?6?01[0-9][-\s]?\d{3,4}[-\s]?\d{3,4}|\b0\d{1,2}[-\s]?\d{3,4}[-\s]?\d{3,4}\b)/);
-    const emailMatch = userTexts.match(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/);
-    const ageMatch = userTexts.match(/\b(20\s*[-–]\s*30|30\s*[-–]\s*40|40\s*[-–]\s*50|50\s*(ke atas|\+))/i);
-    const budgetMatch = userTexts.match(/RM\s?\d[\d,.]*(?:\s*[-–]\s*RM?\s?\d[\d,.]*)?\b/i)
-      ?? userTexts.match(/\d[\d,.]*\s*(?:ribu|k)\b/i);
-    const productMatch = userTexts.match(/(?:supplement|skincare|f&b|herbal|vitamin|kosmetik|kecantikan|minuman|makanan|functional drink|haircare|wellness|slim|detox|collagen|whitening|probiotik)[^\n,.!?]*/i);
-    const qtyMatch = userTexts.match(/\d+\s*(?:unit|sku|item|kotak|botol|pcs|pieces|pack)/i);
-    return {
-      name: name && name.length < 60 ? name : null,
-      phone: phoneMatch?.[0] ?? null,
-      email: emailMatch?.[0] ?? null,
-      age_range: ageMatch?.[0]?.replace(/\s/g, '') ?? null,
-      budget: budgetMatch?.[0] ?? null,
-      product_type: productMatch?.[0]?.trim() ?? null,
-      quantity: qtyMatch?.[0] ?? null,
-    };
-  };
-
-  // Save messages + quick-extracted fields on every turn
-  const saveLeadMessages = async (msgs: Message[]) => {
-    const quick = quickExtract(msgs);
+  // Upsert lead row — creates on first call, updates on subsequent
+  const upsertLead = async (msgs: Message[], extra: Record<string, unknown> = {}) => {
     const currentId = leadIdRef.current;
     if (currentId) {
-      await supabase.from('leads').update({ messages: msgs, ...quick }).eq('id', currentId);
+      await supabase.from('leads').update({ messages: msgs, ...extra }).eq('id', currentId);
     } else {
       const { data, error } = await supabase.from('leads').insert({
         messages: msgs,
-        ...quick,
         completed: false,
+        ...extra,
       }).select('id').maybeSingle();
       if (error) console.error('Lead insert error:', error);
       if (data?.id) {
@@ -123,12 +100,32 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
     }
   };
 
-  // Full extraction + save — only called at finalization
+  // Save messages then run AI extraction in background — non-blocking
+  const saveLeadMessages = async (msgs: Message[]) => {
+    await upsertLead(msgs);
+    // Fire AI extraction async so it doesn't delay the chat UX
+    extractLeadData(msgs).then(extracted => {
+      const currentId = leadIdRef.current;
+      if (!currentId) return;
+      supabase.from('leads').update({
+        name: extracted.name,
+        age_range: extracted.age_range,
+        note: extracted.note,
+        email: extracted.email,
+        phone: extracted.phone,
+        product_type: extracted.product_type,
+        budget: extracted.budget,
+        quantity: extracted.quantity,
+      }).eq('id', currentId).then(({ error }) => {
+        if (error) console.error('Lead extraction update error:', error);
+      });
+    }).catch(() => {});
+  };
+
+  // Final save with personality profile — awaited fully before showing report
   const saveLeadFinal = async (msgs: Message[], profile?: PersonalityProfile) => {
     const extracted = await extractLeadData(msgs);
-    const currentId = leadIdRef.current;
-    const payload = {
-      messages: msgs,
+    await upsertLead(msgs, {
       name: extracted.name,
       age_range: extracted.age_range,
       note: extracted.note,
@@ -138,18 +135,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
       budget: extracted.budget,
       quantity: extracted.quantity,
       ...(profile ? { personality_profile: profile, completed: true } : {}),
-    };
-    if (currentId) {
-      const { error } = await supabase.from('leads').update(payload).eq('id', currentId);
-      if (error) console.error('Lead update error:', error);
-    } else {
-      const { data, error } = await supabase.from('leads').insert({ ...payload, completed: false }).select('id').maybeSingle();
-      if (error) console.error('Lead insert error:', error);
-      if (data?.id) {
-        leadIdRef.current = data.id;
-        setLeadId(data.id);
-      }
-    }
+    });
   };
 
   const isAskingAboutAge = (text: string) => {
