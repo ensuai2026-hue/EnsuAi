@@ -1,7 +1,7 @@
 const PROXY_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/kie-proxy`;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
-async function kieChat(messages: { role: string; content: string }[], jsonMode = false, model = 'gemini-2.0-flash'): Promise<string> {
+async function kieChat(messages: { role: string; content: string }[], jsonMode = false, model = 'gemini-2.5-flash'): Promise<string> {
   const body: Record<string, unknown> = {
     model,
     messages,
