@@ -7,7 +7,12 @@ const corsHeaders = {
 };
 
 const KIE_API_KEY = "9a87eccff0cfc2f9effdef7be2acc545";
-const KIE_URL = "https://api.kie.ai/gemini-2.5-pro/v1/chat/completions";
+
+const MODEL_URLS: Record<string, string> = {
+  "gemini-2.5-pro": "https://api.kie.ai/gemini-2.5-pro/v1/chat/completions",
+  "gemini-2.0-flash": "https://api.kie.ai/gemini-2.0-flash/v1/chat/completions",
+};
+const DEFAULT_URL = MODEL_URLS["gemini-2.0-flash"];
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
@@ -16,8 +21,10 @@ Deno.serve(async (req: Request) => {
 
   try {
     const body = await req.json();
+    const model: string = body.model ?? "gemini-2.0-flash";
+    const kieUrl = MODEL_URLS[model] ?? DEFAULT_URL;
 
-    const res = await fetch(KIE_URL, {
+    const res = await fetch(kieUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
