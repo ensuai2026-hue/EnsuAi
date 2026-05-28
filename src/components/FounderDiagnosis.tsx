@@ -81,36 +81,45 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
     scrollToBottom();
   }, [messages, isTyping]);
 
-  const saveLead = async (msgs: Message[], profile?: PersonalityProfile) => {
-    const extracted = await extractLeadData(msgs);
+  // Save messages only — no AI extraction on every turn (expensive)
+  const saveLeadMessages = async (msgs: Message[]) => {
     const currentId = leadIdRef.current;
     if (currentId) {
-      const { error } = await supabase.from('leads').update({
-        messages: msgs,
-        name: extracted.name,
-        age_range: extracted.age_range,
-        note: extracted.note,
-        email: extracted.email,
-        phone: extracted.phone,
-        product_type: extracted.product_type,
-        budget: extracted.budget,
-        quantity: extracted.quantity,
-        ...(profile ? { personality_profile: profile, completed: true } : {}),
-      }).eq('id', currentId);
-      if (error) console.error('Lead update error:', error);
+      await supabase.from('leads').update({ messages: msgs }).eq('id', currentId);
     } else {
       const { data, error } = await supabase.from('leads').insert({
         messages: msgs,
-        name: extracted.name,
-        age_range: extracted.age_range,
-        note: extracted.note,
-        email: extracted.email,
-        phone: extracted.phone,
-        product_type: extracted.product_type,
-        budget: extracted.budget,
-        quantity: extracted.quantity,
         completed: false,
       }).select('id').maybeSingle();
+      if (error) console.error('Lead insert error:', error);
+      if (data?.id) {
+        leadIdRef.current = data.id;
+        setLeadId(data.id);
+      }
+    }
+  };
+
+  // Full extraction + save — only called at finalization
+  const saveLeadFinal = async (msgs: Message[], profile?: PersonalityProfile) => {
+    const extracted = await extractLeadData(msgs);
+    const currentId = leadIdRef.current;
+    const payload = {
+      messages: msgs,
+      name: extracted.name,
+      age_range: extracted.age_range,
+      note: extracted.note,
+      email: extracted.email,
+      phone: extracted.phone,
+      product_type: extracted.product_type,
+      budget: extracted.budget,
+      quantity: extracted.quantity,
+      ...(profile ? { personality_profile: profile, completed: true } : {}),
+    };
+    if (currentId) {
+      const { error } = await supabase.from('leads').update(payload).eq('id', currentId);
+      if (error) console.error('Lead update error:', error);
+    } else {
+      const { data, error } = await supabase.from('leads').insert({ ...payload, completed: false }).select('id').maybeSingle();
       if (error) console.error('Lead insert error:', error);
       if (data?.id) {
         leadIdRef.current = data.id;
@@ -133,7 +142,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
       const response = await chatWithScientist(msgs);
       const withBot: Message[] = [...msgs, { role: 'bot', content: response }];
       setMessages(withBot);
-      await saveLead(withBot);
+      await saveLeadMessages(withBot);
     } catch {
       setMessages(prev => [...prev, { role: 'bot', content: 'Maaf, hubungan transmisi saya sedikit terganggu. Boleh anda nyatakan semula?' }]);
     } finally {
@@ -163,7 +172,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
     setIsAnalyzing(true);
     try {
       const profile = await diagnoseFounder(messages);
-      await saveLead(messages, profile);
+      await saveLeadFinal(messages, profile);
       onReportComplete(profile, leadId);
     } catch (error) {
       alert(error instanceof Error ? error.message : 'Gagal memproses DNA anda.');

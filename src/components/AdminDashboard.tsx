@@ -54,21 +54,31 @@ const ProfileRow = ({ label, value }: { label: string; value: string }) => (
 );
 
 const buildWaMessage = (lead: Lead): string => {
-  const lines: string[] = [];
-  lines.push(`*Lead Baru — ENSU.AI*`);
-  lines.push(`Nama : ${lead.name ?? '—'}`);
-  lines.push(`Note : ${lead.note ?? '—'}`);
-  lines.push(`Emel : ${lead.email ?? '—'}`);
-  lines.push(`Jenis Produk : ${lead.product_type ?? '—'}`);
-  lines.push(`Bajet : ${lead.budget ?? '—'}`);
-  lines.push(`Kuantiti : ${lead.quantity ?? '—'}`);
-  if (lead.phone) lines.push(`\nWhatsApp : ${lead.phone}`);
-  if (lead.age_range) lines.push(`Umur : ${lead.age_range}`);
-  lines.push(`Tarikh : ${new Date(lead.created_at).toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' })}`);
+  const date = new Date(lead.created_at).toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' });
   const profile = lead.personality_profile as Record<string, string> | null;
-  if (profile?.personalityType) lines.push(`\n*Profil DNA:* ${profile.personalityType}`);
-  if (profile?.entrepreneurStyle) lines.push(`Gaya : ${profile.entrepreneurStyle}`);
-  return lines.join('\n');
+
+  const parts: string[] = [
+    `🧬 *LEAD BARU — ENSU.AI*`,
+    `📅 ${date}`,
+    ``,
+    `👤 *Nama :* ${lead.name ?? '—'}`,
+    `📝 *Note :* ${lead.note ?? '—'}`,
+    `📧 *Emel :* ${lead.email ?? '—'}`,
+    `📱 *WhatsApp :* ${lead.phone ?? '—'}`,
+    ``,
+    `🧪 *Jenis Produk :* ${lead.product_type ?? '—'}`,
+    `💰 *Bajet :* ${lead.budget ?? '—'}`,
+    `📦 *Kuantiti :* ${lead.quantity ?? '—'}`,
+  ];
+
+  if (lead.age_range) parts.push(`🎂 *Umur :* ${lead.age_range}`);
+
+  if (profile?.personalityType) {
+    parts.push(``, `🔬 *Profil DNA :* ${profile.personalityType}`);
+    if (profile.entrepreneurStyle) parts.push(`⚡ *Gaya :* ${profile.entrepreneurStyle}`);
+  }
+
+  return parts.join('\n');
 };
 
 const sendToWhatsApp = (lead: Lead) => {
