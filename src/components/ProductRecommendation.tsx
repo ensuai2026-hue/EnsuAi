@@ -102,7 +102,12 @@ export const ProductRecommendation = ({ profile, onReset, adminMode }: Props) =>
                 </div>
 
                 <div className="pt-10 border-t border-emerald-50/50">
-                  <div className="prose prose-slate max-w-none prose-p:text-base md:prose-p:text-lg prose-p:leading-relaxed prose-p:font-medium prose-p:text-oem-dark/60 prose-strong:text-emerald-600 prose-strong:font-black prose-headings:text-oem-dark prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tighter">
+                  <div className="prose prose-slate max-w-none
+                    prose-p:text-base prose-p:leading-relaxed prose-p:font-medium prose-p:text-oem-dark/60 prose-p:mb-4
+                    prose-strong:text-emerald-600 prose-strong:font-black
+                    prose-headings:text-oem-dark prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tighter prose-headings:mt-8 prose-headings:mb-3
+                    prose-h3:text-base prose-h3:border-l-2 prose-h3:border-emerald-400 prose-h3:pl-3
+                    prose-ul:space-y-2 prose-li:text-oem-dark/60 prose-li:font-medium">
                     <ReactMarkdown>{profile.fullDiagnosis}</ReactMarkdown>
                   </div>
                 </div>
