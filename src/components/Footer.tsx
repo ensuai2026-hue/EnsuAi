@@ -16,16 +16,7 @@ export const Footer = () => {
             </span>
           </div>
 
-          {/* Links */}
-          <div className="flex items-center gap-6">
-            {['Diagnosa', 'Kilang Pintar', 'API', 'Privasi', 'Terma'].map((item, i) => (
-              <a key={i} href="#" className="text-oem-dark/40 text-[10px] font-bold uppercase tracking-widest hover:text-oem-primary transition-colors">
-                {item}
-              </a>
-            ))}
-          </div>
-
-          {/* Right: social + status */}
+{/* Right: social + status */}
           <div className="flex items-center gap-4">
             <div className="flex gap-3">
               {[Twitter, Instagram, Linkedin].map((Icon, i) => (
