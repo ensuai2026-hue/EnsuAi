@@ -227,12 +227,17 @@ export const Hero = ({ onStartDiagnosis }: { onStartDiagnosis: () => void }) => 
               Kitorang kaji personaliti korang sampai ke akar umbi untuk bina jenama yang bukan saja catchy, tapi betul-betul ada <span className="text-oem-dark font-bold underline decoration-emerald-200">soul</span>.
             </p>
             <div className="flex flex-col sm:flex-row items-center gap-6 md:gap-8">
-              <button
-                onClick={onStartDiagnosis}
-                className="btn-organic group w-full sm:w-auto"
-              >
-                SCAN DNA <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
-              </button>
+              <div className="flex flex-col items-center sm:items-start gap-2 w-full sm:w-auto">
+                <button
+                  onClick={onStartDiagnosis}
+                  className="btn-organic group w-full sm:w-auto"
+                >
+                  SCAN DNA PRODUK <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
+                </button>
+                <p className="text-[10px] font-semibold text-oem-dark/40 tracking-wide text-center sm:text-left">
+                  Inject DNA dalam produk ni — supaya setiap titisan cerita founder hidup dalam setiap botol.
+                </p>
+              </div>
               <div className="flex items-center gap-5">
                 <div className="flex -space-x-2.5">
                   {[1, 2, 3, 4].map((i) => (
