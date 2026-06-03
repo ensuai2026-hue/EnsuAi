@@ -3,7 +3,7 @@ import { Factory, Twitter, Instagram, Linkedin } from 'lucide-react';
 
 export const Footer = () => {
   return (
-    <footer className="bg-white border-t border-emerald-50 py-5 relative overflow-hidden">
+    <footer className="hidden md:block bg-white border-t border-emerald-50 py-5 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 md:px-10">
         <div className="flex flex-wrap items-center justify-between gap-4">
           {/* Brand */}
