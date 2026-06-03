@@ -74,7 +74,7 @@ export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
               </h1>
 
               <p className="text-sm md:text-base text-oem-dark/40 leading-relaxed font-medium mb-7 max-w-xl">
-                20+ Tahun Kepakaran OEM Bersama <span className="text-oem-dark font-bold">Saintis Formula</span>
+                20+ Tahun Kepakaran OEM
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 mb-8">
