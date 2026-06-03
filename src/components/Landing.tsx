@@ -28,22 +28,6 @@ export const Header = ({ onStartDiagnosis, onGoHome, onGoAdmin, showCta, ctaHref
             ENSU<span className="text-oem-primary">.ai</span>
           </span>
         </div>
-        <nav className="hidden lg:flex items-center gap-10 text-[10px] font-bold uppercase tracking-[0.2em] text-oem-dark/40">
-          <button
-            onClick={onGoHome}
-            className="hover:text-oem-primary transition-colors relative group uppercase tracking-[0.2em] font-bold text-[10px]"
-          >
-            Home
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-oem-primary transition-all group-hover:w-full" />
-          </button>
-          <button
-            onClick={onStartDiagnosis}
-            className="hover:text-oem-primary transition-colors relative group uppercase tracking-[0.2em] font-bold text-[10px]"
-          >
-            Scan DNA
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-oem-primary transition-all group-hover:w-full" />
-          </button>
-        </nav>
         <div className="hidden sm:flex items-center gap-3">
           {showCta && ctaHref ? (
             <a
