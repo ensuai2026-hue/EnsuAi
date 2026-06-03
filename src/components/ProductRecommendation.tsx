@@ -212,54 +212,53 @@ export const ProductRecommendation = ({ profile, onReset, adminMode }: Props) =>
                   {/* Scientific Data Dashboard */}
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 items-stretch">
                     {/* Market Value Visualizer */}
-                    <div className="lg:col-span-12 p-8 md:p-16 bg-oem-dark rounded-[2.5rem] md:rounded-[4rem] text-white relative shadow-2xl overflow-hidden group/stats">
-                      <div className="absolute top-0 right-0 p-16 opacity-5 md:opacity-10 blur-sm group-hover/stats:scale-125 transition-transform duration-[4s] select-none pointer-events-none">
-                        <BarChart3 className="w-[20rem] md:w-[30rem] h-[20rem] md:h-[30rem]" />
+                    <div className="lg:col-span-12 p-8 md:p-12 bg-oem-dark rounded-[2.5rem] md:rounded-[3rem] text-white relative shadow-2xl overflow-hidden group/stats">
+                      <div className="absolute top-0 right-0 p-10 opacity-5 group-hover/stats:scale-110 transition-transform duration-[4s] select-none pointer-events-none">
+                        <BarChart3 className="w-48 md:w-64 h-48 md:h-64" />
                       </div>
-                      
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-20 items-center relative z-10">
-                        <div className="space-y-6 md:space-y-10">
-                          <div>
-                            <div className="flex items-center gap-3 mb-4 md:mb-6">
-                              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                              <span className="text-emerald-500 font-black text-[9px] md:text-[11px] uppercase tracking-[0.6em]">Market Potential Report</span>
-                            </div>
-                            <p className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight uppercase break-words">
-                              {selectedProduct.estimatedMarketValue}
-                            </p>
+
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center relative z-10">
+                        {/* Left: Market value */}
+                        <div className="space-y-6">
+                          <div className="flex items-center gap-3">
+                            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                            <span className="text-emerald-500 font-black text-[10px] uppercase tracking-[0.5em]">Market Potential Report</span>
                           </div>
-                          
-                          <div className="inline-flex items-center gap-4 md:gap-6 py-4 px-6 md:py-5 md:px-8 bg-white/5 backdrop-blur-xl rounded-[1.5rem] md:rounded-[2rem] border border-white/10 shadow-2xl">
-                             <div className="flex -space-x-3 md:-space-x-4">
-                               {[1,2,3,4,5].map(i => <div key={i} className="w-8 h-8 md:w-12 md:h-12 rounded-full border-2 md:border-4 border-oem-dark bg-emerald-200 shadow-xl" />)}
-                             </div>
-                             <div className="space-y-1">
-                               <span className="text-[10px] md:text-[12px] font-black text-white uppercase tracking-widest block">Exponential Demand</span>
-                               <span className="text-[8px] md:text-[10px] text-white/30 font-bold uppercase tracking-[0.4em]">Sentiment Analysis: 98.4%</span>
-                             </div>
+                          <p className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight uppercase">
+                            {selectedProduct.estimatedMarketValue}
+                          </p>
+                          <div className="flex items-center gap-4 py-4 px-6 bg-white/5 rounded-2xl border border-white/10 w-fit">
+                            <div className="flex -space-x-2.5">
+                              {[1,2,3,4,5].map(i => <div key={i} className="w-8 h-8 rounded-full border-2 border-oem-dark bg-emerald-200" />)}
+                            </div>
+                            <div>
+                              <span className="text-[11px] font-black text-white uppercase tracking-widest block">Exponential Demand</span>
+                              <span className="text-[9px] text-white/30 font-bold uppercase tracking-[0.3em]">Sentiment Analysis: 98.4%</span>
+                            </div>
                           </div>
                         </div>
-                        
-                        <div className="space-y-6 md:space-y-8 bg-black/20 p-8 md:p-12 rounded-[2rem] md:rounded-[3.5rem] border border-white/5 backdrop-blur-2xl">
+
+                        {/* Right: Stats bars */}
+                        <div className="space-y-5 bg-black/20 p-6 md:p-8 rounded-2xl border border-white/5">
                            {[
                              { label: 'Market Resilience', val: '92%', color: 'bg-emerald-500', icon: Shield },
                              { label: 'Audience Synergy', val: '88%', color: 'bg-emerald-400', icon: Heart },
                              { label: 'Scaling Precision', val: '95%', color: 'bg-emerald-600', icon: Target }
                            ].map((stat, i) => (
-                             <div key={i} className="space-y-3 md:space-y-4">
-                                <div className="flex justify-between items-end">
-                                   <div className="flex items-center gap-3">
-                                      <stat.icon className="w-3 md:w-4 h-3 md:h-4 text-emerald-500/40" />
-                                      <span className="text-[9px] md:text-[11px] font-black uppercase text-white/40 tracking-[0.3em]">{stat.label}</span>
+                             <div key={i} className="space-y-2">
+                                <div className="flex justify-between items-center">
+                                   <div className="flex items-center gap-2">
+                                      <stat.icon className="w-3.5 h-3.5 text-emerald-500/50" />
+                                      <span className="text-[10px] font-black uppercase text-white/40 tracking-[0.25em]">{stat.label}</span>
                                    </div>
-                                   <span className="text-xl md:text-2xl font-black font-mono text-emerald-500 tracking-tighter">{stat.val}</span>
+                                   <span className="text-lg font-black font-mono text-emerald-400">{stat.val}</span>
                                 </div>
-                                <div className="h-2 md:h-2.5 w-full bg-white/5 rounded-full overflow-hidden p-[2px]">
-                                   <motion.div 
-                                     initial={{ width: 0 }} 
-                                     whileInView={{ width: stat.val }} 
-                                     transition={{ duration: 2, delay: i * 0.2, ease: [0.34, 1.56, 0.64, 1] }} 
-                                     className={cn("h-full rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]", stat.color)} 
+                                <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                                   <motion.div
+                                     initial={{ width: 0 }}
+                                     whileInView={{ width: stat.val }}
+                                     transition={{ duration: 2, delay: i * 0.2, ease: [0.34, 1.56, 0.64, 1] }}
+                                     className={cn("h-full rounded-full shadow-[0_0_10px_rgba(16,185,129,0.4)]", stat.color)}
                                    />
                                 </div>
                              </div>
