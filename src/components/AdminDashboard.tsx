@@ -26,7 +26,7 @@ interface AdminDashboardProps {
   onLogout: () => void;
 }
 
-const ADMIN_WA = '+60123456789';
+const ADMIN_WA = '+60133278287';
 
 const StatCard = ({ icon: Icon, label, value, color, bg }: {
   icon: React.ElementType; label: string; value: number; color: string; bg: string;
