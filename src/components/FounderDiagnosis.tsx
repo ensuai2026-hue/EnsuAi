@@ -195,7 +195,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
   const canFinalize = messages.length >= 4;
 
   return (
-    <div className="w-full max-w-3xl mx-auto px-4 md:px-6 flex flex-col py-12 md:py-16">
+    <div className="w-full max-w-3xl mx-auto px-4 md:px-6 flex flex-col py-12 md:py-16 relative">
 
       {/* Header */}
       <motion.div
@@ -257,25 +257,25 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="flex flex-col rounded-2xl border border-slate-200/80 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.12)] bg-white overflow-hidden"
+        className="flex flex-col rounded-2xl border border-emerald-200/60 shadow-[0_16px_60px_-12px_rgba(16,185,129,0.25),0_4px_20px_-4px_rgba(0,0,0,0.08)] bg-white overflow-hidden"
         style={{ height: '520px' }}
       >
         {/* Chat Header */}
-        <div className="flex items-center gap-3.5 px-5 py-3.5 border-b border-slate-100 bg-white flex-shrink-0">
+        <div className="flex items-center gap-3.5 px-5 py-3.5 border-b border-emerald-100 bg-gradient-to-r from-emerald-600 to-emerald-500 flex-shrink-0">
           <div className="relative flex-shrink-0">
-            <div className="w-9 h-9 rounded-xl bg-oem-dark flex items-center justify-center text-emerald-400 shadow-sm">
+            <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center text-white shadow-sm">
               <Bot size={16} />
             </div>
-            <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-white flex items-center justify-center">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-600 flex items-center justify-center">
+              <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse" />
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-xs font-black uppercase tracking-widest text-oem-dark leading-none">Ensu Saintis</div>
-            <div className="text-[9px] text-emerald-600 font-bold uppercase tracking-wider mt-0.5">Aktif Mengkaji</div>
+            <div className="text-xs font-black uppercase tracking-widest text-white leading-none">Ensu Saintis</div>
+            <div className="text-[9px] text-emerald-100 font-bold uppercase tracking-wider mt-0.5">Aktif Mengkaji</div>
           </div>
           <div className="flex items-center gap-1.5">
-            {['bg-red-300', 'bg-amber-300', 'bg-emerald-400'].map((c, i) => (
+            {['bg-red-300', 'bg-amber-300', 'bg-white/60'].map((c, i) => (
               <div key={i} className={cn('w-2.5 h-2.5 rounded-full', c)} />
             ))}
           </div>
@@ -284,7 +284,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
         {/* Messages */}
         <div
           ref={messagesContainerRef}
-          className="flex-1 overflow-y-auto px-5 py-5 space-y-4 custom-scrollbar bg-slate-50/40"
+          className="flex-1 overflow-y-auto px-5 py-5 space-y-4 custom-scrollbar bg-emerald-50/30"
         >
           <AnimatePresence initial={false}>
             {messages.map((m, i) => (
@@ -297,7 +297,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
               >
                 <div className={cn(
                   'w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm',
-                  m.role === 'user' ? 'bg-oem-dark text-white' : 'bg-white border border-slate-200 text-emerald-600'
+                  m.role === 'user' ? 'bg-oem-dark text-white' : 'bg-emerald-50 border border-emerald-200 text-emerald-600'
                 )}>
                   {m.role === 'user' ? <User className="w-3.5 h-3.5" /> : <Bot className="w-3.5 h-3.5" />}
                 </div>
@@ -322,7 +322,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
                 exit={{ opacity: 0 }}
                 className="flex items-end gap-2.5"
               >
-                <div className="w-7 h-7 rounded-xl bg-white border border-slate-200 text-emerald-600 flex items-center justify-center flex-shrink-0 shadow-sm">
+                <div className="w-7 h-7 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center flex-shrink-0 shadow-sm">
                   <Bot className="w-3.5 h-3.5" />
                 </div>
                 <div className="px-4 py-3 rounded-2xl rounded-bl-sm bg-white border border-slate-200/80 shadow-sm">
@@ -334,7 +334,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
         </div>
 
         {/* Input Area */}
-        <div className="flex-shrink-0 border-t border-slate-100 bg-white px-4 py-3.5">
+        <div className="flex-shrink-0 border-t border-emerald-100 bg-white px-4 py-3.5">
           {isAnalyzing ? (
             <div className="flex items-center justify-center gap-3 py-3">
               <Loader2 className="w-5 h-5 text-oem-primary animate-spin" />
