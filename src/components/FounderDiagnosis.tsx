@@ -214,7 +214,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
           Scan DNA<span className="text-oem-primary">.</span>
         </h2>
         <p className="text-oem-dark/40 text-sm font-medium leading-relaxed max-w-md mx-auto">
-          Bincang santai dengan <span className="text-oem-primary font-bold">Ensu Saintis</span> untuk kenali DNA jenama anda.
+          Kenalpasti personaliti anda dan <span className="text-oem-primary font-bold">Inject DNA</span> dalam produk.
         </p>
       </motion.div>
 
