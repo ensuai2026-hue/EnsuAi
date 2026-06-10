@@ -224,7 +224,7 @@ export const Hero = ({ onStartDiagnosis }: { onStartDiagnosis: () => void }) => 
               DNA <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-emerald-400 to-emerald-600 animate-gradient-x">FOUNDER.</span>
             </h1>
             <p className="text-base md:text-xl text-oem-dark/40 mb-8 md:mb-14 max-w-2xl leading-relaxed font-medium">
-              Kitorang kaji personaliti korang sampai ke akar umbi untuk bina jenama yang bukan saja catchy, tapi betul-betul ada <span className="text-oem-dark font-bold underline decoration-emerald-200">soul</span>.
+              Jenama yang kuat bermula dari dalam. Kita bina dari <span className="text-oem-dark font-bold underline decoration-emerald-200">siapa kau sebenarnya</span>.
             </p>
             <div className="flex flex-col sm:flex-row items-center gap-6 md:gap-8">
               <div className="flex flex-col items-center sm:items-start gap-2 w-full sm:w-auto">
