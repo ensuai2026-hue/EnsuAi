@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
-import { Header, Hero } from './components/Landing';
+import { useState, useEffect } from 'react';
+import { Header } from './components/Landing';
 import { HomePage } from './components/HomePage';
 import { FounderDiagnosis } from './components/FounderDiagnosis';
 import { ProductRecommendation } from './components/ProductRecommendation';
@@ -17,7 +17,6 @@ export default function App() {
   const [view, setView] = useState<View>('home');
   const [profile, setProfile] = useState<PersonalityProfile | null>(null);
   const [currentLeadId, setCurrentLeadId] = useState<string | null>(null);
-  const diagnosisRef = useRef<HTMLDivElement>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminAuthed, setAdminAuthed] = useState(false);
 
@@ -43,9 +42,7 @@ export default function App() {
   const handleStartDiagnosis = () => {
     setView('scan');
     setProfile(null);
-    setTimeout(() => {
-      diagnosisRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleReportComplete = (data: PersonalityProfile, leadId: string | null) => {
@@ -105,16 +102,12 @@ export default function App() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.4 }}
             >
-              <Hero onStartDiagnosis={handleStartDiagnosis} />
-
-              <div ref={diagnosisRef}>
-                <section
-                  className="bg-oem-light border-t border-oem-primary/10 flex items-center justify-center"
-                  style={{ minHeight: 'calc(100vh - 64px)' }}
-                >
-                  <FounderDiagnosis onReportComplete={(data, leadId) => handleReportComplete(data, leadId)} />
-                </section>
-              </div>
+              <section
+                className="bg-oem-light border-t border-oem-primary/10 flex items-center justify-center"
+                style={{ minHeight: 'calc(100vh - 64px)' }}
+              >
+                <FounderDiagnosis onReportComplete={(data, leadId) => handleReportComplete(data, leadId)} />
+              </section>
 
               {/* How It Works */}
               <section className="py-24 md:py-40 oem-grid relative">
