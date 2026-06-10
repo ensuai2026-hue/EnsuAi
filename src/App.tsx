@@ -125,7 +125,7 @@ export default function App() {
                       <span className="pill-container text-[9px]">Infrastruktur Ensu</span>
                     </div>
                     <h2 className="text-5xl md:text-7xl font-extrabold text-oem-dark uppercase tracking-tight leading-[1.1] mb-8">Inject DNA <br/> dalam product.</h2>
-                    <p className="text-lg md:text-xl text-oem-dark/30 max-w-3xl font-medium tracking-tight">Kitorang mengadun DNA dan personaliti unik founder untuk menghasilkan produk yang bukan sekadar laku, tapi ikonik dan memorable sepanjang zaman.</p>
+                    <p className="text-lg md:text-xl text-oem-dark/30 max-w-3xl font-medium tracking-tight">ENSU menggabungkan DNA & Personaliti unik founder untuk menghasilkan produk yang lebih ikonik dan memorable sepanjang zaman.</p>
                   </div>
                   <div className="relative pt-12">
                     <div className="hidden lg:block absolute top-[76px] left-[12%] right-[12%] h-[2px] bg-emerald-100" />
