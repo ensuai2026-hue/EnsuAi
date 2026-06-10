@@ -134,7 +134,7 @@ export default function App() {
                         { id: "01", title: "Analisis Personaliti", desc: "Mengkaji DNA dan karakter unik anda melalui diagnosis AI yang mendalam.", icon: Fingerprint, label: "Intelligence" },
                         { id: "02", title: "Inject DNA Produk", desc: "Memindahkan intipati karakter anda ke dalam formulasi dan visi produk.", icon: Dna, label: "Alchemy" },
                         { id: "03", title: "Pemilihan Produk", desc: "Mencari 'perfect match' kategori produk yang sejajar dengan aura anda.", icon: Target, label: "Selection" },
-                        { id: "04", title: "Become a Founder", desc: "Melancarkan jenama ikonik anda ke pasaran dengan strategi alpha.", icon: Rocket, label: "Execution" },
+                        { id: "04", title: "Become a Founder", desc: "Saintis ensu membantu mengformulakan produk dan menjadikan produk lebih ikonik.", icon: Rocket, label: "Execution" },
                       ].map((item, index) => (
                         <motion.div
                           key={item.id}
