@@ -343,7 +343,7 @@ export const ProductRecommendation = ({ profile, onReset, adminMode }: Props) =>
           </button>
 
           <a
-            href="https://wa.me/60123456789?text=Saya%20baru%20selesai%20Scan%20DNA%20dengan%20Ensu%20Saintis%20dan%20ingin%20tahu%20lebih%20lanjut."
+            href="https://wa.me/60133278287?text=Saya%20baru%20selesai%20Scan%20DNA%20dengan%20Ensu%20Saintis%20dan%20ingin%20tahu%20lebih%20lanjut."
             target="_blank"
             rel="noopener noreferrer"
             className="w-full sm:w-auto px-10 py-6 md:px-16 md:py-8 bg-oem-primary text-white rounded-full text-base md:text-xl font-black uppercase tracking-widest shadow-2xl shadow-emerald-200 hover:scale-[1.03] transition-all relative overflow-hidden group order-1 sm:order-2 flex items-center justify-center"

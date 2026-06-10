@@ -80,7 +80,7 @@ export default function App() {
         onGoHome={handleGoHome}
         onGoAdmin={handleGoAdmin}
         showCta={view === 'results'}
-        ctaHref="https://wa.me/60123456789?text=Saya%20baru%20selesai%20Scan%20DNA%20dengan%20Ensu%20Saintis%20dan%20ingin%20tahu%20lebih%20lanjut."
+        ctaHref="https://wa.me/60133278287?text=Saya%20baru%20selesai%20Scan%20DNA%20dengan%20Ensu%20Saintis%20dan%20ingin%20tahu%20lebih%20lanjut."
       />
 
       <main>
