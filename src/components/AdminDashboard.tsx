@@ -393,7 +393,7 @@ const LeadDrawer = ({ lead, onClose, onDelete, onViewReport }: {
 };
 
 const FullReportModal = ({ lead, onClose }: { lead: Lead; onClose: () => void }) => {
-  const profile = lead.personality_profile as PersonalityProfile | null;
+  const profile = lead.personality_profile as unknown as PersonalityProfile | null;
   if (!profile) return null;
 
   return (
