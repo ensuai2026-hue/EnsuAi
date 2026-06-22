@@ -52,7 +52,7 @@ const TypingDots = () => (
 );
 
 // Extract clickable options from a bot message.
-// Detects numbered lists, bullet lists, or slash/comma-separated inline choices.
+// Detects numbered lists, bullet lists, emoji-prefixed lists, or slash/comma-separated inline choices.
 function parseOptions(text: string): string[] {
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
 
@@ -69,6 +69,13 @@ function parseOptions(text: string): string[] {
     .filter(Boolean)
     .map(m => m![1].replace(/\*\*/g, '').trim());
   if (bulleted.length >= 2) return bulleted;
+
+  // Emoji-prefixed list: "👑 Tan Sri", "🏅 Datuk", "✅ Tiada gelaran"
+  const emojiPrefixed = lines
+    .map(l => l.match(/^\p{Emoji_Presentation}\s*(.+)/u))
+    .filter(Boolean)
+    .map(m => m![1].replace(/\*\*/g, '').trim());
+  if (emojiPrefixed.length >= 2) return emojiPrefixed;
 
   // Inline comma/slash options before a question mark, e.g. "Skincare, makeup atau food?"
   const inlineMatch = text.match(/\b([\w\s]+(?:[,/][\s]*[\w\s]+){2,}(?:\s+atau\s+[\w\s]+)?)\??$/i);
