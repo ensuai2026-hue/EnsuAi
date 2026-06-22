@@ -306,7 +306,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
         className="flex flex-col rounded-2xl border border-emerald-200/60 shadow-[0_16px_60px_-12px_rgba(16,185,129,0.25),0_4px_20px_-4px_rgba(0,0,0,0.08)] bg-white overflow-hidden"
-        style={{ height: '520px' }}
+        style={{ height: 'min(75vh, 700px)' }}
       >
         {/* Chat Header */}
         <div className="flex items-center gap-3.5 px-5 py-3.5 border-b border-emerald-100 bg-gradient-to-r from-emerald-600 to-emerald-500 flex-shrink-0">
