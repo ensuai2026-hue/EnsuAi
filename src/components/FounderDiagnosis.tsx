@@ -72,7 +72,7 @@ function parseOptions(text: string): string[] {
 
   // Emoji-prefixed list: "👑 Tan Sri", "🏅 Datuk", "✅ Tiada gelaran"
   const emojiPrefixed = lines
-    .map(l => l.match(/^\p{Emoji_Presentation}\s*(.+)/u))
+    .map(l => l.match(/^[^\u0000-\u007F\-*•\d]\s*(.+)/u))
     .filter(Boolean)
     .map(m => m![1].replace(/\*\*/g, '').trim());
   if (emojiPrefixed.length >= 2) return emojiPrefixed;
