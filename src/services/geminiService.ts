@@ -55,30 +55,31 @@ export interface PersonalityProfile {
   recommendations: ProductRecommendation[];
 }
 
-const ENSU_CATALOG = `KATALOG PRODUK ENSU LIFESCIENCES (HANYA produk dalam senarai ini boleh dicadangkan):
+const ENSU_CATALOG = `KATALOG PRODUK ENSU LIFESCIENCES — SENARAI MUKTAMAD (HANYA nama produk dalam senarai ini SAHAJA yang boleh dicadangkan. Tiada lain.):
 
-1. SKINCARE: Face cleanser, Makeup remover, Scrub, Toner, Serum, Ampoule serum, Mask, Facial mask, Eye serum, Eye gel, Eye cream, Essence, Face mist, Moisturizer, Cream, Lotion, Sunscreen.
+SKINCARE: Face cleanser | Makeup remover | Scrub | Toner | Serum | Ampoule serum | Mask | Facial mask | Eye serum | Eye gel | Eye cream | Essence | Face mist | Moisturizer | Cream | Lotion | Sunscreen
 
-2. PERSONAL CARE: Body shampoo, Hair shampoo, Hair conditioner, Body scrub, Body balm, Body butter, Whitening lotion, Hair serum, Hair tonic, Hair perfume, Massage oil, Massage balm.
+PERSONAL CARE: Body shampoo | Hair shampoo | Hair conditioner | Body scrub | Body balm | Body butter | Whitening lotion | Hair serum | Hair tonic | Hair perfume | Massage oil | Massage balm
 
-3. BAR SOAP / SABUN: Whitening bar soap, Turmeric bar soap, Neem bar soap, Mix herbs bar soap, Ginger bar soap, Maternity bar soap.
+BAR SOAP / SABUN: Whitening bar soap | Turmeric bar soap | Neem bar soap | Mix herbs bar soap | Ginger bar soap | Maternity bar soap
 
-4. SLIMMING / BODY CARE: Slimming lotion, Slimming serum, Slimming cream, Slimming gel.
+SLIMMING / BODY CARE: Slimming lotion | Slimming serum | Slimming cream | Slimming gel
 
-5. BABY CARE: Baby head to toe, Baby hair shampoo, Baby oil, Baby balm, Baby cream, Baby sunscreen, Nappy cream, Baby lotion, Baby powder.
+BABY CARE: Baby head to toe | Baby hair shampoo | Baby oil | Baby balm | Baby cream | Baby sunscreen | Nappy cream | Baby lotion | Baby powder
 
-6. COLOUR COSMETICS / MAKEUP: Lip cream, Lip matte, Lip gloss, Lip tint, Lip mud, Lip stain, Lip oil, Lipstick, Lip balm, Collagen lipstick, Blusher stick, Blusher cream, Blusher liquid, Blusher mousse, Primer, Eyeshadow cream, Eyeshadow hot pour, Eyeshadow liquid, Eyeliner gel, Eyeliner liquid, Mascara, Foundation drop, Foundation liquid, Foundation mousse, Foundation stick, Foundation cream, Concealer, BB cream, CC cream, DD cream, EE cream, FF cream with SPF, Highlighter.
+COLOUR COSMETICS / MAKEUP: Lip cream | Lip matte | Lip gloss | Lip tint | Lip mud | Lip stain | Lip oil | Lipstick | Lip balm | Collagen lipstick | Blusher stick | Blusher cream | Blusher liquid | Blusher mousse | Primer | Eyeshadow cream | Eyeshadow hot pour | Eyeshadow liquid | Eyeliner gel | Eyeliner liquid | Mascara | Foundation drop | Foundation liquid | Foundation mousse | Foundation stick | Foundation cream | Concealer | BB cream | CC cream | DD cream | EE cream | FF cream with SPF | Highlighter
 
-7. BOTANICAL BEVERAGE / MINUMAN KESIHATAN: Mind juice, Women juice, Healthy juice, Slimming juice, Premix coffee, Premix tea, Detox powder, Slimming powder, Whitening powder, Healthy powder, Powder kemam, Protein powder, Fiber drink, Instant jelly, Gummies, Chewable tablet, Meal replacement.
+BOTANICAL BEVERAGE / MINUMAN KESIHATAN: Mind juice | Women juice | Healthy juice | Slimming juice | Premix coffee | Premix tea | Detox powder | Slimming powder | Whitening powder | Healthy powder | Powder kemam | Protein powder | Fiber drink | Instant jelly | Gummies | Chewable tablet | Meal replacement
 
-8. READY-TO-EAT FOOD: Aneka sambal, Aneka kuih, Biskut raya, Produk perencah, Seasoning product, Food paste, Thai sauce.
+READY-TO-EAT FOOD: Aneka sambal | Aneka muruku | Aneka kuih | Biskut raya | Produk perencah | Seasoning product | Food paste | Thai sauce
 
-PERATURAN PRODUK (WAJIB):
-- HANYA cadang produk dari senarai di atas. JANGAN reka produk baru.
-- JANGAN claim produk boleh merawat, menyembuhkan penyakit atau jamin keputusan.
-- JANGAN guna ayat macam "confirm kurus", "hilang lemak cepat", "turun berat dijamin". Guna ayat selamat: "membantu rutin penjagaan badan", "sesuai untuk rutin wellness harian".
-- Kalau user minta produk luar senarai, balas sopan: "Buat masa ini, saya hanya boleh cadangkan produk yang tersedia dalam kategori katalog kami. Untuk produk tersebut, pilihan paling hampir yang boleh dipertimbangkan ialah…"
-- Maksimum 3-5 idea produk setiap cadangan.`;
+PERATURAN KETAT (WAJIB DIPATUHI SETIAP MASA):
+- Sebelum cadang mana-mana produk, semak dulu: adakah nama produk tersebut wujud TEPAT dalam senarai di atas? Kalau tidak ada — JANGAN cadangkan.
+- JANGAN reka nama produk baru, JANGAN gabung nama produk sendiri, JANGAN tambah kategori baru.
+- JANGAN claim produk boleh merawat atau menyembuhkan penyakit. Guna: "membantu rutin penjagaan badan", "sesuai untuk rutin wellness harian".
+- JANGAN guna "confirm kurus", "hilang lemak cepat", "turun berat dijamin".
+- Kalau user minta produk yang TIADA dalam senarai: "Buat masa ni saya hanya boleh cadangkan produk dalam katalog kami. Pilihan paling hampir ialah…" — lepas tu pilih nama yang ADA dalam senarai.
+- Maksimum 3-5 produk per cadangan.`;
 
 const SCIENTIST_SYSTEM_PROMPT = `Kau adalah "Ensu Saintis" dari ENSU LIFESCIENCES. Kau borak macam kawan rapat — santai, chill, direct. Macam WhatsApp je.
 
@@ -179,7 +180,7 @@ PROSES ANALISIS:
 2. Gunakan **Anggaran Umur** untuk analisis generasi dan mindset mereka — ambil point yang paling "ngam" saja.
 3. Kaitkan DNA founder dengan "Life Sciences" secara logik tapi senang faham.
 4. Berikan huraian **Market Value** yang realistik untuk pasaran Malaysia.
-5. Rangka 3 konsep produk yang betul-betul "soulmate" dengan jiwa founder. WAJIB pilih HANYA dari KATALOG PRODUK ENSU di atas. JANGAN reka produk luar katalog. Nama produk dalam "recommendations[].name" mesti merujuk produk dari katalog (contoh: "Whitening Serum", "Turmeric Bar Soap", "Women Juice", "Lip Tint", "Baby Balm").
+5. Rangka 3 konsep produk yang betul-betul "soulmate" dengan jiwa founder. WAJIB semak katalog di atas — HANYA gunakan nama produk yang wujud TEPAT dalam senarai katalog. Contoh nama yang betul: "Serum", "Turmeric bar soap", "Women juice", "Lip tint", "Baby balm", "Fiber drink", "Food paste". JANGAN reka nama produk sendiri yang tiada dalam senarai.
 6. Rangka 3 Strategi Alpha yang praktikal dan senang buat terus.
 7. Sediakan "Sales Advisor Memo" (Internal): Detail SKU, apa "pahit" pelanggan nak settlekan, dan cara nak close.
 
