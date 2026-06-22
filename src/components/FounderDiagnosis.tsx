@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Send, Loader as Loader2, Sparkles, User, Bot, Dna, ChevronRight } from 'lucide-react';
-import { diagnoseFounder, chatWithScientist, extractLeadData, PersonalityProfile, ExtractedLeadData } from '../services/geminiService';
+import { diagnoseFounder, chatWithScientist, extractLeadData, PersonalityProfile } from '../services/geminiService';
 import { cn } from '../lib/utils';
 import { supabase } from '../lib/supabase';
 
@@ -171,23 +171,6 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
     }).catch(() => {});
   };
 
-  const saveLeadFinal = async (msgs: Message[], profile?: PersonalityProfile): Promise<ExtractedLeadData> => {
-    const extracted = await extractLeadData(msgs);
-    await upsertLead(msgs, {
-      name: extracted.name,
-      age_range: extracted.age_range,
-      note: extracted.note,
-      email: extracted.email,
-      phone: extracted.phone,
-      niche: extracted.niche,
-      product_type: extracted.product_type,
-      budget: extracted.budget,
-      quantity: extracted.quantity,
-      ...(profile ? { personality_profile: profile, completed: true } : {}),
-    });
-    return extracted;
-  };
-
   const sendBotReply = async (msgs: Message[]) => {
     setIsTyping(true);
     try {
@@ -224,13 +207,44 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
     if (messages.length < 2) return;
     setIsAnalyzing(true);
     try {
-      const profile = await diagnoseFounder(messages);
-      const extracted = await saveLeadFinal(messages, profile);
+      // 1. SAVE lead data first (extract + persist) — so admin sees it even if AI fails
+      const extracted = await extractLeadData(messages);
+      await upsertLead(messages, {
+        name: extracted.name,
+        age_range: extracted.age_range,
+        note: extracted.note,
+        email: extracted.email,
+        phone: extracted.phone,
+        niche: extracted.niche,
+        product_type: extracted.product_type,
+        budget: extracted.budget,
+        quantity: extracted.quantity,
+      });
+
+      // 2. Try AI diagnosis (may fail without losing the saved lead)
+      let profile: PersonalityProfile;
+      try {
+        profile = await diagnoseFounder(messages);
+      } catch (aiErr) {
+        console.error('Diagnose error:', aiErr);
+        alert('AI sedang sibuk — data anda dah disimpan, team Ensu akan follow up. Sila cuba lagi sebentar untuk laporan DNA penuh.');
+        return;
+      }
+
+      // 3. Mark lead as completed with AI profile
+      const currentId = leadIdRef.current;
+      if (currentId) {
+        await supabase.from('leads').update({
+          personality_profile: profile,
+          completed: true,
+        }).eq('id', currentId);
+      }
 
       // Build WhatsApp message with lead details
       const lines = ['*[ENSU DNA SCAN — Lead Baru]*', ''];
       if (extracted.name) lines.push(`*Nama:* ${extracted.name}`);
       if (extracted.age_range) lines.push(`*Umur:* ${extracted.age_range}`);
+      if (extracted.niche) lines.push(`*Niche:* ${extracted.niche}`);
       if (extracted.product_type) lines.push(`*Produk:* ${extracted.product_type}`);
       if (extracted.budget) lines.push(`*Bajet:* ${extracted.budget}`);
       if (extracted.quantity) lines.push(`*Kuantiti:* ${extracted.quantity}`);
@@ -245,6 +259,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
 
       onReportComplete(profile, leadId);
     } catch (error) {
+      console.error('Final analyze error:', error);
       alert(error instanceof Error ? error.message : 'Gagal memproses DNA anda.');
     } finally {
       setIsAnalyzing(false);

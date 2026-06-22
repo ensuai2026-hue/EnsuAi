@@ -277,13 +277,31 @@ Balas DALAM FORMAT JSON SAHAJA (tanpa markdown code block):
   ]
 }`;
 
-  const text = await kieChat([{ role: 'user', content: prompt }], true, 'gemini-2.5-pro');
+  const text = await kieChat([{ role: 'user', content: prompt }], true, 'gemini-2.5-pro').catch(async () => {
+    return await kieChat([{ role: 'user', content: prompt }], true, 'gemini-2.5-flash');
+  });
 
-  try {
-    const cleaned = text.replace(/^```json\s*/i, '').replace(/```\s*$/, '').trim();
-    return JSON.parse(cleaned) as PersonalityProfile;
-  } catch (e) {
-    console.error("Failed to parse KIE response:", text);
-    throw new Error("Gagal menganalisis profil founder. Sila cuba lagi.");
-  }
+  const tryParse = (raw: string): PersonalityProfile | null => {
+    const cleaned = raw.replace(/^```json\s*/i, '').replace(/```\s*$/, '').trim();
+    try {
+      return JSON.parse(cleaned) as PersonalityProfile;
+    } catch {
+      const match = cleaned.match(/\{[\s\S]*\}/);
+      if (match) {
+        try { return JSON.parse(match[0]) as PersonalityProfile; } catch { return null; }
+      }
+      return null;
+    }
+  };
+
+  const parsed = tryParse(text);
+  if (parsed) return parsed;
+
+  console.error('Failed to parse KIE response, retrying with flash:', text);
+  const retry = await kieChat([{ role: 'user', content: prompt }], true, 'gemini-2.5-flash');
+  const parsedRetry = tryParse(retry);
+  if (parsedRetry) return parsedRetry;
+
+  console.error('Failed to parse KIE retry response:', retry);
+  throw new Error('Gagal menganalisis profil founder. Sila cuba lagi.');
 }
