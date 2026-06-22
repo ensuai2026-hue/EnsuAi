@@ -243,25 +243,25 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
     : [];
 
   return (
-    <div className="w-full max-w-3xl mx-auto px-4 md:px-6 flex flex-col py-12 md:py-16 relative">
+    <div className="w-full max-w-3xl mx-auto px-3 md:px-6 flex flex-col py-6 md:py-16 relative">
 
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="text-center mb-10"
+        className="text-center mb-5 md:mb-10"
       >
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-100 rounded-full mb-5">
+        <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-100 rounded-full mb-3 md:mb-5">
           <div className="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center">
             <Dna className="w-2.5 h-2.5 text-white" />
           </div>
           <span className="text-[10px] font-black uppercase tracking-[0.25em] text-emerald-600">Karakter & Visi</span>
         </div>
-        <h2 className="text-4xl md:text-5xl font-extrabold text-oem-dark uppercase tracking-tight leading-none mb-3">
+        <h2 className="text-3xl md:text-5xl font-extrabold text-oem-dark uppercase tracking-tight leading-none mb-2 md:mb-3">
           Scan DNA<span className="text-oem-primary">.</span>
         </h2>
-        <p className="text-oem-dark/40 text-sm font-medium leading-relaxed max-w-md mx-auto">
+        <p className="text-oem-dark/40 text-xs md:text-sm font-medium leading-relaxed max-w-md mx-auto hidden sm:block">
           Kenalpasti personaliti anda dan <span className="text-oem-primary font-bold">Inject DNA</span> dalam produk.
         </p>
       </motion.div>
@@ -271,7 +271,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
-        className="flex items-center justify-center gap-2 mb-8"
+        className="flex items-center justify-center gap-2 mb-4 md:mb-8"
       >
         {STEPS.map((step, i) => {
           const done = step.done(messages);
@@ -306,7 +306,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
         className="flex flex-col rounded-2xl border border-emerald-200/60 shadow-[0_16px_60px_-12px_rgba(16,185,129,0.25),0_4px_20px_-4px_rgba(0,0,0,0.08)] bg-white overflow-hidden"
-        style={{ height: 'min(75vh, 700px)' }}
+        style={{ height: 'min(72vh, 700px)' }}
       >
         {/* Chat Header */}
         <div className="flex items-center gap-3.5 px-5 py-3.5 border-b border-emerald-100 bg-gradient-to-r from-emerald-600 to-emerald-500 flex-shrink-0">
@@ -332,7 +332,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
         {/* Messages */}
         <div
           ref={messagesContainerRef}
-          className="flex-1 overflow-y-auto px-5 py-5 space-y-4 custom-scrollbar bg-emerald-50/30"
+          className="flex-1 overflow-y-auto px-3 md:px-5 py-4 md:py-5 space-y-3 md:space-y-4 custom-scrollbar bg-emerald-50/30"
         >
           <AnimatePresence initial={false}>
             {messages.map((m, i) => (
@@ -382,14 +382,14 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
         </div>
 
         {/* Input Area */}
-        <div className="flex-shrink-0 border-t border-emerald-100 bg-white px-4 py-3.5">
+        <div className="flex-shrink-0 border-t border-emerald-100 bg-white px-3 md:px-4 py-2.5 md:py-3.5">
           {isAnalyzing ? (
             <div className="flex items-center justify-center gap-3 py-3">
               <Loader2 className="w-5 h-5 text-oem-primary animate-spin" />
               <p className="text-slate-400 text-sm font-semibold">Sedang membedah DNA anda...</p>
             </div>
           ) : (
-            <div className="flex flex-col gap-2.5">
+            <div className="flex flex-col gap-2">
               {/* Quick-select option buttons — auto-detected from last bot message */}
               <AnimatePresence>
                 {quickOptions.length > 0 && (
@@ -397,14 +397,14 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
-                    className="flex flex-wrap gap-2 overflow-hidden"
+                    className="flex flex-wrap gap-1.5 md:gap-2 overflow-hidden"
                   >
                     {quickOptions.map(opt => (
                       <button
                         key={opt}
                         type="button"
                         onClick={() => handleOptionSelect(opt, lastBotEntry!.i)}
-                        className="px-4 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-oem-dark text-xs font-bold hover:bg-oem-dark hover:text-white hover:border-oem-dark transition-all duration-200 active:scale-95"
+                        className="px-3 md:px-4 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-oem-dark text-[11px] md:text-xs font-bold hover:bg-oem-dark hover:text-white hover:border-oem-dark transition-all duration-200 active:scale-95"
                       >
                         {opt}
                       </button>
@@ -420,14 +420,14 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
                   value={input}
                   onChange={e => setInput(e.target.value)}
                   placeholder={isTyping ? 'Saintis sedang berfikir...' : 'Katakan sesuatu kepada Saintis...'}
-                  className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-oem-dark placeholder:text-slate-400 focus:outline-none focus:border-slate-400 focus:bg-white transition-all font-medium disabled:opacity-50"
+                  className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 md:px-4 py-2 md:py-2.5 text-sm text-oem-dark placeholder:text-slate-400 focus:outline-none focus:border-slate-400 focus:bg-white transition-all font-medium disabled:opacity-50"
                   disabled={isTyping}
                   autoFocus
                 />
                 <button
                   type="submit"
                   disabled={!input.trim() || isTyping}
-                  className="w-10 h-10 bg-oem-dark text-white rounded-xl flex items-center justify-center hover:bg-emerald-600 active:scale-95 disabled:bg-slate-100 disabled:text-slate-300 transition-all flex-shrink-0"
+                  className="w-9 h-9 md:w-10 md:h-10 bg-oem-dark text-white rounded-xl flex items-center justify-center hover:bg-emerald-600 active:scale-95 disabled:bg-slate-100 disabled:text-slate-300 transition-all flex-shrink-0"
                 >
                   {isTyping ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                 </button>
