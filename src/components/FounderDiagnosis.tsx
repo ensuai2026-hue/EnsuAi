@@ -221,22 +221,32 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
         quantity: extracted.quantity,
       });
 
-      // 2. Try AI diagnosis (may fail without losing the saved lead)
+      // 2. Try AI diagnosis — fall back to a minimal profile if AI fails
       let profile: PersonalityProfile;
+      let aiSucceeded = true;
       try {
         profile = await diagnoseFounder(messages);
       } catch (aiErr) {
         console.error('Diagnose error:', aiErr);
-        alert('AI sedang sibuk — data anda dah disimpan, team Ensu akan follow up. Sila cuba lagi sebentar untuk laporan DNA penuh.');
-        return;
+        aiSucceeded = false;
+        profile = {
+          characterTraits: [],
+          personalityType: 'Pending Analysis',
+          fullDiagnosis: 'Laporan DNA penuh belum selesai. Team Ensu akan follow up dengan analisis lengkap melalui WhatsApp.',
+          entrepreneurStyle: 'Belum dianalisis sepenuhnya.',
+          creativeVision: '',
+          strategies: [],
+          salesAdvisorReport: 'Lead pre-mature submit — perbualan belum lengkap, ikut up manual.',
+          recommendations: [],
+        };
       }
 
-      // 3. Mark lead as completed with AI profile
+      // 3. Mark lead with profile (completed only if AI succeeded)
       const currentId = leadIdRef.current;
       if (currentId) {
         await supabase.from('leads').update({
           personality_profile: profile,
-          completed: true,
+          completed: aiSucceeded,
         }).eq('id', currentId);
       }
 
@@ -485,11 +495,21 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 6 }}
                     onClick={handleFinalAnalyze}
-                    className="w-full py-3 px-6 bg-oem-dark text-white rounded-xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-emerald-600 transition-all duration-300 active:scale-[0.98] shadow-sm"
+                    disabled={isAnalyzing || isTyping}
+                    className="w-full py-3 px-6 bg-oem-dark text-white rounded-xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-emerald-600 transition-all duration-300 active:scale-[0.98] shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
                   >
-                    <Sparkles size={12} />
-                    Tamatkan Analisis — Hantar Detail ke WhatsApp
-                    <Sparkles size={12} />
+                    {isAnalyzing ? (
+                      <>
+                        <Loader2 size={12} className="animate-spin" />
+                        Memproses DNA Anda...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles size={12} />
+                        Tamatkan Analisis — Hantar Detail ke WhatsApp
+                        <Sparkles size={12} />
+                      </>
+                    )}
                   </motion.button>
                 )}
               </AnimatePresence>
