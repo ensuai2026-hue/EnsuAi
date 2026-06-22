@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Send, Loader as Loader2, Sparkles, User, Bot, Dna, ChevronRight } from 'lucide-react';
-import { diagnoseFounder, chatWithScientist, extractLeadData, PersonalityProfile } from '../services/geminiService';
+import { diagnoseFounder, chatWithScientist, extractLeadData, PersonalityProfile, ExtractedLeadData } from '../services/geminiService';
 import { cn } from '../lib/utils';
 import { supabase } from '../lib/supabase';
 
@@ -147,7 +147,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
     }).catch(() => {});
   };
 
-  const saveLeadFinal = async (msgs: Message[], profile?: PersonalityProfile) => {
+  const saveLeadFinal = async (msgs: Message[], profile?: PersonalityProfile): Promise<ExtractedLeadData> => {
     const extracted = await extractLeadData(msgs);
     await upsertLead(msgs, {
       name: extracted.name,
@@ -160,6 +160,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
       quantity: extracted.quantity,
       ...(profile ? { personality_profile: profile, completed: true } : {}),
     });
+    return extracted;
   };
 
   const sendBotReply = async (msgs: Message[]) => {
@@ -199,7 +200,24 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
     setIsAnalyzing(true);
     try {
       const profile = await diagnoseFounder(messages);
-      await saveLeadFinal(messages, profile);
+      const extracted = await saveLeadFinal(messages, profile);
+
+      // Build WhatsApp message with lead details
+      const lines = ['*[ENSU DNA SCAN — Lead Baru]*', ''];
+      if (extracted.name) lines.push(`*Nama:* ${extracted.name}`);
+      if (extracted.age_range) lines.push(`*Umur:* ${extracted.age_range}`);
+      if (extracted.product_type) lines.push(`*Produk:* ${extracted.product_type}`);
+      if (extracted.budget) lines.push(`*Bajet:* ${extracted.budget}`);
+      if (extracted.quantity) lines.push(`*Kuantiti:* ${extracted.quantity}`);
+      if (extracted.email) lines.push(`*Email:* ${extracted.email}`);
+      if (extracted.phone) lines.push(`*Phone:* ${extracted.phone}`);
+      if (extracted.note) lines.push(``, `*Latar belakang:* ${extracted.note}`);
+      if (profile.personalityType) lines.push(``, `*DNA Type:* ${profile.personalityType}`);
+      lines.push('', 'Saya baru selesai Scan DNA dengan Ensu Saintis dan ingin tahu lebih lanjut.');
+
+      const waText = encodeURIComponent(lines.join('\n'));
+      window.open(`https://wa.me/60133278287?text=${waText}`, '_blank');
+
       onReportComplete(profile, leadId);
     } catch (error) {
       alert(error instanceof Error ? error.message : 'Gagal memproses DNA anda.');
