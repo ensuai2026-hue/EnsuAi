@@ -241,18 +241,29 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
       }
 
       // Build WhatsApp message with lead details
-      const lines = ['*[ENSU DNA SCAN — Lead Baru]*', ''];
-      if (extracted.name) lines.push(`*Nama:* ${extracted.name}`);
-      if (extracted.age_range) lines.push(`*Umur:* ${extracted.age_range}`);
-      if (extracted.niche) lines.push(`*Niche:* ${extracted.niche}`);
-      if (extracted.product_type) lines.push(`*Produk:* ${extracted.product_type}`);
-      if (extracted.budget) lines.push(`*Bajet:* ${extracted.budget}`);
-      if (extracted.quantity) lines.push(`*Kuantiti:* ${extracted.quantity}`);
-      if (extracted.email) lines.push(`*Email:* ${extracted.email}`);
-      if (extracted.phone) lines.push(`*Phone:* ${extracted.phone}`);
-      if (extracted.note) lines.push(``, `*Latar belakang:* ${extracted.note}`);
-      if (profile.personalityType) lines.push(``, `*DNA Type:* ${profile.personalityType}`);
-      lines.push('', 'Saya baru selesai Scan DNA dengan Ensu Saintis dan ingin tahu lebih lanjut.');
+      const today = new Date().toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      });
+      const divider = '--------------------------------';
+      const lines: string[] = [];
+      lines.push('[ LEAD BARU — ENSU.AI ]');
+      lines.push(`Tarikh: ${today}`);
+      lines.push(divider);
+      if (extracted.name) lines.push(`Nama : ${extracted.name}`);
+      if (extracted.age_range) lines.push(`Umur : ${extracted.age_range}`);
+      if (extracted.note) lines.push(`Note : ${extracted.note}`);
+      if (extracted.email) lines.push(`Emel : ${extracted.email}`);
+      if (extracted.phone) lines.push(`WhatsApp : ${extracted.phone}`);
+      lines.push(divider);
+      if (extracted.niche) lines.push(`Niche : ${extracted.niche}`);
+      if (extracted.product_type) lines.push(`Jenis Produk : ${extracted.product_type}`);
+      if (extracted.budget) lines.push(`Bajet : ${extracted.budget}`);
+      if (extracted.quantity) lines.push(`Kuantiti : ${extracted.quantity}`);
+      lines.push(divider);
+      if (profile.personalityType) lines.push(`Profil DNA : ${profile.personalityType}`);
+      if (profile.entrepreneurStyle) lines.push(`Gaya : ${profile.entrepreneurStyle}`);
 
       const waText = encodeURIComponent(lines.join('\n'));
       window.open(`https://wa.me/60133278287?text=${waText}`, '_blank');
