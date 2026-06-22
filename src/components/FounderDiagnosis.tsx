@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Send, Loader as Loader2, Sparkles, User, Bot, Dna, ChevronRight } from 'lucide-react';
-import { diagnoseFounder, chatWithScientist, extractLeadData, PersonalityProfile } from '../services/geminiService';
+import { diagnoseFounder, chatWithScientist, extractLeadData, ExtractedLeadData, PersonalityProfile } from '../services/geminiService';
 import { cn, buildLeadWhatsAppUrl } from '../lib/utils';
 import { supabase } from '../lib/supabase';
 
@@ -110,6 +110,18 @@ const STEPS = [
   { label: 'DNA Lengkap', done: (msgs: Message[]) => msgs.filter(m => m.role === 'user').length >= 6 },
 ];
 
+const MISSING_LABEL: Record<keyof ExtractedLeadData, string> = {
+  name: 'Nama',
+  age_range: 'Umur',
+  note: 'Latar belakang',
+  email: 'Emel',
+  phone: 'WhatsApp',
+  niche: 'Niche',
+  product_type: 'Jenis produk',
+  budget: 'Bajet',
+  quantity: 'Kuantiti',
+};
+
 export const FounderDiagnosis = ({ onReportComplete }: Props) => {
   const [messages, setMessages] = useState<Message[]>([
     { role: 'bot', content: 'Salam! Saya Ensu Saintis. Sebelum kita mula kaji DNA bisnes anda, boleh saya tahu nama anda siapa?' }
@@ -119,6 +131,10 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
   const [isTyping, setIsTyping] = useState(false);
   const [optionsUsed, setOptionsUsed] = useState<Set<number>>(new Set());
   const [leadId, setLeadId] = useState<string | null>(null);
+  const [extracted, setExtracted] = useState<ExtractedLeadData>({
+    name: null, age_range: null, note: null, email: null, phone: null,
+    niche: null, product_type: null, budget: null, quantity: null,
+  });
   const leadIdRef = useRef<string | null>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -152,19 +168,20 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
 
   const saveLeadMessages = async (msgs: Message[]) => {
     await upsertLead(msgs);
-    extractLeadData(msgs).then(extracted => {
+    extractLeadData(msgs).then(extractedData => {
+      setExtracted(extractedData);
       const currentId = leadIdRef.current;
       if (!currentId) return;
       supabase.from('leads').update({
-        name: extracted.name,
-        age_range: extracted.age_range,
-        note: extracted.note,
-        email: extracted.email,
-        phone: extracted.phone,
-        niche: extracted.niche,
-        product_type: extracted.product_type,
-        budget: extracted.budget,
-        quantity: extracted.quantity,
+        name: extractedData.name,
+        age_range: extractedData.age_range,
+        note: extractedData.note,
+        email: extractedData.email,
+        phone: extractedData.phone,
+        niche: extractedData.niche,
+        product_type: extractedData.product_type,
+        budget: extractedData.budget,
+        quantity: extractedData.quantity,
       }).eq('id', currentId).then(({ error }) => {
         if (error) console.error('Lead extraction update error:', error);
       });
@@ -208,50 +225,41 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
     setIsAnalyzing(true);
     try {
       // 1. SAVE lead data first (extract + persist) — so admin sees it even if AI fails
-      const extracted = await extractLeadData(messages);
+      const latest = await extractLeadData(messages);
+      setExtracted(latest);
       await upsertLead(messages, {
-        name: extracted.name,
-        age_range: extracted.age_range,
-        note: extracted.note,
-        email: extracted.email,
-        phone: extracted.phone,
-        niche: extracted.niche,
-        product_type: extracted.product_type,
-        budget: extracted.budget,
-        quantity: extracted.quantity,
+        name: latest.name,
+        age_range: latest.age_range,
+        note: latest.note,
+        email: latest.email,
+        phone: latest.phone,
+        niche: latest.niche,
+        product_type: latest.product_type,
+        budget: latest.budget,
+        quantity: latest.quantity,
       });
 
-      // 2. Try AI diagnosis — fall back to a minimal profile if AI fails
+      // 2. Run AI diagnosis (data is already complete — gated by button)
       let profile: PersonalityProfile;
-      let aiSucceeded = true;
       try {
         profile = await diagnoseFounder(messages);
       } catch (aiErr) {
         console.error('Diagnose error:', aiErr);
-        aiSucceeded = false;
-        profile = {
-          characterTraits: [],
-          personalityType: 'Pending Analysis',
-          fullDiagnosis: 'Laporan DNA penuh belum selesai. Team Ensu akan follow up dengan analisis lengkap melalui WhatsApp.',
-          entrepreneurStyle: 'Belum dianalisis sepenuhnya.',
-          creativeVision: '',
-          strategies: [],
-          salesAdvisorReport: 'Lead pre-mature submit — perbualan belum lengkap, ikut up manual.',
-          recommendations: [],
-        };
+        alert('AI sedang sibuk — data anda dah disimpan, team Ensu akan follow up. Sila cuba lagi sebentar untuk laporan DNA penuh.');
+        return;
       }
 
-      // 3. Mark lead with profile (completed only if AI succeeded)
+      // 3. Mark lead as completed with AI profile
       const currentId = leadIdRef.current;
       if (currentId) {
         await supabase.from('leads').update({
           personality_profile: profile,
-          completed: aiSucceeded,
+          completed: true,
         }).eq('id', currentId);
       }
 
       // Build WhatsApp URL with formatted lead details
-      const waUrl = buildLeadWhatsAppUrl(extracted, profile);
+      const waUrl = buildLeadWhatsAppUrl(latest, profile);
       window.open(waUrl, '_blank');
 
       onReportComplete(profile, leadId, waUrl);
@@ -264,6 +272,11 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
   };
 
   const userMsgCount = messages.filter(m => m.role === 'user').length;
+  const REQUIRED_FIELDS: (keyof ExtractedLeadData)[] = [
+    'name', 'note', 'product_type', 'quantity', 'budget', 'phone', 'email',
+  ];
+  const missingFields = REQUIRED_FIELDS.filter(f => !extracted[f] || String(extracted[f]).trim() === '');
+  const isLeadComplete = missingFields.length === 0;
   const canFinalize = messages.length >= 4;
 
   // Determine quick-select options for the last bot message
@@ -490,27 +503,36 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
               {/* Finalize CTA */}
               <AnimatePresence>
                 {canFinalize && (
-                  <motion.button
+                  <motion.div
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 6 }}
-                    onClick={handleFinalAnalyze}
-                    disabled={isAnalyzing || isTyping}
-                    className="w-full py-3 px-6 bg-oem-dark text-white rounded-xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-emerald-600 transition-all duration-300 active:scale-[0.98] shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="flex flex-col gap-2"
                   >
-                    {isAnalyzing ? (
-                      <>
-                        <Loader2 size={12} className="animate-spin" />
-                        Memproses DNA Anda...
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles size={12} />
-                        Tamatkan Analisis — Hantar Detail ke WhatsApp
-                        <Sparkles size={12} />
-                      </>
+                    <button
+                      onClick={handleFinalAnalyze}
+                      disabled={isAnalyzing || isTyping || !isLeadComplete}
+                      className="w-full py-3 px-6 bg-oem-dark text-white rounded-xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-emerald-600 transition-all duration-300 active:scale-[0.98] shadow-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-oem-dark"
+                    >
+                      {isAnalyzing ? (
+                        <>
+                          <Loader2 size={12} className="animate-spin" />
+                          Memproses DNA Anda...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles size={12} />
+                          Tamatkan Analisis — Hantar Detail ke WhatsApp
+                          <Sparkles size={12} />
+                        </>
+                      )}
+                    </button>
+                    {!isLeadComplete && !isAnalyzing && (
+                      <p className="text-[9px] text-slate-400 text-center font-medium uppercase tracking-wider">
+                        Lengkapkan dulu: {missingFields.map(f => MISSING_LABEL[f]).join(', ')}
+                      </p>
                     )}
-                  </motion.button>
+                  </motion.div>
                 )}
               </AnimatePresence>
             </div>
