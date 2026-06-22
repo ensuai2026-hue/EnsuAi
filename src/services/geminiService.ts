@@ -209,29 +209,52 @@ export async function chatWithScientist(history: { role: 'user' | 'bot', content
 export async function diagnoseFounder(history: { role: 'user' | 'bot', content: string }[]): Promise<PersonalityProfile> {
   const fullConversation = history.map(m => `${m.role.toUpperCase()}: ${m.content}`).join('\n');
 
-  const prompt = `Anda bertindak sebagai "Ensu Saintis" dari ENSU LIFESCIENCES.
+  const prompt = `Kau adalah "Ensu Saintis" dari ENSU LIFESCIENCES. Tulis laporan DNA founder dalam bahasa Melayu yang SANTAI, RINGKAS, dan PERSONAL — macam kawan rapat cakap terus terang. Bukan laporan corporate. Bukan ayat bombastik. Reader kena rasa "eh, betul ni pasal aku."
 
 ${ENSU_CATALOG}
 
-TUGAS: Lakukan analisis "Deep Thinking" (KIE - Knowledge-Infused Extraction) yang sangat tajam berdasarkan keseluruhan perbualan ini:
+PERBUALAN LENGKAP:
 ---
 ${fullConversation}
 ---
 
-PROSES ANALISIS:
-1. Bedah karakter founder guna bahasa **santai, moden, dan "straight-to-the-point"**. Elakkan ayat panjang sangat.
-2. Gunakan **Anggaran Umur** untuk analisis generasi dan mindset mereka — ambil point yang paling "ngam" saja.
-3. Kaitkan DNA founder dengan "Life Sciences" secara logik tapi senang faham.
-4. Berikan huraian **Market Value** yang realistik untuk pasaran Malaysia.
-5. Rangka 3 konsep produk yang betul-betul "soulmate" dengan jiwa founder. WAJIB semak katalog di atas — HANYA gunakan nama produk yang wujud TEPAT dalam senarai katalog. Contoh nama yang betul: "Serum", "Turmeric bar soap", "Women juice", "Lip tint", "Baby balm", "Fiber drink", "Food paste". JANGAN reka nama produk sendiri yang tiada dalam senarai.
-6. Rangka 3 Strategi Alpha yang praktikal dan senang buat terus.
-7. Sediakan "Sales Advisor Memo" (Internal): Detail SKU, apa "pahit" pelanggan nak settlekan, dan cara nak close.
+ARAHAN ANALISIS:
 
-MATLAMAT OUTPUT:
-Diagnosis kena nampak "profesional tapi rileks" macam kawan borak kawan. Gunakan Markdown untuk 'fullDiagnosis'.
-WAJIB masukkan sub-heading: ### Karakter DNA, ### Analisis Generasi & Mindset, ### Analisis Pasaran, dan ### Market Value.
+**fullDiagnosis** — WAJIB pakai Markdown. WAJIB ada sub-heading: ### Karakter DNA, ### Analisis Generasi & Mindset, ### Analisis Pasaran, ### Market Value. PERATURAN WAJIB:
+- PENDEK. Setiap section max 3-4 ayat pendek je.
+- Bahasa santai harian. Contoh: "Kau ni jenis yang...", "Orang macam kau biasanya...", "Niche ni memang padan dengan kau sebab..."
+- JANGAN guna ayat formal: "memandangkan", "analisis mendalam", "berdaya saing tinggi", "dalam era digital ini", "merintis laluan baharu".
+- Kena rasa personal — guna nama atau gelaran founder dalam teks.
+- Highlight 1-2 kekuatan paling unik je, bukan senarai panjang.
 
-Balas DALAM FORMAT JSON SAHAJA (tanpa markdown code block) mengikut skema berikut:
+**estimatedMarketValue** untuk setiap produk — WAJIB guna data pasaran Malaysia yang REAL dan SPESIFIK:
+- Cari data dari sumber seperti Statista, Grand View Research, Allied Market Research, laporan KKM, Euromonitor, atau kajian universiti Malaysia.
+- Format: "Pasaran [kategori] Malaysia bernilai RM X bilion (2024), jangkaan capai RM Y bilion menjelang 202Z." ATAU angka global jika data Malaysia terhad.
+- JANGAN tulis nilai umum macam "Bernilai tinggi" atau "Potensi besar" — kena ada ANGKA.
+- Contoh yang BETUL: "Pasaran skincare Malaysia cecah RM2.8 bilion (2023), jangka tumbuh 6.2% setahun hingga 2028."
+- Contoh lain: "Industri wellness drink global RM850 bilion (2023) — segmen Asia Tenggara tumbuh 8.4% p.a."
+
+**characterTraits** — 3-5 sifat pendek, jelas, macam tag. Contoh: "Pemikir Kritis", "Storyteller Semula Jadi", "Pemimpin Organik".
+
+**personalityType** — 3-5 perkataan. Tajam dan unik. Contoh: "The Quiet Disruptor", "Mak Cik Viral", "The Science Storyteller".
+
+**entrepreneurStyle** — 1 ayat santai je. Describe gaya diorang buat bisnes.
+
+**creativeVision** — 1 ayat. Apa impak besar yang diorang boleh buat.
+
+**strategies** — 3 strategi yang PRAKTIKAL dan SPESIFIK untuk founder ni. Bukan tips generic. Kena relate dengan background, produk, dan komuniti diorang. Format: ayat pendek, action-oriented.
+
+**recommendations** — 3 produk dari katalog ENSU SAHAJA:
+- name: Nama tepat dari katalog
+- description: 1-2 ayat santai kenapa produk ni "soulmate" dengan DNA founder
+- sellingPoints: 3 poin pendek (max 8 patah perkataan setiap satu)
+- matchPercentage: Angka realistik antara 72-97
+- targetAudience: Siapa pelanggan utama (1 ayat konkrit)
+- estimatedMarketValue: Data pasaran REAL dengan angka (lihat arahan di atas)
+
+**salesAdvisorReport** — Nota dalaman untuk tim sales. Pendek, direct, dalam bahasa Melayu. Apa yang team perlu tahu untuk close founder ni?
+
+Balas DALAM FORMAT JSON SAHAJA (tanpa markdown code block):
 {
   "characterTraits": ["string"],
   "personalityType": "string",
