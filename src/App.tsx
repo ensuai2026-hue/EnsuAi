@@ -8,15 +8,19 @@ import { AdminLogin } from './components/AdminLogin';
 import { Footer } from './components/Footer';
 import { PersonalityProfile } from './services/geminiService';
 import { supabase } from './lib/supabase';
+import { ENSU_WA_NUMBER } from './lib/utils';
 import { AnimatePresence, motion } from 'motion/react';
 import { Brain, Bot, Factory, Fingerprint, FlaskConical, Cpu, ArrowRight, Dna, Target, Rocket } from 'lucide-react';
 
 type View = 'home' | 'scan' | 'results';
 
+const DEFAULT_WA_URL = `https://wa.me/${ENSU_WA_NUMBER}`;
+
 export default function App() {
   const [view, setView] = useState<View>('home');
   const [profile, setProfile] = useState<PersonalityProfile | null>(null);
   const [currentLeadId, setCurrentLeadId] = useState<string | null>(null);
+  const [leadWaUrl, setLeadWaUrl] = useState<string>(DEFAULT_WA_URL);
   const diagnosisRef = useRef<HTMLDivElement>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminAuthed, setAdminAuthed] = useState(false);
@@ -48,9 +52,10 @@ export default function App() {
     }, 100);
   };
 
-  const handleReportComplete = (data: PersonalityProfile, leadId: string | null) => {
+  const handleReportComplete = (data: PersonalityProfile, leadId: string | null, waUrl: string) => {
     setProfile(data);
     setCurrentLeadId(leadId);
+    setLeadWaUrl(waUrl || DEFAULT_WA_URL);
     setView('results');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -80,7 +85,7 @@ export default function App() {
         onGoHome={handleGoHome}
         onGoAdmin={handleGoAdmin}
         showCta={view === 'results'}
-        ctaHref="https://wa.me/60133278287?text=Saya%20baru%20selesai%20Scan%20DNA%20dengan%20Ensu%20Saintis%20dan%20ingin%20tahu%20lebih%20lanjut."
+        ctaHref={leadWaUrl}
       />
 
       <main>
@@ -112,7 +117,7 @@ export default function App() {
                   className="bg-oem-light border-t border-oem-primary/10 flex items-center justify-center"
                   style={{ minHeight: 'calc(100vh - 64px)' }}
                 >
-                  <FounderDiagnosis onReportComplete={(data, leadId) => handleReportComplete(data, leadId)} />
+                  <FounderDiagnosis onReportComplete={handleReportComplete} />
                 </section>
               </div>
 
@@ -183,7 +188,7 @@ export default function App() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.4 }}
             >
-              <ProductRecommendation profile={profile} leadId={currentLeadId} onReset={handleReset} />
+              <ProductRecommendation profile={profile} leadId={currentLeadId} waUrl={leadWaUrl} onReset={handleReset} />
             </motion.div>
           )}
         </AnimatePresence>

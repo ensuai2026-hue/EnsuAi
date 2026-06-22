@@ -2,11 +2,11 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Send, Loader as Loader2, Sparkles, User, Bot, Dna, ChevronRight } from 'lucide-react';
 import { diagnoseFounder, chatWithScientist, extractLeadData, PersonalityProfile } from '../services/geminiService';
-import { cn } from '../lib/utils';
+import { cn, buildLeadWhatsAppUrl } from '../lib/utils';
 import { supabase } from '../lib/supabase';
 
 interface Props {
-  onReportComplete: (profile: PersonalityProfile, leadId: string | null) => void;
+  onReportComplete: (profile: PersonalityProfile, leadId: string | null, waUrl: string) => void;
 }
 
 interface Message {
@@ -240,35 +240,11 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
         }).eq('id', currentId);
       }
 
-      // Build WhatsApp message with lead details
-      const today = new Date().toLocaleDateString('en-GB', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-      });
-      const divider = '--------------------------------';
-      const lines: string[] = [];
-      lines.push('[ LEAD BARU — ENSU.AI ]');
-      lines.push(`Tarikh: ${today}`);
-      lines.push(divider);
-      if (extracted.name) lines.push(`Nama : ${extracted.name}`);
-      if (extracted.age_range) lines.push(`Umur : ${extracted.age_range}`);
-      if (extracted.note) lines.push(`Note : ${extracted.note}`);
-      if (extracted.email) lines.push(`Emel : ${extracted.email}`);
-      if (extracted.phone) lines.push(`WhatsApp : ${extracted.phone}`);
-      lines.push(divider);
-      if (extracted.niche) lines.push(`Niche : ${extracted.niche}`);
-      if (extracted.product_type) lines.push(`Jenis Produk : ${extracted.product_type}`);
-      if (extracted.budget) lines.push(`Bajet : ${extracted.budget}`);
-      if (extracted.quantity) lines.push(`Kuantiti : ${extracted.quantity}`);
-      lines.push(divider);
-      if (profile.personalityType) lines.push(`Profil DNA : ${profile.personalityType}`);
-      if (profile.entrepreneurStyle) lines.push(`Gaya : ${profile.entrepreneurStyle}`);
+      // Build WhatsApp URL with formatted lead details
+      const waUrl = buildLeadWhatsAppUrl(extracted, profile);
+      window.open(waUrl, '_blank');
 
-      const waText = encodeURIComponent(lines.join('\n'));
-      window.open(`https://wa.me/60133278287?text=${waText}`, '_blank');
-
-      onReportComplete(profile, leadId);
+      onReportComplete(profile, leadId, waUrl);
     } catch (error) {
       console.error('Final analyze error:', error);
       alert(error instanceof Error ? error.message : 'Gagal memproses DNA anda.');
