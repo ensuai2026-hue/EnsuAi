@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Users, CircleCheck as CheckCircle, Clock, Eye, X, LogOut, RefreshCw, MessageSquare, ChevronDown, ChevronUp, Phone, Mail, Wallet, Package, Hash, Bot, User, Dna, Search, Calendar, Download, Send, Trash2, FileText, TriangleAlert as AlertTriangle } from 'lucide-react';
+import { Users, CircleCheck as CheckCircle, Clock, Eye, X, LogOut, RefreshCw, MessageSquare, ChevronDown, ChevronUp, Phone, Mail, Wallet, Package, Hash, Bot, User, Dna, Search, Calendar, Download, Send, Trash2, FileText, TriangleAlert as AlertTriangle, ShoppingBag } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { cn } from '../lib/utils';
 import { ProductRecommendation } from './ProductRecommendation';
@@ -13,6 +13,7 @@ interface Lead {
   note: string | null;
   phone: string | null;
   email: string | null;
+  niche: string | null;
   budget: string | null;
   product_type: string | null;
   quantity: string | null;
@@ -62,11 +63,12 @@ const buildWaMessage = (lead: Lead): string => {
     `Tarikh: ${date}`,
     `--------------------------------`,
     `*Nama      :* ${lead.name ?? '-'}`,
+    `*Umur      :* ${lead.age_range ?? '-'}`,
     `*Note      :* ${lead.note ?? '-'}`,
     `*Emel      :* ${lead.email ?? '-'}`,
     `*WhatsApp  :* ${lead.phone ?? '-'}`,
-    `*Umur      :* ${lead.age_range ?? '-'}`,
     `--------------------------------`,
+    `*Niche        :* ${lead.niche ?? '-'}`,
     `*Jenis Produk :* ${lead.product_type ?? '-'}`,
     `*Bajet        :* ${lead.budget ?? '-'}`,
     `*Kuantiti     :* ${lead.quantity ?? '-'}`,
@@ -89,13 +91,14 @@ const sendToWhatsApp = (lead: Lead) => {
 };
 
 const downloadCSV = (leads: Lead[]) => {
-  const headers = ['Nama', 'Note', 'Umur', 'WhatsApp', 'Emel', 'Jenis Produk', 'Bajet', 'Kuantiti', 'Status', 'Tarikh'];
+  const headers = ['Nama', 'Note', 'Umur', 'WhatsApp', 'Emel', 'Niche', 'Jenis Produk', 'Bajet', 'Kuantiti', 'Status', 'Tarikh'];
   const rows = leads.map(l => [
     l.name ?? '',
     l.note ?? '',
     l.age_range ?? '',
     l.phone ?? '',
     l.email ?? '',
+    l.niche ?? '',
     l.product_type ?? '',
     l.budget ?? '',
     l.quantity ?? '',
@@ -173,12 +176,13 @@ const LeadDrawer = ({ lead, onClose, onDelete, onViewReport }: {
   const profile = lead.personality_profile as Record<string, string> | null;
 
   const contactFields = [
-    { icon: Phone, label: 'WhatsApp', value: lead.phone, color: 'text-blue-500 bg-blue-50 border-blue-100' },
+    { icon: Phone, label: 'No. WhatsApp', value: lead.phone, color: 'text-blue-500 bg-blue-50 border-blue-100' },
     { icon: Mail, label: 'Emel', value: lead.email, color: 'text-blue-500 bg-blue-50 border-blue-100' },
+    { icon: ShoppingBag, label: 'Niche', value: lead.niche, color: 'text-violet-500 bg-violet-50 border-violet-100' },
     { icon: Package, label: 'Jenis Produk', value: lead.product_type, color: 'text-emerald-600 bg-emerald-50 border-emerald-100' },
-    { icon: Wallet, label: 'Bajet', value: lead.budget, color: 'text-amber-500 bg-amber-50 border-amber-100' },
     { icon: Hash, label: 'Kuantiti / SKU', value: lead.quantity, color: 'text-emerald-600 bg-emerald-50 border-emerald-100' },
-  ].filter(f => f.value);
+    { icon: Wallet, label: 'Bajet', value: lead.budget, color: 'text-amber-500 bg-amber-50 border-amber-100' },
+  ];
 
   return (
     <motion.div
@@ -225,45 +229,42 @@ const LeadDrawer = ({ lead, onClose, onDelete, onViewReport }: {
         </div>
 
         <div className="p-5 space-y-5 flex-1">
-          {/* Basic info grid */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="bg-white/80 backdrop-blur-xl rounded-2xl p-3.5 border border-white shadow-sm">
-              <ProfileRow label="Nama" value={lead.name ?? '—'} />
+          {/* Top info grid: all key fields */}
+          <div className="grid grid-cols-2 gap-2.5">
+            <div className="bg-white/80 backdrop-blur-xl rounded-xl p-3 border border-white shadow-sm col-span-2">
+              <ProfileRow label="Nama (dengan Gelaran)" value={lead.name ?? '—'} />
             </div>
-            <div className="bg-white/80 backdrop-blur-xl rounded-2xl p-3.5 border border-white shadow-sm">
-              <ProfileRow label="Umur" value={lead.age_range ?? '—'} />
+            <div className="bg-white/80 backdrop-blur-xl rounded-xl p-3 border border-white shadow-sm">
+              <ProfileRow label="Umur" value={lead.age_range ? `${lead.age_range} tahun` : '—'} />
             </div>
-            <div className="bg-white/80 backdrop-blur-xl rounded-2xl p-3.5 border border-white shadow-sm">
-              <ProfileRow label="Mesej" value={`${lead.messages?.length ?? 0} mesej`} />
-            </div>
-            <div className="bg-white/80 backdrop-blur-xl rounded-2xl p-3.5 border border-white shadow-sm">
+            <div className="bg-white/80 backdrop-blur-xl rounded-xl p-3 border border-white shadow-sm">
               <ProfileRow label="Tarikh" value={new Date(lead.created_at).toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' })} />
+            </div>
+            <div className="bg-blue-50 rounded-xl p-3 border border-blue-100 shadow-sm">
+              <ProfileRow label="No. WhatsApp" value={lead.phone ?? '—'} />
+            </div>
+            <div className="bg-blue-50 rounded-xl p-3 border border-blue-100 shadow-sm">
+              <ProfileRow label="Emel" value={lead.email ?? '—'} />
+            </div>
+            <div className="bg-violet-50 rounded-xl p-3 border border-violet-100 shadow-sm">
+              <ProfileRow label="Niche" value={lead.niche ?? '—'} />
+            </div>
+            <div className="bg-emerald-50 rounded-xl p-3 border border-emerald-100 shadow-sm">
+              <ProfileRow label="Jenis Produk" value={lead.product_type ?? '—'} />
+            </div>
+            <div className="bg-emerald-50 rounded-xl p-3 border border-emerald-100 shadow-sm">
+              <ProfileRow label="Kuantiti / SKU" value={lead.quantity ?? '—'} />
+            </div>
+            <div className="bg-amber-50 rounded-xl p-3 border border-amber-100 shadow-sm">
+              <ProfileRow label="Bajet" value={lead.budget ?? '—'} />
             </div>
           </div>
 
           {/* Note */}
           {lead.note && (
             <div className="bg-slate-50 rounded-xl p-3.5 border border-slate-200">
-              <div className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Note</div>
+              <div className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Note / Latar Belakang</div>
               <div className="text-sm font-medium text-slate-700 leading-relaxed">{lead.note}</div>
-            </div>
-          )}
-
-          {/* Contact & order info */}
-          {contactFields.length > 0 && (
-            <div>
-              <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2.5">Kenalan & Pesanan</div>
-              <div className="space-y-2">
-                {contactFields.map(({ icon: Icon, label, value, color }) => (
-                  <div key={label} className={cn('flex items-center gap-3 rounded-xl p-3 border', color)}>
-                    <Icon className="w-4 h-4 flex-shrink-0" />
-                    <div>
-                      <div className="text-[9px] font-black uppercase tracking-widest opacity-60">{label}</div>
-                      <div className="text-sm font-bold text-slate-700">{value}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
             </div>
           )}
 
@@ -615,7 +616,7 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-oem-dark/5 bg-oem-dark/[0.02]">
-                    {['Nama', 'Umur', 'Mesej', 'Status', 'Tarikh', ''].map(col => (
+                    {['Nama', 'Niche', 'Produk', 'Bajet', 'Status', 'Tarikh', ''].map(col => (
                       <th key={col} className="text-left px-4 md:px-5 py-4 text-[9px] font-black uppercase tracking-[0.2em] text-oem-dark/25">
                         {col}
                       </th>
@@ -647,13 +648,13 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
                           </div>
                         </div>
                       </td>
-                      <td className="px-4 md:px-5 py-4 text-xs text-oem-dark/40 font-medium">{lead.age_range ?? '—'}</td>
                       <td className="px-4 md:px-5 py-4">
-                        <div className="flex items-center gap-1.5">
-                          <MessageSquare className="w-3 h-3 text-oem-dark/20" />
-                          <span className="text-xs text-oem-dark/40 font-medium">{lead.messages?.length ?? 0}</span>
-                        </div>
+                        {lead.niche
+                          ? <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-violet-50 border border-violet-100 text-[10px] font-black text-violet-600 uppercase tracking-wide">{lead.niche}</span>
+                          : <span className="text-oem-dark/20 text-xs">—</span>}
                       </td>
+                      <td className="px-4 md:px-5 py-4 text-xs text-oem-dark/50 font-medium max-w-[140px] truncate">{lead.product_type ?? '—'}</td>
+                      <td className="px-4 md:px-5 py-4 text-xs font-bold text-amber-600">{lead.budget ?? <span className="text-oem-dark/20 font-medium">—</span>}</td>
                       <td className="px-4 md:px-5 py-4">
                         <span className={cn(
                           'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wide',

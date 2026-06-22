@@ -157,6 +157,7 @@ export interface ExtractedLeadData {
   note: string | null;
   email: string | null;
   phone: string | null;
+  niche: string | null;
   product_type: string | null;
   budget: string | null;
   quantity: string | null;
@@ -173,24 +174,25 @@ ${conversation}
 ---
 
 Ekstrak dengan tepat:
-- name: Nama penuh pengguna
+- name: Nama penuh pengguna (termasuk gelaran jika ada, contoh: "Dr. Siti", "Datuk Razman", "Encik Ali")
 - age_range: Julat umur (contoh: "20-30", "30-40", "40-50", "50+")
 - note: Ringkasan latar belakang — kerja, pengalaman, bidang, komuniti/followers (1-2 ayat pendek)
 - email: Alamat emel
 - phone: Nombor WhatsApp/telefon (format asal seperti yang diberikan)
+- niche: Niche/kategori bisnes yang dipilih (contoh: "Skincare", "Makeup", "Personal Care", "Baby Care", "Supplement Drink", "Makanan", "Slimming") — ambil dari pilihan user semasa perbualan
 - product_type: Jenis produk fizikal yang ingin dibuat (contoh: "Supplement Kolagen", "Skincare Brightening")
 - budget: Bajet yang dinyatakan (contoh: "RM5,000", "RM10k-20k")
 - quantity: Kuantiti/SKU yang dinyatakan (contoh: "500 unit", "1000 botol", "2 SKU")
 
 Balas JSON sahaja, tiada markdown:
-{"name":null,"age_range":null,"note":null,"email":null,"phone":null,"product_type":null,"budget":null,"quantity":null}`;
+{"name":null,"age_range":null,"note":null,"email":null,"phone":null,"niche":null,"product_type":null,"budget":null,"quantity":null}`;
 
   try {
     const text = await kieChat([{ role: 'user', content: prompt }], true, 'gemini-2.5-flash');
     const cleaned = text.replace(/^```json\s*/i, '').replace(/```\s*$/, '').trim();
     return JSON.parse(cleaned) as ExtractedLeadData;
   } catch {
-    return { name: null, age_range: null, note: null, email: null, phone: null, product_type: null, budget: null, quantity: null };
+    return { name: null, age_range: null, note: null, email: null, phone: null, niche: null, product_type: null, budget: null, quantity: null };
   }
 }
 
