@@ -3,14 +3,18 @@ import { motion } from 'motion/react';
 import { Lock, Eye, EyeOff } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
+const REMEMBER_EMAIL_KEY = 'ensu_admin_email';
+const REMEMBER_FLAG_KEY = 'ensu_admin_remember';
+
 interface AdminLoginProps {
   onLogin: () => void;
 }
 
 export const AdminLogin = ({ onLogin }: AdminLoginProps) => {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(() => localStorage.getItem(REMEMBER_EMAIL_KEY) ?? '');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(() => localStorage.getItem(REMEMBER_FLAG_KEY) === '1');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -18,6 +22,15 @@ export const AdminLogin = ({ onLogin }: AdminLoginProps) => {
     e.preventDefault();
     setError('');
     setLoading(true);
+
+    if (rememberMe) {
+      localStorage.setItem(REMEMBER_EMAIL_KEY, email);
+      localStorage.setItem(REMEMBER_FLAG_KEY, '1');
+    } else {
+      localStorage.removeItem(REMEMBER_EMAIL_KEY);
+      localStorage.removeItem(REMEMBER_FLAG_KEY);
+    }
+
     const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
     if (authError) {
       setError('E-mel atau kata laluan tidak sah.');
@@ -75,6 +88,27 @@ export const AdminLogin = ({ onLogin }: AdminLoginProps) => {
               </button>
             </div>
           </div>
+
+          {/* Remember Me */}
+          <label className="flex items-center gap-3 cursor-pointer group select-none">
+            <div
+              onClick={() => setRememberMe(v => !v)}
+              className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all ${
+                rememberMe
+                  ? 'bg-emerald-500 border-emerald-500'
+                  : 'border-slate-300 group-hover:border-emerald-400'
+              }`}
+            >
+              {rememberMe && (
+                <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              )}
+            </div>
+            <span className="text-xs font-semibold text-slate-500 group-hover:text-slate-700 transition-colors">
+              Ingat e-mel saya
+            </span>
+          </label>
 
           {error && (
             <div className="bg-red-50 border border-red-100 rounded-xl px-4 py-3 text-xs font-bold text-red-500">
