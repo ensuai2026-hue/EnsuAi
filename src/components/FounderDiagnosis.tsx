@@ -88,6 +88,22 @@ function parseOptions(text: string): string[] {
   return [];
 }
 
+// Returns the message text with the list portion stripped (for display when buttons handle the choices)
+function stripOptionsList(text: string): string {
+  const allLines = text.split('\n');
+  // Find index of first list line
+  const listStart = allLines.findIndex(l => {
+    const t = l.trim();
+    return (
+      /^\d+[.)]\s+/.test(t) ||
+      /^[-*•]\s+/.test(t) ||
+      /^[^\u0000-\u007F\-*•\d]/u.test(t)
+    );
+  });
+  if (listStart <= 0) return text;
+  return allLines.slice(0, listStart).join('\n').trim();
+}
+
 const STEPS = [
   { label: 'Nama & Umur', done: (msgs: Message[]) => msgs.filter(m => m.role === 'user').length >= 2 },
   { label: 'Bisnes & Visi', done: (msgs: Message[]) => msgs.filter(m => m.role === 'user').length >= 4 },
@@ -356,8 +372,15 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
                     : 'bg-white text-slate-700 rounded-bl-sm border border-slate-200/80 shadow-sm'
                 )}>
                   {m.role === 'bot' && i === messages.length - 1 && !isAnalyzing
-                    ? <TypewriterText text={m.content} onDone={scrollToBottom} />
-                    : <p className="whitespace-pre-wrap">{m.content}</p>}
+                    ? <TypewriterText
+                        text={!optionsUsed.has(i) && parseOptions(m.content).length >= 2 ? stripOptionsList(m.content) : m.content}
+                        onDone={scrollToBottom}
+                      />
+                    : <p className="whitespace-pre-wrap">
+                        {m.role === 'bot' && !optionsUsed.has(i) && parseOptions(m.content).length >= 2
+                          ? stripOptionsList(m.content)
+                          : m.content}
+                      </p>}
                 </div>
               </motion.div>
             ))}
