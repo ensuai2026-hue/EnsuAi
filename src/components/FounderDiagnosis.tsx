@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Send, Loader as Loader2, Sparkles, User, Bot, Dna, ChevronRight } from 'lucide-react';
 import { diagnoseFounder, chatWithScientist, extractLeadData, PersonalityProfile } from '../services/geminiService';
@@ -51,6 +51,36 @@ const TypingDots = () => (
   </div>
 );
 
+// Extract clickable options from a bot message.
+// Detects numbered lists, bullet lists, or slash/comma-separated inline choices.
+function parseOptions(text: string): string[] {
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+
+  // Numbered list: "1. Skincare", "2. Makeup"
+  const numbered = lines
+    .map(l => l.match(/^\d+[.)]\s+(.+)/))
+    .filter(Boolean)
+    .map(m => m![1].replace(/\*\*/g, '').trim());
+  if (numbered.length >= 2) return numbered;
+
+  // Bullet list: "- Skincare", "* Makeup", "• Personal care"
+  const bulleted = lines
+    .map(l => l.match(/^[-*•]\s+(.+)/))
+    .filter(Boolean)
+    .map(m => m![1].replace(/\*\*/g, '').trim());
+  if (bulleted.length >= 2) return bulleted;
+
+  // Inline comma/slash options before a question mark, e.g. "Skincare, makeup atau food?"
+  const inlineMatch = text.match(/\b([\w\s]+(?:[,/][\s]*[\w\s]+){2,}(?:\s+atau\s+[\w\s]+)?)\??$/i);
+  if (inlineMatch) {
+    const raw = inlineMatch[1];
+    const parts = raw.split(/[,/]|(?:\s+atau\s+)/i).map(s => s.trim()).filter(s => s.length > 1 && s.length < 40);
+    if (parts.length >= 2) return parts;
+  }
+
+  return [];
+}
+
 const STEPS = [
   { label: 'Nama & Umur', done: (msgs: Message[]) => msgs.filter(m => m.role === 'user').length >= 2 },
   { label: 'Bisnes & Visi', done: (msgs: Message[]) => msgs.filter(m => m.role === 'user').length >= 4 },
@@ -64,13 +94,11 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
   const [input, setInput] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  const [ageSelected, setAgeSelected] = useState(false);
+  const [optionsUsed, setOptionsUsed] = useState<Set<number>>(new Set());
   const [leadId, setLeadId] = useState<string | null>(null);
   const leadIdRef = useRef<string | null>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const AGE_OPTIONS = ['20 - 30', '30 - 40', '40 - 50', '50 ke atas'];
 
   const scrollToBottom = () => {
     const container = messagesContainerRef.current;
@@ -81,7 +109,6 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
     scrollToBottom();
   }, [messages, isTyping]);
 
-  // Upsert lead row — creates on first call, updates on subsequent
   const upsertLead = async (msgs: Message[], extra: Record<string, unknown> = {}) => {
     const currentId = leadIdRef.current;
     if (currentId) {
@@ -100,10 +127,8 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
     }
   };
 
-  // Save messages then run AI extraction in background — non-blocking
   const saveLeadMessages = async (msgs: Message[]) => {
     await upsertLead(msgs);
-    // Fire AI extraction async so it doesn't delay the chat UX
     extractLeadData(msgs).then(extracted => {
       const currentId = leadIdRef.current;
       if (!currentId) return;
@@ -122,7 +147,6 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
     }).catch(() => {});
   };
 
-  // Final save with personality profile — awaited fully before showing report
   const saveLeadFinal = async (msgs: Message[], profile?: PersonalityProfile) => {
     const extracted = await extractLeadData(msgs);
     await upsertLead(msgs, {
@@ -137,14 +161,6 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
       ...(profile ? { personality_profile: profile, completed: true } : {}),
     });
   };
-
-  const isAskingAboutAge = (text: string) => {
-    const lower = text.toLowerCase();
-    return (lower.includes('umur') || lower.includes('usia') || lower.includes('berapa tahun') || lower.includes('anggaran')) && !ageSelected;
-  };
-
-  const lastBotMsg = messages.filter(m => m.role === 'bot').at(-1)?.content ?? '';
-  const showAgeOptions = isAskingAboutAge(lastBotMsg) && !isTyping && !ageSelected;
 
   const sendBotReply = async (msgs: Message[]) => {
     setIsTyping(true);
@@ -161,12 +177,13 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
     }
   };
 
-  const handleAgeSelect = async (age: string) => {
-    setAgeSelected(true);
-    const updated: Message[] = [...messages, { role: 'user', content: age }];
+  const handleOptionSelect = useCallback(async (option: string, msgIndex: number) => {
+    setOptionsUsed(prev => new Set(prev).add(msgIndex));
+    const updated: Message[] = [...messages, { role: 'user', content: option }];
     setMessages(updated);
     await sendBotReply(updated);
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -193,6 +210,12 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
 
   const userMsgCount = messages.filter(m => m.role === 'user').length;
   const canFinalize = messages.length >= 4;
+
+  // Determine quick-select options for the last bot message
+  const lastBotEntry = messages.map((m, i) => ({ m, i })).filter(x => x.m.role === 'bot').at(-1);
+  const quickOptions = !isTyping && lastBotEntry && !optionsUsed.has(lastBotEntry.i)
+    ? parseOptions(lastBotEntry.m.content)
+    : [];
 
   return (
     <div className="w-full max-w-3xl mx-auto px-4 md:px-6 flex flex-col py-12 md:py-16 relative">
@@ -342,23 +365,23 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
             </div>
           ) : (
             <div className="flex flex-col gap-2.5">
-              {/* Age quick-select */}
+              {/* Quick-select option buttons — auto-detected from last bot message */}
               <AnimatePresence>
-                {showAgeOptions && (
+                {quickOptions.length > 0 && (
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
                     className="flex flex-wrap gap-2 overflow-hidden"
                   >
-                    {AGE_OPTIONS.map(age => (
+                    {quickOptions.map(opt => (
                       <button
-                        key={age}
+                        key={opt}
                         type="button"
-                        onClick={() => handleAgeSelect(age)}
+                        onClick={() => handleOptionSelect(opt, lastBotEntry!.i)}
                         className="px-4 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-oem-dark text-xs font-bold hover:bg-oem-dark hover:text-white hover:border-oem-dark transition-all duration-200 active:scale-95"
                       >
-                        {age}
+                        {opt}
                       </button>
                     ))}
                   </motion.div>
@@ -385,7 +408,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
                 </button>
               </form>
 
-              {/* Progress bar inside input */}
+              {/* Progress bar */}
               {userMsgCount > 0 && (
                 <div className="flex items-center gap-2">
                   <div className="flex-1 h-0.5 bg-slate-100 rounded-full overflow-hidden">
