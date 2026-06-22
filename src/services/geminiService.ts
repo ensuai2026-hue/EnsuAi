@@ -71,7 +71,7 @@ const ENSU_CATALOG = `KATALOG PRODUK ENSU LIFESCIENCES (HANYA produk dalam senar
 
 7. BOTANICAL BEVERAGE / MINUMAN KESIHATAN: Mind juice, Women juice, Healthy juice, Slimming juice, Premix coffee, Premix tea, Detox powder, Slimming powder, Whitening powder, Healthy powder, Powder kemam, Protein powder, Fiber drink, Instant jelly, Gummies, Chewable tablet, Meal replacement.
 
-8. READY-TO-EAT FOOD: Aneka sambal, Aneka muruku, Aneka kuih, Biskut raya, Produk perencah, Seasoning product, Food paste, Thai sauce.
+8. READY-TO-EAT FOOD: Aneka sambal, Aneka kuih, Biskut raya, Produk perencah, Seasoning product, Food paste, Thai sauce.
 
 PERATURAN PRODUK (WAJIB):
 - HANYA cadang produk dari senarai di atas. JANGAN reka produk baru.
