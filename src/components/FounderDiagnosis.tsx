@@ -436,7 +436,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
           {isAnalyzing ? (
             <div className="flex items-center justify-center gap-3 py-3">
               <Loader2 className="w-5 h-5 text-oem-primary animate-spin" />
-              <p className="text-slate-400 text-sm font-semibold">Sedang membedah DNA anda...</p>
+              <p className="text-slate-400 text-sm font-semibold">Sedang menganalisis DNA anda...</p>
             </div>
           ) : (
             <div className="flex flex-col gap-2">
