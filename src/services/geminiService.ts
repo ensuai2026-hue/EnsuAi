@@ -136,6 +136,12 @@ FLOW BORAK (ikut order ni WAJIB):
 🟠 5000 pcs
 🔴 5000+ pcs
    Contoh ayat penuh: "Berapa kuantiti/SKU yang [Nama] nak buat?\n🟢 500 pcs\n🔵 1000 pcs\n🟡 3000 pcs\n🟠 5000 pcs\n🔴 5000+ pcs"
+   Untuk soalan BAJET, format jawapan MESTI persis macam ni (emoji ikut terus teks, satu baris satu pilihan):
+🟢 RM5,000 ke bawah
+🔵 RM5,000 - RM10,000
+🟡 RM10,000 - RM15,000
+🔴 RM15,000 ke atas
+   Contoh ayat penuh: "Bajet [Nama] dalam range mana?\n🟢 RM5,000 ke bawah\n🔵 RM5,000 - RM10,000\n🟡 RM10,000 - RM15,000\n🔴 RM15,000 ke atas"
 6. Selepas dah tahu produk, kuantiti & bajet, tanya no. WhatsApp diorang — cakap supaya team Ensu boleh follow up.
 7. Tanya e-mel diorang — "untuk hantar full DNA report nanti".
 
@@ -181,7 +187,7 @@ Ekstrak dengan tepat:
 - phone: Nombor WhatsApp/telefon (format asal seperti yang diberikan)
 - niche: Niche/kategori bisnes yang dipilih (contoh: "Skincare", "Makeup", "Personal Care", "Baby Care", "Supplement Drink", "Makanan", "Slimming") — ambil dari pilihan user semasa perbualan
 - product_type: Jenis produk fizikal yang ingin dibuat (contoh: "Supplement Kolagen", "Skincare Brightening")
-- budget: Bajet yang dinyatakan (contoh: "RM5,000", "RM10k-20k")
+- budget: Bajet yang dinyatakan (contoh: "RM5,000 ke bawah", "RM5,000 - RM10,000", "RM10,000 - RM15,000", "RM15,000 ke atas")
 - quantity: Kuantiti/SKU yang dinyatakan (contoh: "500 unit", "1000 botol", "2 SKU")
 
 Balas JSON sahaja, tiada markdown:
