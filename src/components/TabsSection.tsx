@@ -436,7 +436,7 @@ const ScientistsPanel = ({ scientists, loading }: { scientists: Scientist[]; loa
     return <div className="text-center text-sm text-oem-dark/40 font-medium py-16">Belum ada saintis dipaparkan.</div>;
   }
   return (
-    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-7">
+    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
       {scientists.map((s, idx) => (
         <motion.div
           key={s.id}
@@ -446,7 +446,7 @@ const ScientistsPanel = ({ scientists, loading }: { scientists: Scientist[]; loa
           transition={{ delay: idx * 0.08 }}
           className="group bg-white border border-emerald-50 rounded-[2rem] overflow-hidden hover:border-emerald-200 hover:-translate-y-1 hover:shadow-[0_30px_60px_-20px_rgba(16,185,129,0.2)] transition-all duration-500"
         >
-          <div className="aspect-[4/5] overflow-hidden bg-emerald-50 relative">
+          <div className="aspect-[4/3] overflow-hidden bg-emerald-50 relative">
             {s.image_url ? (
               <img
                 src={s.image_url}
