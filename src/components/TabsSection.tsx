@@ -198,8 +198,8 @@ const BackgroundPanel = ({ items, loading }: { items: BackgroundItem[]; loading:
       <BackgroundSection
         number="06"
         icon={UserRound}
-        title="In-house Food Technologist & Chemist"
-        subtitle="Pasukan saintis dan teknologis makanan dalaman."
+        title="Pasukan Pakar & Penasihat"
+        subtitle="Saintis, penasihat dan pengasas di sebalik setiap produk Ensu."
       >
         <PhotoCardGrid items={grouped.specialist} aspect="aspect-[3/4]" cols="md:grid-cols-2 lg:grid-cols-4" portrait />
       </BackgroundSection>
