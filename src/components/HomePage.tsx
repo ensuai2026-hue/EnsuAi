@@ -141,7 +141,7 @@ export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
 
                 <div className="relative w-72 h-[420px] lg:w-80 lg:h-[460px]">
                   <img
-                    src="/ChatGPT_Image_May_23,_2026,_10_48_53_AM.png"
+                    src="/ChatGPT_Image_Jun_24,_2026,_09_18_31_PM copy.png"
                     alt="Saintis Formula OEM"
                     className="w-full h-full object-cover object-top rounded-[3rem] shadow-2xl shadow-emerald-200/50 border border-white/80"
                   />
