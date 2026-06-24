@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import { ArrowRight, Dna, Star, CircleCheck as CheckCircle, Scan } from 'lucide-react';
+import { TabsSection } from './TabsSection';
 
 interface HomePageProps {
   onStartDiagnosis: () => void;
@@ -180,6 +181,8 @@ export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
           </div>
         </div>
       </section>
+
+      <TabsSection />
     </div>
   );
 };
