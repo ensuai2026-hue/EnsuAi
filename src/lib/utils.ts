@@ -19,7 +19,7 @@ export function buildLeadWhatsAppText(
   });
   const divider = "--------------------------------";
   const lines: string[] = [];
-  lines.push("[ LEAD BARU — ENSU.AI ]");
+  lines.push("[FOUNDER]");
   lines.push(`Tarikh: ${today}`);
   lines.push(divider);
   if (extracted.name) lines.push(`Nama : ${extracted.name}`);

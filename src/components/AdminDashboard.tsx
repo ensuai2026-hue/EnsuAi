@@ -59,7 +59,7 @@ const buildWaMessage = (lead: Lead): string => {
   const profile = lead.personality_profile as Record<string, string> | null;
 
   const lines: string[] = [
-    `*[ LEAD BARU — ENSU.AI ]*`,
+    `*[FOUNDER]*`,
     `Tarikh: ${date}`,
     `--------------------------------`,
     `*Nama      :* ${lead.name ?? '-'}`,
