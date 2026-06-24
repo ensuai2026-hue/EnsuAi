@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Building2, FlaskConical, Images, Award, Handshake, Factory, Microscope, UserRound } from 'lucide-react';
+import { Building2, FlaskConical, Images, Award, Handshake, Factory, Microscope, UserRound, Sparkles } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 type TabKey = 'background' | 'scientists' | 'gallery';
@@ -130,6 +130,8 @@ export const TabsSection = () => {
 const BackgroundPanel = ({ items, loading }: { items: BackgroundItem[]; loading: boolean }) => {
   const grouped = useMemo(() => {
     const map: Record<string, BackgroundItem[]> = {
+      about: [],
+      'about-stat': [],
       certification: [],
       partner: [],
       factory: [],
@@ -150,6 +152,15 @@ const BackgroundPanel = ({ items, loading }: { items: BackgroundItem[]; loading:
     <div className="space-y-16 md:space-y-24">
       <BackgroundSection
         number="01"
+        icon={Sparkles}
+        title="Tentang Kami"
+        subtitle="Cerita di sebalik Ensu - dari makmal kecil ke visi besar."
+      >
+        <AboutBlock items={grouped.about} stats={grouped['about-stat']} />
+      </BackgroundSection>
+
+      <BackgroundSection
+        number="02"
         icon={Award}
         title="Pensijilan"
         subtitle="Standard kualiti, keselamatan, dan kepatuhan industri."
@@ -158,7 +169,7 @@ const BackgroundPanel = ({ items, loading }: { items: BackgroundItem[]; loading:
       </BackgroundSection>
 
       <BackgroundSection
-        number="02"
+        number="03"
         icon={Handshake}
         title="Rakan Strategik"
         subtitle="Institusi & agensi yang membantu kami berkembang."
@@ -167,7 +178,7 @@ const BackgroundPanel = ({ items, loading }: { items: BackgroundItem[]; loading:
       </BackgroundSection>
 
       <BackgroundSection
-        number="03"
+        number="04"
         icon={Factory}
         title="Kilang di Malaysia"
         subtitle="Tiga kemudahan pengeluaran berlesen di Malaysia."
@@ -176,7 +187,7 @@ const BackgroundPanel = ({ items, loading }: { items: BackgroundItem[]; loading:
       </BackgroundSection>
 
       <BackgroundSection
-        number="04"
+        number="05"
         icon={Microscope}
         title="Makmal Penyelidikan"
         subtitle="Makmal dalaman untuk formulasi dan analisis."
@@ -185,13 +196,80 @@ const BackgroundPanel = ({ items, loading }: { items: BackgroundItem[]; loading:
       </BackgroundSection>
 
       <BackgroundSection
-        number="05"
+        number="06"
         icon={UserRound}
         title="In-house Food Technologist & Chemist"
         subtitle="Pasukan saintis dan teknologis makanan dalaman."
       >
         <PhotoCardGrid items={grouped.specialist} aspect="aspect-[3/4]" cols="md:grid-cols-2 lg:grid-cols-4" portrait />
       </BackgroundSection>
+    </div>
+  );
+};
+
+const AboutBlock = ({ items, stats }: { items: BackgroundItem[]; stats: BackgroundItem[] }) => {
+  if (items.length === 0 && stats.length === 0) {
+    return <div className="text-xs text-oem-dark/40 font-medium">Belum ada kandungan.</div>;
+  }
+  const hero = items[0];
+  const rest = items.slice(1);
+
+  return (
+    <div className="grid lg:grid-cols-5 gap-6 lg:gap-8 items-stretch">
+      {hero && (
+        <div className="lg:col-span-2 organic-card p-6 md:p-8 bg-white border border-emerald-50 flex flex-col">
+          {hero.image_url && (
+            <div className="aspect-[4/5] rounded-[1.75rem] overflow-hidden mb-6 bg-emerald-50">
+              <img src={hero.image_url} alt={hero.name} className="w-full h-full object-cover" />
+            </div>
+          )}
+          <span className="text-[9px] font-black uppercase tracking-[0.3em] text-oem-primary/60">{hero.subtitle || 'Cerita Kami'}</span>
+          <h4 className="mt-2 text-xl md:text-2xl font-extrabold text-oem-dark uppercase leading-tight">
+            {hero.name}
+          </h4>
+          {hero.description && (
+            <p className="mt-3 text-sm text-oem-dark/65 font-medium leading-relaxed">{hero.description}</p>
+          )}
+        </div>
+      )}
+
+      <div className="lg:col-span-3 flex flex-col gap-5">
+        {rest.map((item) => (
+          <div key={item.id} className="organic-card p-6 md:p-8 bg-white border border-emerald-50">
+            {item.subtitle && (
+              <span className="text-[9px] font-black uppercase tracking-[0.3em] text-oem-primary/60">{item.subtitle}</span>
+            )}
+            <h4 className="mt-2 text-lg md:text-xl font-extrabold text-oem-dark uppercase leading-tight">{item.name}</h4>
+            {item.description && (
+              <p className="mt-3 text-sm text-oem-dark/65 font-medium leading-relaxed">{item.description}</p>
+            )}
+          </div>
+        ))}
+
+        {stats.length > 0 && (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
+            {stats.map((s) => (
+              <div
+                key={s.id}
+                className="bg-white border border-emerald-50 rounded-2xl p-4 md:p-5 hover:border-emerald-200 hover:-translate-y-0.5 transition-all duration-500"
+              >
+                <div
+                  className="text-2xl md:text-3xl font-black tracking-tight"
+                  style={{ color: s.accent_color || '#0f172a' }}
+                >
+                  {s.name}
+                </div>
+                <div className="mt-1 text-[10px] md:text-[11px] font-black uppercase tracking-[0.18em] text-oem-dark">
+                  {s.subtitle}
+                </div>
+                {s.description && (
+                  <p className="mt-1.5 text-[11px] text-oem-dark/50 font-medium leading-snug">{s.description}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
