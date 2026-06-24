@@ -286,14 +286,14 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
     : [];
 
   return (
-    <div className="w-full max-w-3xl mx-auto px-3 md:px-6 flex flex-col py-6 md:py-16 relative">
+    <div className="w-full max-w-3xl mx-auto px-0 md:px-6 flex flex-col py-0 md:py-16 relative">
 
-      {/* Header */}
+      {/* Header (hidden on mobile, full chat takes over) */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="text-center mb-5 md:mb-10"
+        className="text-center mb-5 md:mb-10 hidden md:block"
       >
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-100 rounded-full mb-3 md:mb-5">
           <div className="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center">
@@ -314,7 +314,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
-        className="flex items-center justify-center gap-2 mb-4 md:mb-8"
+        className="flex items-center justify-center gap-2 mb-3 md:mb-8 px-3 md:px-0 pt-4 md:pt-0"
       >
         {STEPS.map((step, i) => {
           const done = step.done(messages);
@@ -348,8 +348,8 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="flex flex-col rounded-2xl border border-emerald-200/60 shadow-[0_16px_60px_-12px_rgba(16,185,129,0.25),0_4px_20px_-4px_rgba(0,0,0,0.08)] bg-white overflow-hidden"
-        style={{ height: 'min(72vh, 700px)' }}
+        className="flex flex-col md:rounded-2xl md:border md:border-emerald-200/60 md:shadow-[0_16px_60px_-12px_rgba(16,185,129,0.25),0_4px_20px_-4px_rgba(0,0,0,0.08)] bg-white overflow-hidden h-[calc(100dvh-120px)] md:h-[min(72vh,700px)]"
+        style={{}}
       >
         {/* Chat Header */}
         <div className="flex items-center gap-3.5 px-5 py-3.5 border-b border-emerald-100 bg-gradient-to-r from-emerald-600 to-emerald-500 flex-shrink-0">
@@ -545,7 +545,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
-        className="text-center text-[10px] text-slate-300 font-medium mt-5 uppercase tracking-widest"
+        className="hidden md:block text-center text-[10px] text-slate-300 font-medium mt-5 uppercase tracking-widest"
       >
         Jawab sekurang-kurangnya 6 soalan untuk hasil diagnosis terbaik
       </motion.p>
