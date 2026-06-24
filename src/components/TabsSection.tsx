@@ -243,12 +243,23 @@ const LogoGrid = ({ items, variant }: { items: BackgroundItem[]; variant: 'cert'
           transition={{ delay: idx * 0.05 }}
           className="group relative bg-white border border-emerald-50 rounded-3xl p-5 md:p-6 hover:border-emerald-200 hover:shadow-[0_25px_50px_-20px_rgba(16,185,129,0.2)] hover:-translate-y-1 transition-all duration-500 flex flex-col items-center text-center min-h-[170px] justify-center"
         >
-          <div
-            className="w-14 h-14 md:w-16 md:h-16 rounded-2xl flex items-center justify-center mb-4 text-white font-extrabold text-lg shadow-md"
-            style={{ backgroundColor: item.accent_color || '#0f172a' }}
-          >
-            {logoInitials(item.name)}
-          </div>
+          {item.image_url ? (
+            <div className="w-20 h-20 md:w-24 md:h-24 mb-4 flex items-center justify-center">
+              <img
+                src={item.image_url}
+                alt={item.name}
+                className="max-w-full max-h-full object-contain"
+                loading="lazy"
+              />
+            </div>
+          ) : (
+            <div
+              className="w-14 h-14 md:w-16 md:h-16 rounded-2xl flex items-center justify-center mb-4 text-white font-extrabold text-lg shadow-md"
+              style={{ backgroundColor: item.accent_color || '#0f172a' }}
+            >
+              {logoInitials(item.name)}
+            </div>
+          )}
           <h4 className="text-[11px] md:text-xs font-extrabold text-oem-dark uppercase tracking-tight leading-tight">
             {item.name}
           </h4>
