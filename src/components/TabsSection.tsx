@@ -49,16 +49,6 @@ export const TabsSection = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const onHash = () => {
-      if (window.location.hash === '#scientists') setActive('scientists');
-      else if (window.location.hash === '#gallery') setActive('gallery');
-    };
-    onHash();
-    window.addEventListener('hashchange', onHash);
-    return () => window.removeEventListener('hashchange', onHash);
-  }, []);
-
-  useEffect(() => {
     let cancelled = false;
     const load = async () => {
       setLoading(true);
@@ -80,7 +70,7 @@ export const TabsSection = () => {
   }, []);
 
   return (
-    <section id="tabs-section" className="py-20 md:py-28 bg-oem-light relative">
+    <section className="py-20 md:py-28 bg-oem-light relative">
       <div className="max-w-7xl mx-auto px-6 md:px-10">
         <div className="text-center mb-12 md:mb-16">
           <span className="pill-container text-[9px]">Kenali Ensu</span>
