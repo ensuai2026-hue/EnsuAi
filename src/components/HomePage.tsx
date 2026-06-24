@@ -1,6 +1,6 @@
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Dna, Star, CircleCheck as CheckCircle, Scan } from 'lucide-react';
+import { ArrowRight, Dna, Star, CircleCheck as CheckCircle, Scan, Plus, Building2, FlaskConical, Images } from 'lucide-react';
 
 interface HomePageProps {
   onStartDiagnosis: () => void;
@@ -8,6 +8,7 @@ interface HomePageProps {
 
 export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
   const [showStickyBtn, setShowStickyBtn] = useState(false);
+  const [openTab, setOpenTab] = useState<'background' | 'saintis' | 'galeri' | null>(null);
   const heroRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -177,6 +178,144 @@ export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
                 </div>
               </motion.div>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Accordion Section: Background, Saintis, Galeri */}
+      <section className="py-16 md:py-24 px-6 md:px-10 bg-white border-t border-oem-primary/10">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-10 md:mb-14">
+            <span className="pill-container text-[9px]">Ketahui Lebih</span>
+            <h2 className="mt-5 text-3xl md:text-5xl font-extrabold text-oem-dark uppercase tracking-tight">
+              Tentang ENSU
+            </h2>
+          </div>
+
+          <div className="space-y-3">
+            {[
+              {
+                key: 'background' as const,
+                label: 'Background',
+                icon: Building2,
+                content: (
+                  <div className="space-y-4 text-sm md:text-base text-oem-dark/70 leading-relaxed font-medium">
+                    <p>
+                      ENSU.AI adalah platform AI Jenama Malaysia #1 yang menggabungkan kepakaran 20+ tahun dalam OEM (Original Equipment Manufacturing) dengan teknologi AI terkini untuk membantu founder lokal melahirkan produk berformula eksklusif.
+                    </p>
+                    <p>
+                      Dari skincare hingga supplement, dari makeup hingga personal care — kami telah membantu lebih 1,200+ founder aktif menjana pasaran bernilai RM 2.4B di Malaysia & rantau Asia Tenggara.
+                    </p>
+                    <p>
+                      Misi kami: <span className="text-oem-dark font-bold">setiap founder berhak ada produk yang membawa DNA mereka sendiri</span> — bukan generic, bukan pasar pukal.
+                    </p>
+                  </div>
+                ),
+              },
+              {
+                key: 'saintis' as const,
+                label: 'Saintis',
+                icon: FlaskConical,
+                content: (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {[
+                      { name: 'Dr. Aiman Rusli', role: 'Lead R&D Cosmetics', exp: '15+ tahun', img: 'https://images.pexels.com/photos/8460095/pexels-photo-8460095.jpeg?auto=compress&cs=tinysrgb&w=400' },
+                      { name: 'Dr. Siti Hajar', role: 'Formulator Skincare', exp: '12+ tahun', img: 'https://images.pexels.com/photos/5905709/pexels-photo-5905709.jpeg?auto=compress&cs=tinysrgb&w=400' },
+                      { name: 'Dr. Hafiz Daniel', role: 'Supplement Scientist', exp: '18+ tahun', img: 'https://images.pexels.com/photos/8460047/pexels-photo-8460047.jpeg?auto=compress&cs=tinysrgb&w=400' },
+                    ].map(s => (
+                      <div key={s.name} className="rounded-2xl bg-emerald-50/50 border border-emerald-100 p-4 hover:border-oem-primary/40 transition-all">
+                        <div className="aspect-square rounded-xl overflow-hidden mb-3 bg-emerald-100">
+                          <img src={s.img} alt={s.name} className="w-full h-full object-cover" />
+                        </div>
+                        <div className="text-sm font-extrabold text-oem-dark uppercase tracking-tight">{s.name}</div>
+                        <div className="text-[11px] text-oem-dark/60 font-semibold mt-1">{s.role}</div>
+                        <div className="text-[10px] text-oem-primary font-black uppercase tracking-widest mt-2">{s.exp}</div>
+                      </div>
+                    ))}
+                  </div>
+                ),
+              },
+              {
+                key: 'galeri' as const,
+                label: 'Galeri',
+                icon: Images,
+                content: (
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {[
+                      'https://images.pexels.com/photos/3735747/pexels-photo-3735747.jpeg?auto=compress&cs=tinysrgb&w=600',
+                      'https://images.pexels.com/photos/3735709/pexels-photo-3735709.jpeg?auto=compress&cs=tinysrgb&w=600',
+                      'https://images.pexels.com/photos/3735780/pexels-photo-3735780.jpeg?auto=compress&cs=tinysrgb&w=600',
+                      'https://images.pexels.com/photos/8847156/pexels-photo-8847156.jpeg?auto=compress&cs=tinysrgb&w=600',
+                      'https://images.pexels.com/photos/3825539/pexels-photo-3825539.jpeg?auto=compress&cs=tinysrgb&w=600',
+                      'https://images.pexels.com/photos/3735632/pexels-photo-3735632.jpeg?auto=compress&cs=tinysrgb&w=600',
+                    ].map((src, i) => (
+                      <motion.div
+                        key={src}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: i * 0.05 }}
+                        className="aspect-square rounded-xl overflow-hidden bg-emerald-50 group"
+                      >
+                        <img
+                          src={src}
+                          alt={`Galeri ${i + 1}`}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                        />
+                      </motion.div>
+                    ))}
+                  </div>
+                ),
+              },
+            ].map(({ key, label, icon: Icon, content }) => {
+              const isOpen = openTab === key;
+              return (
+                <div
+                  key={key}
+                  className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
+                    isOpen ? 'border-oem-primary/40 bg-emerald-50/30 shadow-sm' : 'border-oem-primary/10 bg-white hover:border-oem-primary/25'
+                  }`}
+                >
+                  <button
+                    onClick={() => setOpenTab(isOpen ? null : key)}
+                    className="w-full flex items-center justify-between px-5 md:px-7 py-4 md:py-5 text-left"
+                  >
+                    <div className="flex items-center gap-3 md:gap-4">
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
+                        isOpen ? 'bg-oem-primary text-white' : 'bg-emerald-50 text-oem-primary'
+                      }`}>
+                        <Icon size={18} strokeWidth={2.2} />
+                      </div>
+                      <span className="text-sm md:text-base font-black text-oem-dark uppercase tracking-tight">
+                        {label}
+                      </span>
+                    </div>
+                    <motion.div
+                      animate={{ rotate: isOpen ? 45 : 0 }}
+                      transition={{ duration: 0.25 }}
+                      className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                        isOpen ? 'bg-oem-dark text-white' : 'bg-slate-100 text-slate-500'
+                      }`}
+                    >
+                      <Plus size={16} strokeWidth={2.5} />
+                    </motion.div>
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        key="content"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: 'easeInOut' }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-5 md:px-7 pb-6 pt-2">{content}</div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
