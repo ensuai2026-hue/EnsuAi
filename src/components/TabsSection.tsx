@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Building2, FlaskConical, Images, Award, Handshake, Factory, Microscope, UserRound, Sparkles } from 'lucide-react';
+import { Building2, FlaskConical, Images, Award, Handshake, Factory, Microscope, UserRound, Sparkles, X, ChevronRight } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 type TabKey = 'background' | 'scientists' | 'gallery';
@@ -433,6 +433,15 @@ const logoInitials = (name: string) => {
 };
 
 const ScientistsPanel = ({ scientists, loading }: { scientists: Scientist[]; loading: boolean }) => {
+  const [selected, setSelected] = useState<Scientist | null>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setSelected(null); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   if (loading && scientists.length === 0) {
     return <div className="text-center text-sm text-oem-dark/40 font-medium py-16">Memuatkan saintis...</div>;
   }
@@ -440,42 +449,118 @@ const ScientistsPanel = ({ scientists, loading }: { scientists: Scientist[]; loa
     return <div className="text-center text-sm text-oem-dark/40 font-medium py-16">Belum ada saintis dipaparkan.</div>;
   }
   return (
-    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-7">
-      {scientists.map((s, idx) => (
-        <motion.div
-          key={s.id}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: idx * 0.08 }}
-          className="group bg-white border border-emerald-50 rounded-[2rem] overflow-hidden hover:border-emerald-200 hover:-translate-y-1 hover:shadow-[0_30px_60px_-20px_rgba(16,185,129,0.2)] transition-all duration-500"
-        >
-          <div className="aspect-[4/3] overflow-hidden bg-emerald-50 relative">
-            {s.image_url ? (
-              <img
-                src={s.image_url}
-                alt={s.name}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-oem-primary/30">
-                <FlaskConical className="w-10 h-10" />
+    <>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-7">
+        {scientists.map((s, idx) => (
+          <motion.button
+            key={s.id}
+            onClick={() => setSelected(s)}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: idx * 0.08 }}
+            className="group text-left bg-white border border-emerald-50 rounded-[2rem] overflow-hidden hover:border-emerald-300 hover:-translate-y-2 hover:shadow-[0_30px_60px_-20px_rgba(16,185,129,0.25)] transition-all duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+          >
+            <div className="aspect-[4/3] overflow-hidden bg-emerald-50 relative">
+              {s.image_url ? (
+                <img
+                  src={s.image_url}
+                  alt={s.name}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-oem-primary/30">
+                  <FlaskConical className="w-10 h-10" />
+                </div>
+              )}
+              {s.expertise && (
+                <div className="absolute top-3 left-3 bg-white/90 backdrop-blur text-oem-primary text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-widest">
+                  {s.expertise}
+                </div>
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-oem-dark/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute bottom-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 shadow-md">
+                <ChevronRight className="w-4 h-4 text-oem-primary" />
               </div>
-            )}
-            {s.expertise && (
-              <div className="absolute top-3 left-3 bg-white/90 backdrop-blur text-oem-primary text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-widest">
-                {s.expertise}
+            </div>
+            <div className="p-5 md:p-6">
+              <h4 className="text-base font-extrabold text-oem-dark uppercase tracking-tight leading-tight group-hover:text-oem-primary transition-colors duration-300">{s.name}</h4>
+              <p className="mt-1 text-[10px] font-black uppercase tracking-[0.2em] text-oem-primary">{s.role}</p>
+              {s.bio && <p className="mt-3 text-xs text-oem-dark/50 font-medium leading-relaxed line-clamp-2">{s.bio}</p>}
+              <div className="mt-4 flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-oem-primary/60 group-hover:text-oem-primary transition-colors duration-300">
+                <span>Lihat Profil</span>
+                <ChevronRight className="w-3 h-3" />
               </div>
-            )}
-          </div>
-          <div className="p-5 md:p-6">
-            <h4 className="text-base font-extrabold text-oem-dark uppercase tracking-tight leading-tight">{s.name}</h4>
-            <p className="mt-1 text-[10px] font-black uppercase tracking-[0.2em] text-oem-primary">{s.role}</p>
-            {s.bio && <p className="mt-3 text-xs text-oem-dark/50 font-medium leading-relaxed">{s.bio}</p>}
-          </div>
-        </motion.div>
-      ))}
-    </div>
+            </div>
+          </motion.button>
+        ))}
+      </div>
+
+      {/* Detail Modal */}
+      <AnimatePresence>
+        {selected && (
+          <motion.div
+            ref={overlayRef}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-oem-dark/60 backdrop-blur-sm"
+            onClick={(e) => { if (e.target === overlayRef.current) setSelected(null); }}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.93, y: 24 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.93, y: 16 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="relative bg-white rounded-[2.5rem] overflow-hidden shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+            >
+              {/* Close button */}
+              <button
+                onClick={() => setSelected(null)}
+                className="absolute top-5 right-5 z-10 w-10 h-10 rounded-full bg-white/90 backdrop-blur border border-emerald-100 flex items-center justify-center hover:bg-oem-primary hover:text-white hover:border-oem-primary transition-all duration-300 shadow-md"
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              {/* Hero image */}
+              <div className="aspect-[16/7] overflow-hidden bg-emerald-50 relative">
+                {selected.image_url ? (
+                  <img
+                    src={selected.image_url}
+                    alt={selected.name}
+                    className="w-full h-full object-cover object-top"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-oem-primary/20">
+                    <FlaskConical className="w-16 h-16" />
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
+                {selected.expertise && (
+                  <div className="absolute top-5 left-5 bg-white/90 backdrop-blur text-oem-primary text-[9px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest shadow-md">
+                    {selected.expertise}
+                  </div>
+                )}
+              </div>
+
+              {/* Content */}
+              <div className="px-7 md:px-10 pb-10 -mt-6 relative">
+                <span className="inline-block text-[9px] font-black uppercase tracking-[0.3em] text-oem-primary/60 mb-2">{selected.role}</span>
+                <h3 className="text-2xl md:text-3xl font-extrabold text-oem-dark uppercase tracking-tight leading-tight mb-5">
+                  {selected.name}
+                </h3>
+                {selected.bio && (
+                  <p className="text-sm text-oem-dark/65 font-medium leading-relaxed">
+                    {selected.bio}
+                  </p>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 
