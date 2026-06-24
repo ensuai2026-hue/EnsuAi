@@ -3,12 +3,15 @@ import { useEffect, useRef, useState } from 'react';
 import { ArrowRight, Dna, Star, CircleCheck as CheckCircle, Scan } from 'lucide-react';
 import { TabsSection } from './TabsSection';
 
+type TabKey = 'background' | 'scientists' | 'gallery';
+
 interface HomePageProps {
   onStartDiagnosis: () => void;
 }
 
 export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
   const [showStickyBtn, setShowStickyBtn] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabKey | undefined>(undefined);
   const heroRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -143,11 +146,19 @@ export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
                     className="w-full h-full object-cover object-top rounded-[3rem] shadow-2xl shadow-emerald-200/50 border border-white/80"
                   />
                   {/* Name badge */}
-                  <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-oem-dark/90 backdrop-blur-md text-white px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest whitespace-nowrap shadow-2xl flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      setActiveTab('scientists');
+                      setTimeout(() => {
+                        document.getElementById('tabs-section')?.scrollIntoView({ behavior: 'smooth' });
+                      }, 50);
+                    }}
+                    className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-oem-dark/90 backdrop-blur-md text-white px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest whitespace-nowrap shadow-2xl flex items-center gap-2 hover:bg-oem-primary transition-colors duration-300 cursor-pointer"
+                  >
                     <Dna className="w-3.5 h-3.5 text-emerald-400" />
                     Saintis Ensu
                     <span className="bg-emerald-500 text-white text-[8px] px-2 py-0.5 rounded-full ml-1">AI</span>
-                  </div>
+                  </button>
 
                   {/* Floating badge: certified */}
                   <motion.div
@@ -182,7 +193,7 @@ export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
         </div>
       </section>
 
-      <TabsSection />
+      <TabsSection initialTab={activeTab} />
     </div>
   );
 };

@@ -41,12 +41,16 @@ const TABS: { key: TabKey; label: string; icon: typeof Building2 }[] = [
   { key: 'gallery', label: 'Galeri', icon: Images },
 ];
 
-export const TabsSection = () => {
-  const [active, setActive] = useState<TabKey>('background');
+export const TabsSection = ({ initialTab }: { initialTab?: TabKey } = {}) => {
+  const [active, setActive] = useState<TabKey>(initialTab ?? 'background');
   const [scientists, setScientists] = useState<Scientist[]>([]);
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
   const [backgroundItems, setBackgroundItems] = useState<BackgroundItem[]>([]);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (initialTab) setActive(initialTab);
+  }, [initialTab]);
 
   useEffect(() => {
     let cancelled = false;
@@ -70,7 +74,7 @@ export const TabsSection = () => {
   }, []);
 
   return (
-    <section className="py-20 md:py-28 bg-oem-light relative">
+    <section id="tabs-section" className="py-20 md:py-28 bg-oem-light relative">
       <div className="max-w-7xl mx-auto px-6 md:px-10">
         <div className="text-center mb-12 md:mb-16">
           <span className="pill-container text-[9px]">Kenali Ensu</span>
