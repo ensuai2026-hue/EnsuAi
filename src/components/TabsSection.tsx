@@ -436,7 +436,7 @@ const ScientistsPanel = ({ scientists, loading }: { scientists: Scientist[]; loa
     return <div className="text-center text-sm text-oem-dark/40 font-medium py-16">Belum ada saintis dipaparkan.</div>;
   }
   return (
-    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-7">
       {scientists.map((s, idx) => (
         <motion.div
           key={s.id}
