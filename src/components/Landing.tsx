@@ -287,15 +287,9 @@ export const Hero = ({ onStartDiagnosis }: { onStartDiagnosis: () => void }) => 
                   className="w-full h-full object-cover object-top rounded-3xl shadow-2xl shadow-emerald-200/40 border border-white/60"
                 />
                 {/* Name badge */}
-                <button
-                  onClick={() => {
-                    window.location.hash = '#scientists';
-                    document.getElementById('tabs-section')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-oem-dark/90 backdrop-blur-sm text-white px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest whitespace-nowrap shadow-xl hover:bg-oem-primary transition-colors duration-200 cursor-pointer"
-                >
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-oem-dark/90 backdrop-blur-sm text-white px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest whitespace-nowrap shadow-xl">
                   Saintis Ensu
-                </button>
+                </div>
                 {/* AI badge */}
                 <div className="absolute top-4 right-4 bg-emerald-500 text-white text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-widest shadow-lg">
                   AI
