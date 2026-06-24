@@ -282,7 +282,7 @@ export const Hero = ({ onStartDiagnosis }: { onStartDiagnosis: () => void }) => 
                 {/* Glow behind character */}
                 <div className="absolute inset-0 bg-emerald-300/20 rounded-full blur-3xl scale-75 translate-y-8" />
                 <img
-                  src="/ChatGPT_Image_Jun_24,_2026,_09_18_31_PM copy copy.png"
+                  src="/ChatGPT_Image_Jun_24,_2026,_09_18_31_PM copy.png"
                   alt="Saintis Ensu"
                   className="w-full h-full object-cover object-top rounded-3xl shadow-2xl shadow-emerald-200/40 border border-white/60"
                 />
