@@ -110,18 +110,6 @@ const STEPS = [
   { label: 'DNA Lengkap', done: (msgs: Message[]) => msgs.filter(m => m.role === 'user').length >= 6 },
 ];
 
-const MISSING_LABEL: Record<keyof ExtractedLeadData, string> = {
-  name: 'Nama',
-  age_range: 'Umur',
-  note: 'Latar belakang',
-  email: 'Emel',
-  phone: 'WhatsApp',
-  niche: 'Niche',
-  product_type: 'Jenis produk',
-  budget: 'Bajet',
-  quantity: 'Kuantiti',
-};
-
 export const FounderDiagnosis = ({ onReportComplete }: Props) => {
   const [messages, setMessages] = useState<Message[]>([
     { role: 'bot', content: 'Salam! Saya Ensu Saintis. Sebelum kita mula kaji DNA bisnes anda, boleh saya tahu nama anda siapa?' }
@@ -275,8 +263,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
   const REQUIRED_FIELDS: (keyof ExtractedLeadData)[] = [
     'name', 'note', 'product_type', 'quantity', 'budget', 'phone', 'email',
   ];
-  const missingFields = REQUIRED_FIELDS.filter(f => !extracted[f] || String(extracted[f]).trim() === '');
-  const isLeadComplete = missingFields.length === 0;
+  const isLeadComplete = REQUIRED_FIELDS.every(f => extracted[f] && String(extracted[f]).trim() !== '');
   const canFinalize = messages.length >= 4;
 
   // Determine quick-select options for the last bot message
@@ -500,9 +487,9 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
                 </div>
               )}
 
-              {/* Finalize CTA */}
+              {/* Finalize CTA — only when all required lead fields are complete */}
               <AnimatePresence>
-                {canFinalize && (
+                {canFinalize && isLeadComplete && (
                   <motion.div
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -511,7 +498,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
                   >
                     <button
                       onClick={handleFinalAnalyze}
-                      disabled={isAnalyzing || isTyping || !isLeadComplete}
+                      disabled={isAnalyzing || isTyping}
                       className="w-full py-3 px-6 bg-oem-dark text-white rounded-xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-emerald-600 transition-all duration-300 active:scale-[0.98] shadow-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-oem-dark"
                     >
                       {isAnalyzing ? (
@@ -527,11 +514,6 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
                         </>
                       )}
                     </button>
-                    {!isLeadComplete && !isAnalyzing && (
-                      <p className="text-[9px] text-slate-400 text-center font-medium uppercase tracking-wider">
-                        Lengkapkan dulu: {missingFields.map(f => MISSING_LABEL[f]).join(', ')}
-                      </p>
-                    )}
                   </motion.div>
                 )}
               </AnimatePresence>
