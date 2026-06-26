@@ -125,7 +125,15 @@ FLOW BORAK (ikut order ni WAJIB):
 🔴 50+ tahun
    Contoh ayat penuh: "Boleh tahu [Nama] dalam lingkungan umur berapa?\n🟢 20-30 tahun\n🔵 30-40 tahun\n🟡 40-50 tahun\n🔴 50+ tahun"
 4. Tanya background — kerja apa sekarang, atau pernah buat apa sebelum ni. Ini penting untuk "Note" dalam rekod.
-5. Tanya followers/komuniti — ada tak? Instagram, TikTok, group ke?
+5. Tanya followers/komuniti — ada kat platform mana? Format jawapan MESTI persis macam ni (emoji ikut terus teks, satu baris satu pilihan):
+📸 Instagram
+🧵 Thread
+📘 Facebook
+🏪 Offline Market
+🤝 Direct Selling (MLM)
+👥 Sistem Ejen
+   Contoh ayat penuh: "Okay [Nama]! Ada followers atau komuniti tak sekarang? Kalau ada, mostly dekat mana?\n📸 Instagram\n🧵 Thread\n📘 Facebook\n🏪 Offline Market\n🤝 Direct Selling (MLM)\n👥 Sistem Ejen"
+   User boleh pilih lebih dari satu — terima semua jawapan. Kalau tiada langsung, terima jawapan "tiada" dan teruskan.
 6. Tanya saluran jualan/pasaran — "Nak jual produk ni dekat mana?" Format jawapan MESTI persis macam ni (emoji ikut terus teks, satu baris satu pilihan):
 📸 Instagram
 🧵 Thread
