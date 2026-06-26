@@ -203,7 +203,7 @@ const BackgroundPanel = ({ items, loading }: { items: BackgroundItem[]; loading:
         number="06"
         icon={UserRound}
         title="Saintis Kami"
-        subtitle="Saintis, penasihat dan pengasas di sebalik setiap produk Ensu."
+        subtitle="Process & Food egineer"
       >
         <PhotoCardGrid items={grouped.specialist} aspect="aspect-[3/4]" cols="md:grid-cols-2 lg:grid-cols-4" portrait />
       </BackgroundSection>
