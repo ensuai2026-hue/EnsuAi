@@ -121,7 +121,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
   const [leadId, setLeadId] = useState<string | null>(null);
   const [extracted, setExtracted] = useState<ExtractedLeadData>({
     name: null, age_range: null, note: null, email: null, phone: null,
-    niche: null, product_type: null, budget: null, quantity: null,
+    niche: null, product_type: null, budget: null, quantity: null, channel: null,
   });
   const leadIdRef = useRef<string | null>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -170,6 +170,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
         product_type: extractedData.product_type,
         budget: extractedData.budget,
         quantity: extractedData.quantity,
+        channel: extractedData.channel,
       }).eq('id', currentId).then(({ error }) => {
         if (error) console.error('Lead extraction update error:', error);
       });
@@ -225,6 +226,7 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
         product_type: latest.product_type,
         budget: latest.budget,
         quantity: latest.quantity,
+        channel: latest.channel,
       });
 
       // 2. Run AI diagnosis (data is already complete — gated by button)

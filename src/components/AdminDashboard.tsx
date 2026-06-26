@@ -17,6 +17,7 @@ interface Lead {
   budget: string | null;
   product_type: string | null;
   quantity: string | null;
+  channel: string | null;
   messages: Array<{ role: string; content: string }>;
   personality_profile: Record<string, unknown> | null;
   completed: boolean;
@@ -72,6 +73,7 @@ const buildWaMessage = (lead: Lead): string => {
     `*Jenis Produk :* ${lead.product_type ?? '-'}`,
     `*Bajet        :* ${lead.budget ?? '-'}`,
     `*Kuantiti     :* ${lead.quantity ?? '-'}`,
+    `*Saluran      :* ${lead.channel ?? '-'}`,
   ];
 
   if (profile?.personalityType) {
@@ -102,6 +104,7 @@ const downloadCSV = (leads: Lead[]) => {
     l.product_type ?? '',
     l.budget ?? '',
     l.quantity ?? '',
+    l.channel ?? '',
     l.completed ? 'Selesai' : 'Dalam Proses',
     new Date(l.created_at).toLocaleDateString('ms-MY'),
   ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
@@ -182,6 +185,7 @@ const LeadDrawer = ({ lead, onClose, onDelete, onViewReport }: {
     { icon: Package, label: 'Jenis Produk', value: lead.product_type, color: 'text-emerald-600 bg-emerald-50 border-emerald-100' },
     { icon: Hash, label: 'Kuantiti / SKU', value: lead.quantity, color: 'text-emerald-600 bg-emerald-50 border-emerald-100' },
     { icon: Wallet, label: 'Bajet', value: lead.budget, color: 'text-amber-500 bg-amber-50 border-amber-100' },
+    { icon: Send, label: 'Saluran Jualan', value: lead.channel, color: 'text-sky-500 bg-sky-50 border-sky-100' },
   ];
 
   return (
@@ -257,6 +261,9 @@ const LeadDrawer = ({ lead, onClose, onDelete, onViewReport }: {
             </div>
             <div className="bg-amber-50 rounded-xl p-3 border border-amber-100 shadow-sm">
               <ProfileRow label="Bajet" value={lead.budget ?? '—'} />
+            </div>
+            <div className="bg-sky-50 rounded-xl p-3 border border-sky-100 shadow-sm">
+              <ProfileRow label="Saluran Jualan" value={lead.channel ?? '—'} />
             </div>
           </div>
 

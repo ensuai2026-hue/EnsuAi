@@ -125,10 +125,27 @@ FLOW BORAK (ikut order ni WAJIB):
 🔴 50+ tahun
    Contoh ayat penuh: "Boleh tahu [Nama] dalam lingkungan umur berapa?\n🟢 20-30 tahun\n🔵 30-40 tahun\n🟡 40-50 tahun\n🔴 50+ tahun"
 4. Tanya background — kerja apa sekarang, atau pernah buat apa sebelum ni. Ini penting untuk "Note" dalam rekod.
-4. Tanya followers/komuniti — ada tak? Instagram, TikTok, group ke?
-5. Tanya ada idea produk ke belum.
+5. Tanya followers/komuniti — ada tak? Instagram, TikTok, group ke?
+6. Tanya saluran jualan/pasaran — "Nak jual produk ni dekat mana?" Format jawapan MESTI persis macam ni (emoji ikut terus teks, satu baris satu pilihan):
+📸 Instagram
+🧵 Thread
+📘 Facebook
+🏪 Offline Market
+🤝 Direct Selling (MLM)
+👥 Sistem Ejen
+   Contoh ayat penuh: "Okay [Nama], nak jual produk ni dekat mana?\n📸 Instagram\n🧵 Thread\n📘 Facebook\n🏪 Offline Market\n🤝 Direct Selling (MLM)\n👥 Sistem Ejen"
+   User boleh pilih lebih dari satu — terima semua jawapan.
+7. Tanya ada idea produk ke belum.
    - Belum ada → tanya niche dulu: "Nak masuk niche apa? Skincare, makeup, personal care, baby care, supplement drink, atau makanan?" Lepas user pilih, suggest 3-5 idea produk DARI KATALOG ENSU di atas SAHAJA yang sesuai dengan DNA diorang. JANGAN suggest produk luar katalog, produk digital, app, atau perkhidmatan.
    - Dah ada → semak dulu produk tu ada dalam katalog ENSU ke tak. Kalau tiada, suggest pilihan paling hampir dari katalog. Lepas tu tanya detail: jenis produk apa (Jenis Produk), berapa SKU/unit nak buat (Kuantiti), budget lebih kurang berapa (Bajet).
+   Untuk soalan NICHE, format jawapan MESTI persis macam ni (emoji ikut terus teks, satu baris satu pilihan):
+💆 Skincare
+💄 Makeup
+🧴 Personal Care
+👶 Baby Care
+🥤 Supplement Drink
+🍱 Makanan
+🏋️ Slimming
    Untuk soalan KUANTITI/SKU, format jawapan MESTI persis macam ni (emoji ikut terus teks, satu baris satu pilihan):
 🟢 500 pcs
 🔵 1000 pcs
@@ -142,8 +159,8 @@ FLOW BORAK (ikut order ni WAJIB):
 🟡 RM10,000 - RM15,000
 🔴 RM15,000 ke atas
    Contoh ayat penuh: "Bajet [Nama] dalam range mana?\n🟢 RM5,000 ke bawah\n🔵 RM5,000 - RM10,000\n🟡 RM10,000 - RM15,000\n🔴 RM15,000 ke atas"
-6. Selepas dah tahu produk, kuantiti & bajet, tanya no. WhatsApp diorang — cakap supaya team Ensu boleh follow up.
-7. Tanya e-mel diorang — "untuk hantar full DNA report nanti".
+8. Selepas dah tahu produk, kuantiti & bajet, tanya no. WhatsApp diorang — cakap supaya team Ensu boleh follow up.
+9. Tanya e-mel diorang — "untuk hantar full DNA report nanti".
 
 PENTING:
 - MESTI kumpul: nama, background/note, jenis produk, kuantiti, bajet, phone (WhatsApp) dan email sebelum boleh bagi laporan muktamad.
@@ -167,6 +184,7 @@ export interface ExtractedLeadData {
   product_type: string | null;
   budget: string | null;
   quantity: string | null;
+  channel: string | null;
 }
 
 export async function extractLeadData(history: { role: 'user' | 'bot', content: string }[]): Promise<ExtractedLeadData> {
@@ -189,16 +207,17 @@ Ekstrak dengan tepat:
 - product_type: Jenis produk fizikal yang ingin dibuat (contoh: "Supplement Kolagen", "Skincare Brightening")
 - budget: Bajet yang dinyatakan (contoh: "RM5,000 ke bawah", "RM5,000 - RM10,000", "RM10,000 - RM15,000", "RM15,000 ke atas")
 - quantity: Kuantiti/SKU yang dinyatakan (contoh: "500 unit", "1000 botol", "2 SKU")
+- channel: Saluran jualan/pasaran yang dipilih (contoh: "Instagram", "Facebook", "Thread", "Offline Market", "Direct Selling (MLM)", "Sistem Ejen") — boleh lebih dari satu, pisahkan dengan koma
 
 Balas JSON sahaja, tiada markdown:
-{"name":null,"age_range":null,"note":null,"email":null,"phone":null,"niche":null,"product_type":null,"budget":null,"quantity":null}`;
+{"name":null,"age_range":null,"note":null,"email":null,"phone":null,"niche":null,"product_type":null,"budget":null,"quantity":null,"channel":null}`;
 
   try {
     const text = await kieChat([{ role: 'user', content: prompt }], true, 'gemini-2.5-flash');
     const cleaned = text.replace(/^```json\s*/i, '').replace(/```\s*$/, '').trim();
     return JSON.parse(cleaned) as ExtractedLeadData;
   } catch {
-    return { name: null, age_range: null, note: null, email: null, phone: null, niche: null, product_type: null, budget: null, quantity: null };
+    return { name: null, age_range: null, note: null, email: null, phone: null, niche: null, product_type: null, budget: null, quantity: null, channel: null };
   }
 }
 
