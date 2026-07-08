@@ -22,8 +22,12 @@ async function kieChat(messages: { role: string; content: string }[], jsonMode =
   });
 
   if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`KIE API error ${res.status}: ${err}`);
+    const data = await res.json().catch(() => null);
+    const msg = data?.error || `API error ${res.status}`;
+    if (res.status === 402) {
+      throw new Error('CREDIT_EXHAUSTED');
+    }
+    throw new Error(`KIE API error ${res.status}: ${msg}`);
   }
 
   const data = await res.json();
@@ -238,7 +242,7 @@ export async function chatWithScientist(history: { role: 'user' | 'bot', content
     })),
   ];
 
-  return await kieChat(messages) || "Maaf, transmisi saya terganggu. Boleh kita sambung semula?";
+  return await kieChat(messages) || "Maaf, saya tak dapat respon sekarang. Cuba semula sebentar lagi.";
 }
 
 export async function diagnoseFounder(history: { role: 'user' | 'bot', content: string }[]): Promise<PersonalityProfile> {
