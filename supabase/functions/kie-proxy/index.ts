@@ -35,16 +35,8 @@ Deno.serve(async (req: Request) => {
 
     const data = await res.json();
 
-    if (!res.ok) {
-      const errorMsg = data?.msg || data?.error || `API error ${res.status}`;
-      return new Response(
-        JSON.stringify({ error: errorMsg, status: res.status }),
-        { status: res.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
     return new Response(JSON.stringify(data), {
-      status: 200,
+      status: res.status,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err) {

@@ -184,12 +184,8 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
       const withBot: Message[] = [...msgs, { role: 'bot', content: response }];
       setMessages(withBot);
       await saveLeadMessages(withBot);
-    } catch (err) {
-      const isCredit = err instanceof Error && err.message === 'CREDIT_EXHAUSTED';
-      const msg = isCredit
-        ? 'Maaf, sistem AI sedang penuh. Sila cuba lagi dalam beberapa minit.'
-        : 'Maaf, hubungan saya sedikit terganggu. Boleh anda nyatakan semula?';
-      setMessages(prev => [...prev, { role: 'bot', content: msg }]);
+    } catch {
+      setMessages(prev => [...prev, { role: 'bot', content: 'Maaf, hubungan transmisi saya sedikit terganggu. Boleh anda nyatakan semula?' }]);
     } finally {
       setIsTyping(false);
       setTimeout(() => inputRef.current?.focus(), 100);
