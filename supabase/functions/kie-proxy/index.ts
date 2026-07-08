@@ -33,27 +33,10 @@ Deno.serve(async (req: Request) => {
       body: JSON.stringify(body),
     });
 
-    const rawText = await res.text();
-
-    if (!res.ok) {
-      return new Response(
-        JSON.stringify({ error: `KIE upstream ${res.status}: ${rawText}` }),
-        { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    let data;
-    try {
-      data = JSON.parse(rawText);
-    } catch {
-      return new Response(
-        JSON.stringify({ error: `Invalid JSON from KIE: ${rawText.slice(0, 200)}` }),
-        { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    const data = await res.json();
 
     return new Response(JSON.stringify(data), {
-      status: 200,
+      status: res.status,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err) {
