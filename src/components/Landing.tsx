@@ -36,7 +36,7 @@ export const Header = ({ onStartDiagnosis, onGoHome, onGoAdmin, showCta, ctaHref
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-5 py-2.5 bg-oem-primary text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-md shadow-emerald-200 hover:scale-105 transition-all"
             >
-              Buat Sekarang
+              WhatsApp Sekarang
               <ArrowRight className="w-3 h-3" />
             </a>
           ) : (
