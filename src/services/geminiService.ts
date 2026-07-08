@@ -29,10 +29,19 @@ async function kieChat(messages: { role: string; content: string }[], jsonMode =
   const data = await res.json();
 
   if (data.error) {
-    throw new Error(`KIE error: ${data.error}`);
+    throw new Error(`KIE error: ${typeof data.error === 'string' ? data.error : JSON.stringify(data.error)}`);
   }
 
-  return data.choices?.[0]?.message?.content || '';
+  const content = data.choices?.[0]?.message?.content
+    || data.candidates?.[0]?.content?.parts?.[0]?.text
+    || '';
+
+  if (!content) {
+    console.error('KIE response empty content:', JSON.stringify(data).slice(0, 500));
+    throw new Error('AI tidak memberi respons. Sila cuba lagi.');
+  }
+
+  return content;
 }
 
 export interface ProductRecommendation {
