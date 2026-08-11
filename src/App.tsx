@@ -36,7 +36,7 @@ export default function App() {
     if (view !== 'scan') return;
 
     const frame = requestAnimationFrame(() => {
-      diagnosisRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('diagnosis-progress')?.scrollIntoView({ behavior: 'auto', block: 'start' });
     });
 
     return () => cancelAnimationFrame(frame);
@@ -119,7 +119,7 @@ export default function App() {
             >
               <Hero onStartDiagnosis={handleStartDiagnosis} />
 
-              <div ref={diagnosisRef} className="scroll-mt-24 md:scroll-mt-28">
+              <div ref={diagnosisRef} className="scroll-mt-20 md:scroll-mt-20">
                 <section
                   className="bg-oem-light border-t border-oem-primary/10 flex items-center justify-center"
                   style={{ minHeight: 'calc(100vh - 64px)' }}

@@ -303,7 +303,8 @@ export const FounderDiagnosis = ({ onReportComplete }: Props) => {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
-        className="flex items-center justify-center gap-2 mb-3 md:mb-8 px-3 md:px-0 pt-4 md:pt-0"
+        id="diagnosis-progress"
+        className="flex items-center justify-center gap-2 mb-3 md:mb-8 px-3 md:px-0 pt-4 md:pt-0 scroll-mt-20"
       >
         {STEPS.map((step, i) => {
           const done = step.done(messages);
