@@ -32,6 +32,16 @@ export default function App() {
     });
   }, []);
 
+  useEffect(() => {
+    if (view !== 'scan') return;
+
+    const frame = requestAnimationFrame(() => {
+      diagnosisRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [view]);
+
   const handleGoAdmin = () => {
     window.location.hash = '#/admin';
     setIsAdmin(true);
@@ -47,9 +57,6 @@ export default function App() {
   const handleStartDiagnosis = () => {
     setView('scan');
     setProfile(null);
-    setTimeout(() => {
-      diagnosisRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
   };
 
   const handleReportComplete = (data: PersonalityProfile, leadId: string | null, waUrl: string) => {
@@ -112,7 +119,7 @@ export default function App() {
             >
               <Hero onStartDiagnosis={handleStartDiagnosis} />
 
-              <div ref={diagnosisRef}>
+              <div ref={diagnosisRef} className="scroll-mt-24 md:scroll-mt-28">
                 <section
                   className="bg-oem-light border-t border-oem-primary/10 flex items-center justify-center"
                   style={{ minHeight: 'calc(100vh - 64px)' }}
