@@ -35,11 +35,16 @@ export default function App() {
   useEffect(() => {
     if (view !== 'scan') return;
 
-    const frame = requestAnimationFrame(() => {
-      document.getElementById('diagnosis-progress')?.scrollIntoView({ behavior: 'auto', block: 'start' });
-    });
+    const timeout = window.setTimeout(() => {
+      const progress = document.getElementById('diagnosis-progress');
+      if (!progress) return;
 
-    return () => cancelAnimationFrame(frame);
+      const targetOffset = window.innerWidth >= 768 ? 150 : 96;
+      const targetTop = progress.getBoundingClientRect().top + window.scrollY - targetOffset;
+      window.scrollTo({ top: Math.max(0, targetTop), behavior: 'auto' });
+    }, 500);
+
+    return () => window.clearTimeout(timeout);
   }, [view]);
 
   const handleGoAdmin = () => {
