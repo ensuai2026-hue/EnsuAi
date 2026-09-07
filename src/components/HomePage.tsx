@@ -2,6 +2,7 @@ import { motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import { ArrowRight, Dna, Star, CircleCheck as CheckCircle, Scan } from 'lucide-react';
 import { TabsSection } from './TabsSection';
+import { ClosingCTA } from './ClosingCTA';
 
 type TabKey = 'background' | 'scientists' | 'gallery';
 
@@ -194,6 +195,7 @@ export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
       </section>
 
       <TabsSection initialTab={activeTab} />
+      <ClosingCTA />
     </div>
   );
 };
