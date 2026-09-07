@@ -43,7 +43,7 @@ export const HomePage = ({ onStartDiagnosis }: HomePageProps) => {
       </motion.div>
 
       {/* Hero Section */}
-      <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden pt-20 pb-12">
+      <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden pt-28 md:pt-36 pb-12">
         {/* Background */}
         <div className="absolute inset-0 z-0">
           <img

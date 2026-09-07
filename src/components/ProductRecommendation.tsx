@@ -19,7 +19,7 @@ export const ProductRecommendation = ({ profile, onReset, adminMode, waUrl }: Pr
   const ctaUrl = waUrl || `https://wa.me/${ENSU_WA_NUMBER}`;
 
   return (
-    <div className={cn('min-h-screen bg-oem-cream pb-12 md:pb-24 px-4 md:px-10 overflow-x-hidden', adminMode ? 'pt-6 md:pt-10' : 'pt-24 md:pt-32')}>
+    <div className={cn('min-h-screen bg-oem-cream pb-12 md:pb-24 px-4 md:px-10 overflow-x-hidden', adminMode ? 'pt-6 md:pt-10' : 'pt-32 md:pt-44')}>
       <div className="max-w-7xl mx-auto space-y-12 md:space-y-16">
         <motion.div 
           initial={{ opacity: 0, y: 30 }}

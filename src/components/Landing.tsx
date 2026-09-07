@@ -1,10 +1,13 @@
-import React from 'react';
-import { motion } from 'motion/react';
-import { ArrowRight, Factory, TrendingUp, LayoutDashboard } from 'lucide-react';
-import { cn } from '../lib/utils';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { ArrowRight, Factory, TrendingUp, LayoutDashboard, MessageCircle, X, Phone, User } from 'lucide-react';
+import { cn, ENSU_WA_NUMBER } from '../lib/utils';
 
 export const Header = ({ onStartDiagnosis, onGoHome, onGoAdmin, showCta, ctaHref }: { onStartDiagnosis?: () => void; onGoHome?: () => void; onGoAdmin?: () => void; showCta?: boolean; ctaHref?: string }) => {
   const [isScrolled, setIsScrolled] = React.useState(false);
+  const [showWaForm, setShowWaForm] = useState(false);
+  const [waName, setWaName] = useState('');
+  const [waPhone, setWaPhone] = useState('');
 
   React.useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -12,59 +15,187 @@ export const Header = ({ onStartDiagnosis, onGoHome, onGoAdmin, showCta, ctaHref
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleWaSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const name = waName.trim() || 'Tanpa Nama';
+    const phone = waPhone.trim() || 'Tanpa No Telefon';
+    const message = `Saya ${name} ${phone} Berminat Nak Buat Produk`;
+    const url = `https://wa.me/${ENSU_WA_NUMBER}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+    setShowWaForm(false);
+    setWaName('');
+    setWaPhone('');
+  };
+
   return (
-    <header className={cn(
-      "fixed top-0 w-full z-50 transition-all duration-300 border-b",
-      isScrolled
-        ? "bg-white/80 backdrop-blur-xl border-emerald-100 py-3 shadow-sm"
-        : "bg-transparent border-transparent py-5"
-    )}>
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-        <div className="flex items-center gap-2.5 group cursor-pointer">
-          <div className="w-8 h-8 md:w-9 md:h-9 bg-oem-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-200 transition-transform group-hover:rotate-12">
-            <Factory className="w-4 h-4 md:w-5 md:h-5" />
+    <>
+      <header className={cn(
+        "fixed top-[34px] md:top-[38px] w-full z-50 transition-all duration-300 border-b",
+        isScrolled
+          ? "bg-white/80 backdrop-blur-xl border-emerald-100 py-3 shadow-sm"
+          : "bg-transparent border-transparent py-5"
+      )}>
+        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+          <div className="flex items-center gap-2.5 group cursor-pointer">
+            <div className="w-8 h-8 md:w-9 md:h-9 bg-oem-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-200 transition-transform group-hover:rotate-12">
+              <Factory className="w-4 h-4 md:w-5 md:h-5" />
+            </div>
+            <span className="text-lg md:text-xl font-display font-extrabold tracking-tight text-oem-dark uppercase">
+              ENSU<span className="text-oem-primary">.ai</span>
+            </span>
           </div>
-          <span className="text-lg md:text-xl font-display font-extrabold tracking-tight text-oem-dark uppercase">
-            ENSU<span className="text-oem-primary">.ai</span>
-          </span>
+          <div className="hidden sm:flex items-center gap-3">
+            {showCta && ctaHref ? (
+              <a
+                href={ctaHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-5 py-2.5 bg-oem-primary text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-md shadow-emerald-200 hover:scale-105 transition-all"
+              >
+                WhatsApp Sekarang
+                <ArrowRight className="w-3 h-3" />
+              </a>
+            ) : (
+              <>
+                <button
+                  onClick={onGoAdmin}
+                  className="flex items-center gap-2 px-4 py-2.5 text-[10px] font-black uppercase tracking-widest text-oem-dark/40 hover:text-oem-primary transition-colors"
+                >
+                  <LayoutDashboard className="w-3.5 h-3.5" />
+                  Admin
+                </button>
+                <button
+                  onClick={onStartDiagnosis}
+                  className="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest bg-oem-primary text-white rounded-full shadow-md shadow-emerald-200 hover:scale-105 transition-all"
+                >
+                  Scan DNA Produk
+                </button>
+              </>
+            )}
+          </div>
         </div>
-        <div className="hidden sm:flex items-center gap-3">
-          {showCta && ctaHref ? (
-            <a
-              href={ctaHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-5 py-2.5 bg-oem-primary text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-md shadow-emerald-200 hover:scale-105 transition-all"
-            >
-              WhatsApp Sekarang
-              <ArrowRight className="w-3 h-3" />
-            </a>
-          ) : (
-            <>
-              <button
-                onClick={onGoAdmin}
-                className="flex items-center gap-2 px-4 py-2.5 text-[10px] font-black uppercase tracking-widest text-oem-dark/40 hover:text-oem-primary transition-colors"
-              >
-                <LayoutDashboard className="w-3.5 h-3.5" />
-                Admin
-              </button>
-              <button
-                onClick={onStartDiagnosis}
-                className="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest bg-oem-primary text-white rounded-full shadow-md shadow-emerald-200 hover:scale-105 transition-all"
-              >
-                Scan DNA Produk
-              </button>
-            </>
-          )}
+      </header>
+
+      {/* WhatsApp Announcement Bar */}
+      <div className="fixed top-0 w-full z-[60] bg-oem-dark text-white">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-2 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
+            <MessageCircle className="w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-400 flex-shrink-0" />
+            <p className="text-[9px] md:text-[11px] font-bold tracking-wide truncate">
+              Klik Sini Untuk Hubungi Pegawai Perkhidmatan Kami Di Whatsapp
+            </p>
+          </div>
+          <button
+            onClick={() => setShowWaForm(true)}
+            className="flex items-center gap-1.5 md:gap-2 bg-emerald-500 hover:bg-emerald-400 text-white px-3 md:px-4 py-1.5 md:py-2 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all duration-300 hover:scale-105 flex-shrink-0 shadow-md shadow-emerald-500/30"
+          >
+            <MessageCircle className="w-3 h-3 md:w-3.5 md:h-3.5" />
+            <span className="hidden sm:inline">WhatsApp Sekarang</span>
+            <span className="sm:hidden">WA</span>
+          </button>
         </div>
       </div>
-    </header>
+
+      {/* WhatsApp Form Modal */}
+      <AnimatePresence>
+        {showWaForm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-oem-dark/60 backdrop-blur-sm"
+            onClick={() => setShowWaForm(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header */}
+              <div className="bg-gradient-to-r from-emerald-600 to-emerald-500 px-6 py-5 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                    <MessageCircle className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-white font-black text-sm uppercase tracking-widest">Hubungi Pegawai</h3>
+                    <p className="text-emerald-100 text-[10px] font-bold uppercase tracking-wider mt-0.5">Perkhidmatan Whatsapp</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowWaForm(false)}
+                  className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+                >
+                  <X className="w-4 h-4 text-white" />
+                </button>
+              </div>
+
+              {/* Form */}
+              <form onSubmit={handleWaSubmit} className="p-6 space-y-4">
+                <p className="text-xs text-oem-dark/50 font-medium leading-relaxed">
+                  Isi nama panggilan dan nombor telefon anda. Kami akan hubungi anda terus di WhatsApp.
+                </p>
+
+                <div className="space-y-2">
+                  <label className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-oem-dark/60">
+                    <User className="w-3 h-3" />
+                    Nama Panggilan
+                  </label>
+                  <input
+                    type="text"
+                    value={waName}
+                    onChange={(e) => setWaName(e.target.value)}
+                    placeholder="cth: Ahmad"
+                    required
+                    className="w-full px-4 py-3 rounded-xl border border-emerald-100 bg-emerald-50/30 text-sm font-medium text-oem-dark placeholder:text-oem-dark/30 focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 transition-all"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-oem-dark/60">
+                    <Phone className="w-3 h-3" />
+                    No Telefon
+                  </label>
+                  <input
+                    type="tel"
+                    value={waPhone}
+                    onChange={(e) => setWaPhone(e.target.value)}
+                    placeholder="cth: 0123456789"
+                    required
+                    className="w-full px-4 py-3 rounded-xl border border-emerald-100 bg-emerald-50/30 text-sm font-medium text-oem-dark placeholder:text-oem-dark/30 focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 transition-all"
+                  />
+                </div>
+
+                <div className="bg-emerald-50 rounded-xl px-4 py-3 border border-emerald-100">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-emerald-700 mb-1">Mesej WhatsApp anda:</p>
+                  <p className="text-xs text-oem-dark/70 font-medium leading-relaxed italic">
+                    "Saya {waName.trim() || '[Nama Panggilan]'} {waPhone.trim() || '[no telefon]'} Berminat Nak Buat Produk"
+                  </p>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white py-3.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 hover:scale-[1.02] shadow-lg shadow-emerald-200"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  Hantar ke WhatsApp
+                </button>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 
 export const Hero = ({ onStartDiagnosis }: { onStartDiagnosis: () => void }) => {
   return (
-    <section className="pt-24 md:pt-40 pb-16 md:pb-24 oem-grid relative overflow-hidden min-h-[90vh] flex items-center">
+    <section className="pt-32 md:pt-48 pb-16 md:pb-24 oem-grid relative overflow-hidden min-h-[90vh] flex items-center">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <img 

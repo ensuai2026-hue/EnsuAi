@@ -39,7 +39,7 @@ export default function App() {
       const progress = document.getElementById('diagnosis-progress');
       if (!progress) return;
 
-      const targetOffset = window.innerWidth >= 768 ? 150 : 96;
+      const targetOffset = window.innerWidth >= 768 ? 180 : 130;
       const targetTop = progress.getBoundingClientRect().top + window.scrollY - targetOffset;
       window.scrollTo({ top: Math.max(0, targetTop), behavior: 'auto' });
     }, 500);
