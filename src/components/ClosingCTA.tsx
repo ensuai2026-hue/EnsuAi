@@ -1,8 +1,7 @@
+import { useState } from 'react';
 import { motion } from 'motion/react';
-import { MessageCircle, Headset, UserCheck, Rocket } from 'lucide-react';
+import { MessageCircle, Headset, UserCheck, Rocket, User, Phone, Send } from 'lucide-react';
 import { ENSU_WA_NUMBER } from '../lib/utils';
-
-const WA_PRETEXT_URL = `https://wa.me/${ENSU_WA_NUMBER}?text=${encodeURIComponent('Saya [Nama Panggilan] [no telefon] Berminat Nak Buat Produk')}`;
 
 const steps = [
   {
@@ -28,6 +27,18 @@ const steps = [
 ];
 
 export const ClosingCTA = () => {
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmedName = name.trim() || 'Tanpa Nama';
+    const trimmedPhone = phone.trim() || 'Tanpa No Telefon';
+    const message = `Salam Sejahtera, saya ${trimmedName} (${trimmedPhone}) berminat untuk buat produk jenama sendiri di Kilang Ensu`;
+    const url = `https://wa.me/${ENSU_WA_NUMBER}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+  };
+
   return (
     <section className="relative bg-oem-dark py-20 md:py-32 overflow-hidden">
       {/* Background glow */}
@@ -94,26 +105,68 @@ export const ClosingCTA = () => {
           ))}
         </div>
 
-        {/* CTA Button */}
+        {/* Lead Form */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="flex flex-col items-center gap-4"
+          transition={{ duration: 0.7, delay: 0.2 }}
+          className="max-w-2xl mx-auto"
         >
-          <a
-            href={WA_PRETEXT_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group flex items-center gap-3 bg-emerald-500 hover:bg-emerald-400 text-white px-8 md:px-10 py-4 md:py-5 rounded-full text-xs md:text-sm font-black uppercase tracking-widest shadow-2xl shadow-emerald-500/30 transition-all duration-300 hover:scale-105"
-          >
-            <MessageCircle className="w-5 h-5 transition-transform group-hover:rotate-12" />
-            Hubungi Pegawai Sekarang
-          </a>
-          <p className="text-[10px] text-white/30 font-bold uppercase tracking-widest">
-            Aktif 24 Jam · Respon Pantas
-          </p>
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2rem] p-6 md:p-10 shadow-2xl">
+            <div className="text-center mb-6 md:mb-8">
+              <h3 className="text-lg md:text-2xl font-black text-white uppercase tracking-tight mb-2">
+                Isi Sekarang, Kami Hubungi Anda
+              </h3>
+              <p className="text-xs md:text-sm text-white/40 font-medium leading-relaxed">
+                Masukkan nama dan nombor telefon anda, kemudian tekan butang hantar untuk terus ke WhatsApp.
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
+              <div className="space-y-2">
+                <label className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-white/50">
+                  <User className="w-3 h-3" />
+                  Nama
+                </label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Masukkan nama anda"
+                  required
+                  className="w-full px-4 py-3.5 rounded-xl bg-white/5 border border-white/10 text-sm font-medium text-white placeholder:text-white/25 focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-white/50">
+                  <Phone className="w-3 h-3" />
+                  No. Telefon
+                </label>
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="cth: 0123456789"
+                  required
+                  className="w-full px-4 py-3.5 rounded-xl bg-white/5 border border-white/10 text-sm font-medium text-white placeholder:text-white/25 focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="group w-full flex items-center justify-center gap-2.5 bg-emerald-500 hover:bg-emerald-400 text-white py-4 rounded-xl text-xs md:text-sm font-black uppercase tracking-widest transition-all duration-300 hover:scale-[1.02] shadow-xl shadow-emerald-500/30"
+              >
+                <Send className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                Hantar ke WhatsApp
+              </button>
+            </form>
+
+            <p className="text-center text-[10px] text-white/25 font-bold uppercase tracking-widest mt-5">
+              Aktif 24 Jam · Respon Pantas
+            </p>
+          </div>
         </motion.div>
       </div>
     </section>
