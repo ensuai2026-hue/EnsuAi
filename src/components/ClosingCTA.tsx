@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { MessageCircle, Headset, UserCheck, Rocket, User, Phone, Send } from 'lucide-react';
+import { MessageCircle, Headset, UserCheck, Rocket, User, Phone, Send, CheckCircle } from 'lucide-react';
 import { ENSU_WA_NUMBER } from '../lib/utils';
+import { supabase } from '../lib/supabase';
 
 const steps = [
   {
@@ -29,14 +30,35 @@ const steps = [
 export const ClosingCTA = () => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmedName = name.trim() || 'Tanpa Nama';
     const trimmedPhone = phone.trim() || 'Tanpa No Telefon';
+
+    setSubmitting(true);
+
+    try {
+      await supabase.from('leads').insert({
+        name: trimmedName,
+        phone: trimmedPhone,
+        channel: 'Form Closing CTA',
+      });
+    } catch {
+      // Still proceed to WhatsApp even if DB save fails
+    }
+
     const message = `Salam Sejahtera, saya ${trimmedName} (${trimmedPhone}) berminat untuk buat produk jenama sendiri di Kilang Ensu`;
     const url = `https://wa.me/${ENSU_WA_NUMBER}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
+
+    setSubmitting(false);
+    setSubmitted(true);
+    setName('');
+    setPhone('');
+    setTimeout(() => setSubmitted(false), 4000);
   };
 
   return (
@@ -156,10 +178,25 @@ export const ClosingCTA = () => {
 
               <button
                 type="submit"
-                className="group w-full flex items-center justify-center gap-2.5 bg-emerald-500 hover:bg-emerald-400 text-white py-4 rounded-xl text-xs md:text-sm font-black uppercase tracking-widest transition-all duration-300 hover:scale-[1.02] shadow-xl shadow-emerald-500/30"
+                disabled={submitting}
+                className="group w-full flex items-center justify-center gap-2.5 bg-emerald-500 hover:bg-emerald-400 text-white py-4 rounded-xl text-xs md:text-sm font-black uppercase tracking-widest transition-all duration-300 hover:scale-[1.02] shadow-xl shadow-emerald-500/30 disabled:opacity-60 disabled:hover:scale-100"
               >
-                <Send className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                Hantar ke WhatsApp
+                {submitting ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                    Menghantar...
+                  </>
+                ) : submitted ? (
+                  <>
+                    <CheckCircle className="w-4 h-4" />
+                    Terhantar!
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                    Hantar ke WhatsApp
+                  </>
+                )}
               </button>
             </form>
 
